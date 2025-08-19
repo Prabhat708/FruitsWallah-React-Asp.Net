@@ -9,12 +9,12 @@ const Hero = () => {
         <div  className="row g-5 align-items-center">
             <div  className="col-md-12 col-lg-7">
                 <h4  className="mb-3 text-secondary">100% Chemical free</h4>
-                <h1  className="mb-2 display-3 text-success">Garden-Fresh Organic Veggies and Fruits</h1>
+                <h1  className="mb-5 display-3 text-success">Garden-Fresh Organic Veggies and Fruits</h1>
                 <div  className="position-relative mx-auto">
                     <form method='get' action='/fruitwallah/search'  className="form-inline my-2 my-lg-0">
                         <input  className="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="search" name="search" id="search"  placeholder="Search"/>
                         <button type="submit"
-                         className="btn btn-success border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white ">Submit Now</button>
+                         className="btn btn-success border-2 border-secondary py-3 px-4 position-absolute top-0 start-50 rounded-pill text-white hero-search-btn">Submit Now</button>
                     </form>
                 </div>
             </div>
@@ -22,10 +22,10 @@ const Hero = () => {
                 <div id="carouselId"  className="carousel slide position-relative" data-bs-ride="carousel">
                     <div  className="carousel-inner" role="listbox">
                         <div  className="carousel-item active rounded" id='carousel-items'>
-                            <img src={hero_img_1} className="img-fluid w-100 h-100 bg-secondary rounded" alt="First slide"/>
+                            <img src={hero_img_1} className="img-fluid w-100 h-100 rounded hero-img" alt="First slide"/>
                             <a href=""  className="btn px-4 py-2 text-white rounded">Fruites</a>
                         </div>
-                        <div  className="carousel-item rounded" id='carousel-items'>
+                        <div  className="carousel-item rounded " id='carousel-items'>
                             <img src={hero_img_2}  className="img-fluid w-100 h-100 rounded" alt="Second slide"/>
                             <a href=""  className="btn px-4 py-2 text-white rounded">Vegetables</a>
                         </div>

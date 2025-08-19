@@ -64,14 +64,10 @@ function Navbar() {
                 </a>
               </div>
               <div className="d-flex m-3 me-0">
-                <div className="position-relative mx-auto">
-                  <form
-                    method="get"
-                    action="/search"
-                    className="form-inline my-2 my-lg-0"
-                  >
+                <div className="position-relative mx-auto d-inline-block w-75">
+                  <form method="get" action="/search" className="w-100">
                     <input
-                      className="form-control border-2 border-success w-75  rounded-pill"
+                      className="form-control border-2 top-50 border-success rounded-pill "
                       type="search"
                       name="search"
                       id="search"
@@ -79,15 +75,16 @@ function Navbar() {
                     />
                     <button
                       type="submit"
-                      className="btn  px-4 position-absolute  text-white "
+                      className="btn position-absolute top-50 end-0 translate-middle-y me-0 p-0 border-0 bg-transparent "
                     >
                       <IoSearchCircleSharp
-                        size={30}
-                        className="text-success display-inline"
-                      ></IoSearchCircleSharp>
+                        size={50}
+                        className="text-success search-btn"
+                      />
                     </button>
                   </form>
                 </div>
+
                 <a href="/cart/" className="m-2">
                   <FaShoppingCart
                     size={30}
