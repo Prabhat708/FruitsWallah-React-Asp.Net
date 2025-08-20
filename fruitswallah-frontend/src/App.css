@@ -2,6 +2,9 @@
 *{
     box-sizing: border-box !important;
 }
+a{
+    text-decoration: none !important;
+}
 /*** Spinner Start ***/
 #spinner {
     opacity: 0;
