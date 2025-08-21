@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const LoginPage = () => {
+  const[showButton, setShowButton] = useState(false);
+  const handleShowPassword = () => {
+    setShowButton(!showButton);
+
+  }
   return (
     <>
       <Navbar />
@@ -34,19 +39,15 @@ const LoginPage = () => {
                   Password
                 </label>
                 <input
-                  type="password"
-                  className="form-control pe-5" // add padding so text doesn't overlap button
+                  type={showButton ? "text" : "password"}
+                  className="form-control pe-5" 
                   id="password"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   className="btn btn-sm btn-link text-success position-absolute top-50 end-0 translate-middle-y me-2 mt-3 text-decoration-none "
-                  onClick={() => {
-                    const input = document.getElementById("password");
-                    input.type =
-                      input.type === "password" ? "text" : "password";
-                  }}
+                  onClick={handleShowPassword}
                 >
                   Show
                 </button>

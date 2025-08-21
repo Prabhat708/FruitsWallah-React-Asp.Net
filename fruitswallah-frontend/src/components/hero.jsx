@@ -23,11 +23,11 @@ const Hero = () => {
                     <div  className="carousel-inner" role="listbox">
                         <div  className="carousel-item active rounded" id='carousel-items'>
                             <img src={hero_img_1} className="img-fluid w-100 h-100 rounded hero-img" alt="First slide"/>
-                            <a href=""  className="btn px-4 py-2 text-white rounded">Fruites</a>
+                            
                         </div>
                         <div  className="carousel-item rounded " id='carousel-items'>
                             <img src={hero_img_2}  className="img-fluid w-100 h-100 rounded" alt="Second slide"/>
-                            <a href=""  className="btn px-4 py-2 text-white rounded">Vegetables</a>
+                           
                         </div>
                     </div>
                     <button  className="carousel-control-prev" type="button" data-bs-target="#carouselId" data-bs-slide="prev">

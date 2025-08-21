@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const SignUpPage = () => {
+   const [showPasswordBtn, setShowPasswordBtn] = useState(false);
+    const handleShowPassword = () => {
+      setShowPasswordBtn(!showPasswordBtn);
+  
+  }
+  const [showConfirmPasswordBtn, setShowConfirmPasswordBtn] = useState(false);
+  const handleShowConfirmPassword = () => { 
+    setShowConfirmPasswordBtn(!showConfirmPasswordBtn);
+  }
   return (
     <>
       <Navbar />
@@ -16,14 +25,14 @@ const SignUpPage = () => {
 
             <h2 className="text-center mb-4 mt-2">Please! Register.</h2>
             <form>
-              <div class="mb-3">
-                <label for="Username" class="form-label">
+              <div className="mb-3">
+                <label htmlFor="Username" className="form-label">
                   Username
                 </label>
                 <input
                   type="text"
                   name="Username"
-                  class="form-control"
+                  className="form-control"
                   id="Username"
                   placeholder="Username" required
                 />
@@ -57,7 +66,8 @@ const SignUpPage = () => {
                   Password
                 </label>
                 <input
-                  type="password"
+                  type={
+                    showPasswordBtn ? "text" : "password"}
                   name="password"
                   className="form-control pe-5"
                   id="password"
@@ -66,22 +76,20 @@ const SignUpPage = () => {
                 <button
                   type="button"
                   className="btn btn-sm btn-link text-success position-absolute top-50 end-0 translate-middle-y me-2 mt-3 text-decoration-none "
-                  onClick={() => {
-                    const input = document.getElementById("password");
-                    input.type =
-                      input.type === "password" ? "text" : "password";
-                  }}
+                  onClick={handleShowPassword}
                 >
                   Show
                 </button>
               </div>
-              <div class="mb-3 position-relative">
-                <label for="cpassword" class="form-label">
+              <div className="mb-3 position-relative">
+                <label htmlFor="cpassword" className="form-label">
                   Confirm Password
                 </label>
                 <input
-                  type="password"
-                  class="form-control"
+                  type={
+                    showConfirmPasswordBtn ? "text" : "password"
+                  }
+                  className="form-control"
                   name="cpassword"
                   id="cpassword"
                   placeholder="Confirm Password" required
@@ -89,11 +97,7 @@ const SignUpPage = () => {
                 <button
                   type="button"
                   className="btn btn-sm btn-link text-success position-absolute top-50 end-0 translate-middle-y me-2 mt-3 text-decoration-none "
-                  onClick={() => {
-                    const input = document.getElementById("cpassword");
-                    input.type =
-                      input.type === "password" ? "text" : "password";
-                  }}
+                  onClick={handleShowConfirmPassword}
                 >
                   Show
                 </button>

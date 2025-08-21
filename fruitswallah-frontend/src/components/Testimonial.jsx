@@ -10,9 +10,31 @@ const Testimonial = () => {
             <h1 className="text-success mb-2 display-7">Our Testimonial</h1>
             <h2 className="display-7 mb-5 text-dark">Our Client Saying!</h2>
           </div>
-          <div className="owl-carousel testimonial-carousel">
-            <div className="testimonial-item img-border-radius bg-light rounded p-4">
-              <div className="position-relative">
+          <div
+            id="testimonialCarousel"
+            className="carousel slide pt-5"
+            data-bs-ride="carousel"
+          >
+            <div className="testimonial-item img-border-radius bg-light rounded p-4 carousel-inner">
+              <div className="position-relative carousel-item active">
+                <i className="fa fa-quote-right fa-2x text-secondary position-absolute"></i>
+                <div className="mb-4 pb-4 border-bottom border-secondary">
+                  <p className="mb-0">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Suscipit, distinctio!
+                  </p>
+                </div>
+                <div className="d-flex align-items-center flex-nowrap">
+                  <div className="bg-secondary rounded">
+                    <img src={user} className="img-fluid rounded" alt="" />
+                  </div>
+                  <div className="ms-4 d-block">
+                    <h4 className="text-dark">Lorem.</h4>
+                    <p className="m-0 pb-3">fruitsWallah Customer</p>
+                  </div>
+                </div>
+              </div>
+              <div className="position-relative carousel-item ">
                 <i className="fa fa-quote-right fa-2x text-secondary position-absolute"></i>
                 <div className="mb-4 pb-4 border-bottom border-secondary">
                   <p className="mb-0">
@@ -38,9 +60,7 @@ const Testimonial = () => {
       <div className="container py-5">
         <div className="row g-4 align-items-center">
           <div className="col-lg-6 col-md-6">
-                      <img src={
-                          review
-            } height="350px" alt="" />
+            <img src={review} height="350px" alt="" />
           </div>
           <div className="col-lg-6 col-md-6">
             <h2 className="text-center mb-4">User Review Form</h2>
