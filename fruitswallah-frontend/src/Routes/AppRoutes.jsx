@@ -4,6 +4,9 @@ import HomePage from '../Pages/HomePage';
 import LoginPage from '../Pages/LoginPage';
 import SignUpPage from "../Pages/SignUpPage";
 import ContactPage from "../Pages/ContactPage";
+import ProductsPage from "../Pages/ProductsPage";
+import CartPage from "../Pages/CartPage";
+import OrdersPage from "../Pages/OrdersPage";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +16,10 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} /> 
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/products" element={<ProductsPage />} />
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/orders" element={<OrdersPage />} />
+      
       </Routes>
   )
 }

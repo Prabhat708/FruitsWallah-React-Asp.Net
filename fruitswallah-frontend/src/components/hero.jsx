@@ -12,7 +12,7 @@ const Hero = () => {
                 <h1  className="mb-5 display-3 text-success">Garden-Fresh Organic Veggies and Fruits</h1>
                 <div  className="position-relative mx-auto">
                     <form method='get' action='/fruitwallah/search'  className="form-inline my-2 my-lg-0">
-                        <input  className="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="search" name="search" id="search"  placeholder="Search"/>
+                        <input  className="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="search" name="search" id="search" placeholder="Search"/>
                         <button type="submit"
                          className="btn btn-success border-2 border-secondary py-3 px-4 position-absolute top-0 start-50 rounded-pill text-white hero-search-btn">Submit Now</button>
                     </form>

@@ -1,15 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import contactImg from "../assets/Contact-us-pana.svg";
 
 const ContactPage = () => {
+  const [contactData, setContactData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    orderNo: "",
+    subject: "",
+    desc: ""
+  });
+  const handleChange = (e) => {
+    setContactData({ ...contactData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Contact data:", contactData);
+    if (!contactData.name || !contactData.email || !contactData.phone || !contactData.orderNo || !contactData.subject || !contactData.desc) {
+      alert("Please fill all fields");
+      return;
+    }
+    alert(`Message sent successfully.\n Our team will contact you soon.`);
+    setContactData({
+      name: "",
+      email: "",
+      phone: "",
+      orderNo: "",
+      subject: "",
+      desc: ""
+    });
+  };
   return (
-      <>
-          <Navbar />
-      <div className="container mb-4 pt-5 mt-5">
-        <h2 className="h1-responsive font-weight-bold text-center my-4">
-          Contact us
-        </h2>
+    <>
+      <Navbar />
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Contact Us</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item">
+            <a href="/"className="text-white">Home</a>
+          </li>
+          <li class="breadcrumb-item active text-primary">Contact Us</li>
+        </ol>
+      </div>
+      <div className="container mb-4">
+        <h2 className="text-center mb-4">Get in Touch</h2>
         <p className="text-center w-responsive mx-auto mb-5">
           Do you have any questions? Please do not hesitate to contact us
           directly. Our team will come back to you within a matter of hours to
@@ -20,7 +56,7 @@ const ContactPage = () => {
             <form id="contact-form" name="contact-form" method="post">
               <div className="row my-2">
                 <div className="col-md-6">
-                  <div className="md-form mb-0">
+                  <div className="md-form mb-0 ">
                     <label htmlFor="name" className="">
                       Your name
                     </label>
@@ -29,6 +65,8 @@ const ContactPage = () => {
                       id="name"
                       name="name"
                       className="form-control"
+                      value={contactData.name}
+                      onChange={handleChange}
                       placeholder="Enter Your Name"
                       required
                     />
@@ -44,6 +82,8 @@ const ContactPage = () => {
                       type="email"
                       id="email"
                       name="email"
+                      value={contactData.email}
+                      onChange={handleChange}
                       className="form-control"
                       placeholder="Enter Your Email id"
                     />
@@ -61,9 +101,10 @@ const ContactPage = () => {
                       type="number"
                       id="phone"
                       name="phone"
-                      max="10"
-                      pattern="/^-?\d+\.?\d*$/"
-                      onKeyPress="if( this.value.length == 10 ) return false;"
+                      maxLength="10"
+                      minLength="10"
+                      value={contactData.phone}
+                      onChange={handleChange}
                       className="form-control"
                       placeholder="Enter Your Registered Number"
                       required
@@ -77,11 +118,13 @@ const ContactPage = () => {
                       Your Order Number
                     </label>
                     <input
-                      type="text"
+                      type="number"
                       id="OrderNo"
-                      name="OrderNo"
+                      name="orderNo"
                       className="form-control"
                       placeholder="Enter Your order Number"
+                      value={contactData.orderNo}
+                      onChange={handleChange}
                       required
                     />
                   </div>
@@ -97,6 +140,9 @@ const ContactPage = () => {
                       type="text"
                       id="subject"
                       name="subject"
+                      placeholder="Enter Your Subject"
+                      value={contactData.subject}
+                      onChange={handleChange}
                       className="form-control"
                     />
                   </div>
@@ -113,6 +159,8 @@ const ContactPage = () => {
                       rows="2"
                       className="form-control md-textarea"
                       placeholder="Discribe Your Problem"
+                      value={contactData.desc}
+                      onChange={handleChange}
                       required
                     ></textarea>
                   </div>
@@ -123,8 +171,8 @@ const ContactPage = () => {
             <div className="text-center text-md-left my-3">
               <button
                 type="submit"
-                className="btn btn-primary"
-                onclick="document.getElementById('contact-form').submit();"
+                className="btn btn-success"
+                onClick={handleSubmit}
               >
                 Send
               </button>
@@ -132,26 +180,11 @@ const ContactPage = () => {
           </div>
 
           <div className="col-md-3 text-center">
-            <ul className="list-unstyled mb-0">
-              <li>
-                <i className="fas fa-map-marker-alt fa-2x"></i>
-                <p>fruitsWallah office Address </p>
-              </li>
-
-              <li>
-                <i className="fas fa-phone mt-4 fa-2x"></i>
-                <p>+91 6389285501</p>
-              </li>
-
-              <li>
-                <i className="fas fa-envelope mt-4 fa-2x"></i>
-                <p>contact@fruitsWallah.in</p>
-              </li>
-            </ul>
+            <img src={contactImg} alt="" srcset="" />
           </div>
         </div>
-          </div>
-          <Footer />
+      </div>
+      <Footer />
     </>
   );
 };

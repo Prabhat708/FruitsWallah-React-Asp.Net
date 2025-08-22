@@ -3,15 +3,52 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const SignUpPage = () => {
-   const [showPasswordBtn, setShowPasswordBtn] = useState(false);
-    const handleShowPassword = () => {
-      setShowPasswordBtn(!showPasswordBtn);
-  
-  }
+  const [data, setData] = useState({
+    Username: "",
+    email: "",
+    mobile: "",
+    password: "",
+    cpassword: "",
+  });
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+  const handleSignUp = (e) => {
+    const { Username, email, mobile, password, cpassword } = data;
+    console.log("Sign Up data:", data);
+    if (!Username || !email || !mobile || !password || !cpassword) {
+      alert("Please fill all fields");
+      return;
+    } else if (password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    } else if (password !== cpassword) {
+      alert("Passwords do not match");
+      return;
+    } else if (password === "password" && email === "Prabhat@gmail.com") {
+      alert("username already exists");
+      return;
+    } else {
+      alert("Account Created Successfully");
+      setData({
+        Username: "",
+        email: "",
+        mobile: "",
+        password: "",
+        cpassword: "",
+      });
+      window.location.href = "/";
+      return;
+    }
+  };
+  const [showPasswordBtn, setShowPasswordBtn] = useState(false);
+  const handleShowPassword = () => {
+    setShowPasswordBtn(!showPasswordBtn);
+  };
   const [showConfirmPasswordBtn, setShowConfirmPasswordBtn] = useState(false);
-  const handleShowConfirmPassword = () => { 
+  const handleShowConfirmPassword = () => {
     setShowConfirmPasswordBtn(!showConfirmPasswordBtn);
-  }
+  };
   return (
     <>
       <Navbar />
@@ -34,7 +71,10 @@ const SignUpPage = () => {
                   name="Username"
                   className="form-control"
                   id="Username"
-                  placeholder="Username" required
+                  value={data.Username}
+                  onChange={handleChange}
+                  required
+                  placeholder="Username"
                 />
               </div>
               <div className="mb-3">
@@ -46,7 +86,10 @@ const SignUpPage = () => {
                   name="email"
                   className="form-control"
                   id="email"
-                  placeholder="Enter your email" required
+                  value={data.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  required
                 />
               </div>
               <div className="mb-3">
@@ -58,7 +101,12 @@ const SignUpPage = () => {
                   name="mobile"
                   className="form-control"
                   id="mobile"
-                  placeholder="Enter your Mobile Number" maxLength={10} minLength={10} required
+                  value={data.mobile}
+                  onChange={handleChange}
+                  placeholder="Enter your Mobile Number"
+                  maxLength={"10"}
+                  minLength={10}
+                  required
                 />
               </div>
               <div className="mb-3 position-relative">
@@ -66,12 +114,14 @@ const SignUpPage = () => {
                   Password
                 </label>
                 <input
-                  type={
-                    showPasswordBtn ? "text" : "password"}
+                  type={showPasswordBtn ? "text" : "password"}
                   name="password"
                   className="form-control pe-5"
                   id="password"
-                  placeholder="Enter your password" required
+                  value={data.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  required
                 />
                 <button
                   type="button"
@@ -86,13 +136,14 @@ const SignUpPage = () => {
                   Confirm Password
                 </label>
                 <input
-                  type={
-                    showConfirmPasswordBtn ? "text" : "password"
-                  }
+                  type={showConfirmPasswordBtn ? "text" : "password"}
                   className="form-control"
                   name="cpassword"
+                  value={data.cpassword}
+                  onChange={handleChange}
                   id="cpassword"
-                  placeholder="Confirm Password" required
+                  placeholder="Confirm Password"
+                  required
                 />
                 <button
                   type="button"
@@ -103,7 +154,7 @@ const SignUpPage = () => {
                 </button>
               </div>
 
-              <button type="submit" className="btn btn-success w-100">
+              <button type="submit" onClick={handleSignUp} className="btn btn-success w-100">
                 Create Account
               </button>
             </form>

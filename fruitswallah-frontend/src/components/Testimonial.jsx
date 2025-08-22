@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import user from "../assets/user.png";
 import review from "../assets/review.png";
 const Testimonial = () => {
-  return (
+  const [data, setData] = useState({
+    name: "",
+    comment: "",
+  });
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { name, comment } = data;
+    console.log("Review data:", data);
+    if (!name || !comment) {
+      alert("Please fill all fields");
+      return;
+    }
+    alert("Review submitted successfully");
+    setData({ name: "", comment: "" });
+  }
+
+
+    return(
     <>
-      <div className="container-fluid testimonial border-bottom border-secondary">
+      <div className="container-fluid testimonial">
         <div className="container py-5">
           <div className="testimonial-header text-center">
             <h1 className="text-success mb-2 display-7">Our Testimonial</h1>
@@ -15,8 +35,8 @@ const Testimonial = () => {
             className="carousel slide pt-5"
             data-bs-ride="carousel"
           >
-            <div className="testimonial-item img-border-radius bg-light rounded p-4 carousel-inner">
-              <div className="position-relative carousel-item active">
+            <div className="testimonial-item img-border-radius bg-light rounded p-4 carousel-inner ">
+              <div className="position-relative carousel-item active ">
                 <i className="fa fa-quote-right fa-2x text-secondary position-absolute"></i>
                 <div className="mb-4 pb-4 border-bottom border-secondary">
                   <p className="mb-0">
@@ -34,7 +54,7 @@ const Testimonial = () => {
                   </div>
                 </div>
               </div>
-              <div className="position-relative carousel-item ">
+              <div className="position-relative carousel-item">
                 <i className="fa fa-quote-right fa-2x text-secondary position-absolute"></i>
                 <div className="mb-4 pb-4 border-bottom border-secondary">
                   <p className="mb-0">
@@ -72,6 +92,9 @@ const Testimonial = () => {
                   className="form-control"
                   id="name"
                   name="name"
+                  placeholder="Enter your name"
+                    value={data.name}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -82,11 +105,15 @@ const Testimonial = () => {
                   id="comment"
                   name="comment"
                   rows="3"
+                  placeholder="Write your review here"
+                    value={data.comment}
+                  onChange={handleChange}
                   required
                 ></textarea>
               </div>
               <button
-                type="submit"
+                  type="submit" 
+                onClick={handleSubmit}
                 className="btn btn-primary btn-block my-2 align-items-center"
               >
                 Submit

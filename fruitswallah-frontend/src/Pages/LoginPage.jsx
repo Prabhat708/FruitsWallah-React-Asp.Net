@@ -1,8 +1,37 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const [data, setData] = useState({
+    email: '',  
+    password: ''
+  });
+  const handleLogin = (e) => {
+    const { email, password } = data;
+    console.log('Login data:', data);
+    if (!email || !password) {
+      alert("Please fill all fields");
+      return;
+    } else if (password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+    else if (password === "password" && email === "Prabhat@gmail.com") {
+      console.log("Login Successful");
+      setData({ email: '', password: '' });
+      window.location.href = "/";
+      return;
+    }
+    else {
+      alert("Invalid Credentials");
+    }
+  }
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  }
+
   const[showButton, setShowButton] = useState(false);
   const handleShowPassword = () => {
     setShowButton(!showButton);
@@ -15,7 +44,7 @@ const LoginPage = () => {
         <div className="row justify-content-center">
           <div className="col-md-6">
             <h1 className="text-center mb-4 mt-5">
-              Welcome Back to{" "}
+              Welcome Back to
               <strong className="text-success">FruitsWallah.</strong>
             </h1>
 
@@ -31,6 +60,10 @@ const LoginPage = () => {
                   type="email"
                   className="form-control"
                   id="email"
+                  name="email"
+                  value={data.email}
+                  onChange={handleChange}
+                  required
                   placeholder="Enter your email"
                 />
               </div>
@@ -43,6 +76,11 @@ const LoginPage = () => {
                   className="form-control pe-5" 
                   id="password"
                   placeholder="Enter your password"
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
+                  required
+
                 />
                 <button
                   type="button"
@@ -53,7 +91,8 @@ const LoginPage = () => {
                 </button>
               </div>
 
-              <button type="submit" className="btn btn-success w-100">
+              <button type="submit" className="btn btn-success w-100" 
+                onClick={handleLogin}>
                 Login
               </button>
             </form>

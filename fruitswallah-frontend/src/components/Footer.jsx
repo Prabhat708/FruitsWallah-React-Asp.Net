@@ -24,6 +24,8 @@ const Footer = () => {
                     className="form-control border-0 w-100 py-3 px-4 rounded-pill"
                     type="number"
                     placeholder="Your Email"
+                    id="email"
+                    name="email"
                   />
                   <button
                     type="submit"

@@ -15,7 +15,7 @@ function Navbar() {
               className="navbar-toggler py-2 px-3"
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="navbarCollapse"
+              data-bs-target="#navbarCollapse"
             >
               <FaBars className="text-success"></FaBars>
             </button>
@@ -46,6 +46,7 @@ function Navbar() {
                       type="search"
                       name="search"
                       id="search"
+                     
                       placeholder="Search"
                     />
                     <button
