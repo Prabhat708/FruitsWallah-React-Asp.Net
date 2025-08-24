@@ -1,5 +1,6 @@
 import { FaStar } from "react-icons/fa6";
 import { FaStarHalfAlt, FaRegUserCircle } from "react-icons/fa";
+import {Link} from 'react-router-dom';
 import bestProduct1 from "../assets/best-product-1.jpg";
 import bestProduct2 from "../assets/best-product-2.jpg";
 import bestProduct3 from "../assets/best-product-3.jpg";
@@ -31,9 +32,9 @@ const BestSellerProduct = () => {
                     />
                   </div>
                   <div className="col-6">
-                    <a href="#" className="h5">
+                    <Link to="#" className="h5">
                       Organic Tomato
-                    </a>
+                    </Link>
                     <div className="d-flex my-3">
                       <FaStar className="text-success" />
                       <FaStar className="text-success" />
@@ -63,9 +64,9 @@ const BestSellerProduct = () => {
                     />
                   </div>
                   <div className="col-6">
-                    <a href="#" className="h5">
+                    <Link to="#" className="h5">
                       Organic Tomato
-                    </a>
+                    </Link>
                     <div className="d-flex my-3">
                       <FaStar className="text-success" />
                       <FaStar className="text-success" />
@@ -95,9 +96,9 @@ const BestSellerProduct = () => {
                     />
                   </div>
                   <div className="col-6">
-                    <a href="#" className="h5">
+                    <Link to="#" className="h5">
                       Organic Tomato
-                    </a>
+                    </Link>
                     <div className="d-flex my-3">
                       <FaStar className="text-success" />
                       <FaStar className="text-success" />
@@ -127,9 +128,9 @@ const BestSellerProduct = () => {
                     />
                   </div>
                   <div className="col-6">
-                    <a href="#" className="h5">
+                    <Link to="#" className="h5">
                       Organic Tomato
-                    </a>
+                    </Link>
                     <div className="d-flex my-3">
                       <FaStar className="text-success" />
                       <FaStar className="text-success" />
@@ -159,9 +160,9 @@ const BestSellerProduct = () => {
                     />
                   </div>
                   <div className="col-6">
-                    <a href="#" className="h5">
+                    <Link to="#" className="h5">
                       Organic Tomato
-                    </a>
+                    </Link>
                     <div className="d-flex my-3">
                       <FaStar className="text-success" />
                       <FaStar className="text-success" />
@@ -191,9 +192,9 @@ const BestSellerProduct = () => {
                     />
                   </div>
                   <div className="col-6">
-                    <a href="#" className="h5">
+                    <Link to="#" className="h5">
                       Organic Tomato
-                    </a>
+                    </Link>
                     <div className="d-flex my-3">
                       <FaStar className="text-success" />
                       <FaStar className="text-success" />
@@ -216,9 +217,9 @@ const BestSellerProduct = () => {
               <div className="text-center">
                 <img src={bestProduct1} className="img-fluid rounded" alt="" />
                 <div className="py-4">
-                  <a href="#" className="h5">
+                  <Link to="#" className="h5">
                     Organic Tomato
-                  </a>
+                  </Link>
                   <div className="d-flex my-3 justify-content-center">
                     <FaStar className="text-success" />
                     <FaStar className="text-success" />
@@ -240,9 +241,9 @@ const BestSellerProduct = () => {
               <div className="text-center">
                 <img src={bestProduct6} className="img-fluid rounded" alt="" />
                 <div className="py-4">
-                  <a href="#" className="h5">
+                  <Link to="#" className="h5">
                     Organic Tomato
-                  </a>
+                  </Link>
                   <div className="d-flex my-3 justify-content-center">
                     <FaStar className="text-success" />
                     <FaStar className="text-success" />
@@ -264,9 +265,9 @@ const BestSellerProduct = () => {
               <div className="text-center">
                 <img src={bestProduct3} className="img-fluid rounded" alt="" />
                 <div className="py-4">
-                  <a href="#" className="h5">
+                  <Link to="#" className="h5">
                     Organic Tomato
-                  </a>
+                  </Link>
                   <div className="d-flex my-3 justify-content-center">
                     <FaStar className="text-success" />
                     <FaStar className="text-success" />
@@ -289,9 +290,9 @@ const BestSellerProduct = () => {
               <div className="text-center">
                 <img src={bestProduct4} className="img-fluid rounded" alt="" />
                 <div className="py-2">
-                  <a href="#" className="h5">
+                  <Link to="#" className="h5">
                     Organic Tomato
-                  </a>
+                  </Link>
                   <div className="d-flex my-3 justify-content-center">
                     <FaStar className="text-success" />
                     <FaStar className="text-success" />

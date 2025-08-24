@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import {Link} from 'react-router-dom';
 import {
   Package,
   User,
@@ -119,9 +120,9 @@ const OrdersPage = () => {
             </p>
           </div>
           <div className="col-lg-6 col-md-6 text-end">
-            <a href="/contact" className="btn btn-success btn-md">
+            <Link to="/contact" className="btn btn-success btn-md">
               Contact Support
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import {Link} from 'react-router-dom';
 
 const SignUpPage = () => {
   const [data, setData] = useState({
@@ -160,7 +161,7 @@ const SignUpPage = () => {
             </form>
             <div className="text-center mt-3">
               <p>
-                Already have an account? <a href="/login">Login here</a>
+                Already have an account? <Link to="/login">Login here</Link>
               </p>
             </div>
           </div>

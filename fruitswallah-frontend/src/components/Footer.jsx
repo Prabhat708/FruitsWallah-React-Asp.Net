@@ -1,6 +1,7 @@
 import React from "react";
 import { FaRegArrowAltCircleUp, FaRegCopyright } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
+import {Link} from 'react-router-dom';
 import payment from "../assets/payment.png";
 const Footer = () => {
   return (
@@ -13,10 +14,10 @@ const Footer = () => {
           >
             <div className="row g-4">
               <div className="col-lg-3">
-                <a href="">
+                <Link to="">
                   <h1 className="text-success mb-0">FruitsWallah</h1>
                   <p className="text-secondary mb-0">Fresh products</p>
-                </a>
+                </Link>
               </div>
               <div className="col-lg-6">
                 <div className="position-relative mx-auto">
@@ -37,30 +38,30 @@ const Footer = () => {
               </div>
               <div className="col-lg-3">
                 <div className="d-flex justify-content-end pt-3">
-                  <a
+                  <Link to=""
                     className="btn  btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    href=""
+                    
                   >
                     <i className="fab fa-twitter"></i>
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     className="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    href=""
+                    to=""
                   >
                     <i className="fab fa-facebook-f"></i>
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     className="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    href=""
+                    to=""
                   >
                     <i className="fab fa-youtube"></i>
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     className="btn btn-outline-secondary btn-md-square rounded-circle"
-                    href=""
+                    to=""
                   >
                     <FaLinkedin size={30} />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -79,41 +80,41 @@ const Footer = () => {
             <div className="col-lg-3 col-md-6">
               <div className="d-flex flex-column text-start footer-item">
                 <h4 className="text-light mb-3">Shop Info</h4>
-                <a className="btn-link" href="">
+                <Link className="btn-link" to="">
                   About Us
-                </a>
-                <a className="btn-link" href="/fruitwallah/contact/">
+                </Link>
+                <Link className="btn-link" to="/fruitwallah/contact/">
                   Contact Us
-                </a>
-                <a className="btn-link" href="">
+                </Link>
+                <Link className="btn-link" to="">
                   Privacy Policy
-                </a>
-                <a className="btn-link" href="">
+                </Link>
+                <Link className="btn-link" to="">
                   Terms & Condition
-                </a>
-                <a className="btn-link" href="">
+                </Link>
+                <Link className="btn-link" to="">
                   Return Policy
-                </a>
-                <a className="btn-link" href="">
+                </Link>
+                <Link className="btn-link" to="">
                   FAQs & Help
-                </a>
+                </Link>
               </div>
             </div>
             <div className="col-lg-3 col-md-6">
               <div className="d-flex flex-column text-start footer-item">
                 <h4 className="text-light mb-3">Account</h4>
-                <a className="btn-link" href="">
+                <Link className="btn-link" to="">
                   My Account
-                </a>
-                <a className="btn-link" href="/fruitwallah/shop-detail/">
+                </Link>
+                <Link className="btn-link" to="/fruitwallah/shop-detail/">
                   Shop details
-                </a>
-                <a className="btn-link" href="/fruitwallah/cart/">
+                </Link>
+                <Link className="btn-link" to="/fruitwallah/cart/">
                   Shopping Cart
-                </a>
-                <a className="btn-link" href="">
+                </Link>
+                <Link className="btn-link" to="">
                   Order History
-                </a>
+                </Link>
               </div>
             </div>
             <div className="col-lg-3 col-md-6">
@@ -134,10 +135,10 @@ const Footer = () => {
           <div className="row">
             <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
               <span className="text-light">
-                <a href="/fruitwallah/">
+                <Link to="/fruitwallah/">
                   <FaRegCopyright className="text-light me-2"></FaRegCopyright>
                  <strong className="text-success"> FruitsWallah.in</strong>
-                </a>
+                </Link>
                 , All right reserved 2025
               </span>
             </div>
@@ -145,12 +146,12 @@ const Footer = () => {
         </div>
       </div>
 
-      <a
-        href=""
+      <Link
+        to=""
         className="btn btn-success border-3 border-success rounded-circle back-to-top"
       >
         <FaRegArrowAltCircleUp className="fa fa-arrow-up"></FaRegArrowAltCircleUp>
-      </a>
+      </Link>
     </>
   );
 };

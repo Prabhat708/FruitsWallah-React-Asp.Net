@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import contactImg from "../assets/Contact-us-pana.svg";
+import {Link} from 'react-router-dom';
 
 const ContactPage = () => {
   const [contactData, setContactData] = useState({
@@ -39,7 +40,7 @@ const ContactPage = () => {
         <h1 class="text-center text-white display-6">Contact Us</h1>
         <ol class="breadcrumb justify-content-center mb-0">
           <li class="breadcrumb-item">
-            <a href="/"className="text-white">Home</a>
+            <Link to="/"className="text-white">Home</Link>
           </li>
           <li class="breadcrumb-item active text-primary">Contact Us</li>
         </ol>

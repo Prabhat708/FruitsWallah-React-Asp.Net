@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
 import { MdDelete } from "react-icons/md";
+import {Link} from 'react-router-dom';
 
 const CartPage = () => {
   return (
@@ -12,9 +13,9 @@ const CartPage = () => {
         <h1 className="text-center text-white display-6">Cart</h1>
         <ol className="breadcrumb justify-content-center mb-0">
           <li className="breadcrumb-item">
-            <a href="/" className="text-white">
+            <Link to="/" className="text-white">
               Home
-            </a>
+            </Link>
           </li>
           <li className="breadcrumb-item active text-success">Cart</li>
         </ol>
@@ -92,7 +93,7 @@ const CartPage = () => {
                     150
                   </p>
                 </div>
-                <a href="/fruitWallah/checkout/">
+                <Link to="/fruitWallah/checkout/">
                   {" "}
                   <button
                     className="btn border-warning bg-success rounded-pill position-relative start-50 px-4 py-3 text-white text-uppercase mb-4 "
@@ -100,7 +101,7 @@ const CartPage = () => {
                   >
                     Proceed Checkout
                   </button>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

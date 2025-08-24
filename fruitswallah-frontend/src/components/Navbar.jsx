@@ -1,16 +1,17 @@
 import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
+import {Link} from 'react-router-dom';
 function Navbar() {
   return (
     <>
       <div className="container-fluid fixed-top">
         <div className="container px-0">
           <nav className="navbar navbar-light bg-white navbar-expand-xl">
-            <a href="/home" className="navbar-brand">
+            <Link to="/home" className="navbar-brand">
               <h1 className="text-success display-6" id="logo">
                 <strong>FruitsWallah</strong>
               </h1>
-            </a>
+            </Link>
             <button
               className="navbar-toggler py-2 px-3"
               type="button"
@@ -24,19 +25,19 @@ function Navbar() {
               id="navbarCollapse"
             >
               <div className="navbar-nav mx-auto">
-                <a href="/home" className="nav-item nav-link active">
+                <Link to="/home" className="nav-item nav-link active">
                   Home
-                </a>
-                <a href="/Products" className="nav-item nav-link">
+                </Link>
+                <Link to="/Products" className="nav-item nav-link">
                   Products
-                </a>
-                <a href="/Orders/" className="nav-item nav-link">
+                </Link>
+                <Link to="/Orders/" className="nav-item nav-link">
                   Orders
-                </a>
+                </Link>
 
-                <a href="/contact/" className="nav-item nav-link">
+                <Link to="/contact/" className="nav-item nav-link">
                   Contact
-                </a>
+                </Link>
               </div>
               <div className="d-flex m-3 me-0">
                 <div className="position-relative mx-auto d-inline-block w-75">
@@ -61,15 +62,15 @@ function Navbar() {
                   </form>
                 </div>
 
-                <a href="/cart/" className="m-2">
+                <Link to="/cart/" className="m-2">
                   <FaShoppingCart
                     size={30}
                     className="text-success pb-1"
                   ></FaShoppingCart>
-                </a>
-                <a href="/login/" className="m-2">
+                </Link>
+                <Link to="/login/" className="m-2">
                   <FaRegUserCircle className="text-success pb-1" size={30} />
-                </a>
+                </Link>
               </div>
             </div>
           </nav>

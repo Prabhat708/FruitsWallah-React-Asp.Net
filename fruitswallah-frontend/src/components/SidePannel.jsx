@@ -1,5 +1,6 @@
 import { CircleUserRound } from "lucide-react";
 import React from 'react'
+import {Link} from 'react-router-dom';
 
 const SidePannel = ({sidebarItems,activeItem,setActiveItem}) => {
   return (
@@ -38,7 +39,7 @@ const SidePannel = ({sidebarItems,activeItem,setActiveItem}) => {
                 >
                   <div className="d-flex align-items-center gap-3">
                     <Icon size={20} />
-                    <a href={item.href} className="fw-medium text-dark">{item.label}</a>
+                    <Link to={item.href} className="fw-medium text-dark">{item.label}</Link>
                   </div>
                   {item.count && (
                     <span className="badge bg-primary rounded-pill">

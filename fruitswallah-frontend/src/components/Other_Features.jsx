@@ -1,6 +1,7 @@
 import featur_1 from "../assets/feature-1.jpg";
 import featur_2 from "../assets/feature-2.jpg"; 
 import featur_3 from "../assets/feature-3.jpg";
+import {Link} from 'react-router-dom';
 const Other_Features = () => {
   return (
     <>
@@ -8,7 +9,7 @@ const Other_Features = () => {
         <div className="container py-5">
           <div className="row g-4 justify-content-center">
             <div className="col-md-6 col-lg-4 ">
-              <a href="" className="text-decoration-none">
+              <Link to="" className="text-decoration-none">
                 <div className="service-item bg-success rounded border border-secondary ">
                   <img
                     src={featur_1}
@@ -22,10 +23,10 @@ const Other_Features = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
             <div className="col-md-6 col-lg-4">
-              <a href="" className="text-decoration-none">
+              <Link to="" className="text-decoration-none">
                 <div className="service-item bg-success rounded border border-dark">
                   <img
                     src={featur_2}
@@ -39,10 +40,10 @@ const Other_Features = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
             <div className="col-md-6 col-lg-4">
-              <a href="" className="text-decoration-none">
+              <Link to="" className="text-decoration-none">
                 <div className="service-item bg-success rounded border border-success">
                   <img
                     src={featur_3}
@@ -56,7 +57,7 @@ const Other_Features = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

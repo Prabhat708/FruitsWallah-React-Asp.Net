@@ -6,6 +6,7 @@ import grapes from "../assets/best-product-5.jpg";
 import mango from "../assets/mango.webp";
 import pineapple from "../assets/pineApple.jpg";
 import strawberries from "../assets/feature-2.jpg";
+import {Link} from 'react-router-dom';
 const Fruits_shop = () => {
   const Fruits = [
     {
@@ -73,31 +74,31 @@ const Fruits_shop = () => {
               <div className="col-lg-8 text-end">
                 <ul className="nav nav-pills d-inline-flex text-center mb-5">
                   <li className="nav-item">
-                    <a
+                    <Link
                       className="d-flex m-2 py-2 bg-warning rounded-pill active p-3 text-decoration-none"
                       data-bs-toggle="pill"
-                      href="#tab-1"
+                      to="#tab-1"
                     >
                       <span className="text-dark ">All Products</span>
-                    </a>
+                    </Link>
                   </li>
                   <li className="nav-item">
-                    <a
+                    <Link
                       className="d-flex py-2 m-2 bg-warning rounded-pill p-3 text-decoration-none"
                       data-bs-toggle="pill"
-                      href="#v"
+                      to="#v"
                     >
                       <span className="text-dark ">Vegetables</span>
-                    </a>
+                    </Link>
                   </li>
                   <li className="nav-item">
-                    <a
+                    <Link
                       className="d-flex m-2 py-2 bg-warning rounded-pill p-3 text-decoration-none"
                       data-bs-toggle="pill"
-                      href="#f"
+                      to="#f"
                     >
                       <span className="text-dark ">Fruits</span>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

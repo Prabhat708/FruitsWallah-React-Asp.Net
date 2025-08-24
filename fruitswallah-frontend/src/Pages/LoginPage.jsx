@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const navigate=useNavigate()
   const [data, setData] = useState({
     email: '',  
     password: ''
@@ -20,8 +21,8 @@ const LoginPage = () => {
     }
     else if (password === "password" && email === "Prabhat@gmail.com") {
       console.log("Login Successful");
+      navigate('/home')
       setData({ email: '', password: '' });
-      window.location.href = "/";
       return;
     }
     else {
@@ -98,7 +99,7 @@ const LoginPage = () => {
             </form>
             <div className="text-center mt-3">
               <p>
-                Don't have an account? <a href="/signup">Register here</a>
+                Don't have an account? <Link to="/signup">Register here</Link>
               </p>
             </div>
           </div>

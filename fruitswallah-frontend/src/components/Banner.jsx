@@ -1,5 +1,6 @@
 import React from 'react'
 import banner from '../assets/banner.png'
+import {Link} from 'react-router-dom';
 const Banner = () => {
   return (
     <>
@@ -12,7 +13,7 @@ const Banner = () => {
                     <p className="fw-normal display-3 text-dark mb-4">in Our Store</p>
                     <p className="mb-4 text-white">The generated Lorem Ipsum is therefore always free from repetition
                         injected humour, or non-characteristic words etc.</p>
-                    <a href="#" className="banner-btn btn border-2 border-warning rounded-pill text-dark py-3 px-5">BUY</a>
+                    <Link to="#" className="banner-btn btn border-2 border-warning rounded-pill text-dark py-3 px-5">BUY</Link>
                 </div>
             </div>
             <div className="col-lg-6">
