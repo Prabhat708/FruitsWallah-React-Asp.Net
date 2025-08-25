@@ -2,8 +2,6 @@ import React from "react";
 import { FaShoppingBag } from "react-icons/fa";
 
 const ItemCard = ({ item }) => {
-    console.log(item)
-   
 
   return (
     <>

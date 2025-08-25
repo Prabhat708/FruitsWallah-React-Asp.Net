@@ -8,7 +8,6 @@ import {
   Lock,
   CreditCard,
   MapPin,
-  Users,
   LogOut,
   Clock,
   CheckCircle,
@@ -28,9 +27,8 @@ const OrdersPage = () => {
     { icon: Package, label: "View orders", href: "/orders", active: true ,count:3},
     { icon: User, label: "Personal details", href: "/profile" },
     { icon: Lock, label: "Change password", href: "/changePassword" },
-    { icon: CreditCard, label: "Payment methods", href: "payment" },
+    { icon: CreditCard, label: "Payment methods", href: "/payment" },
     { icon: MapPin, label: "Manage addresses", href: "/address" },
-    { icon: Users, label: "Social accounts", href: "/socialMedia" },
     { icon: LogOut, label: "Log out", href: "/logOut" },
   ];
   const orders = [

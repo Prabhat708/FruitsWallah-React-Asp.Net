@@ -11,7 +11,6 @@ const LoginPage = () => {
   });
   const handleLogin = (e) => {
     const { email, password } = data;
-    console.log('Login data:', data);
     if (!email || !password) {
       alert("Please fill all fields");
       return;
@@ -20,7 +19,6 @@ const LoginPage = () => {
       return;
     }
     else if (password === "password" && email === "Prabhat@gmail.com") {
-      console.log("Login Successful");
       navigate('/home')
       setData({ email: '', password: '' });
       return;

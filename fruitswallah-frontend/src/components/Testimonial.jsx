@@ -12,7 +12,6 @@ const Testimonial = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { name, comment } = data;
-    console.log("Review data:", data);
     if (!name || !comment) {
       alert("Please fill all fields");
       return;

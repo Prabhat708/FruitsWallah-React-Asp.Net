@@ -18,7 +18,6 @@ const ContactPage = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Contact data:", contactData);
     if (!contactData.name || !contactData.email || !contactData.phone || !contactData.orderNo || !contactData.subject || !contactData.desc) {
       alert("Please fill all fields");
       return;

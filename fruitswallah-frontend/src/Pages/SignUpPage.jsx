@@ -16,7 +16,6 @@ const SignUpPage = () => {
   };
   const handleSignUp = (e) => {
     const { Username, email, mobile, password, cpassword } = data;
-    console.log("Sign Up data:", data);
     if (!Username || !email || !mobile || !password || !cpassword) {
       alert("Please fill all fields");
       return;

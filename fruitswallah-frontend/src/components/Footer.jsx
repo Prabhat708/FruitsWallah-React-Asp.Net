@@ -80,22 +80,22 @@ const Footer = () => {
             <div className="col-lg-3 col-md-6">
               <div className="d-flex flex-column text-start footer-item">
                 <h4 className="text-light mb-3">Shop Info</h4>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="/aboutUs">
                   About Us
                 </Link>
-                <Link className="btn-link" to="/fruitwallah/contact/">
+                <Link className="btn-link" to="/contact/">
                   Contact Us
                 </Link>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="/policy">
                   Privacy Policy
                 </Link>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="/t&c">
                   Terms & Condition
                 </Link>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="returnPolicy">
                   Return Policy
                 </Link>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="faqs">
                   FAQs & Help
                 </Link>
               </div>
@@ -103,16 +103,16 @@ const Footer = () => {
             <div className="col-lg-3 col-md-6">
               <div className="d-flex flex-column text-start footer-item">
                 <h4 className="text-light mb-3">Account</h4>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="/profile">
                   My Account
                 </Link>
-                <Link className="btn-link" to="/fruitwallah/shop-detail/">
-                  Shop details
+                <Link className="btn-link" to="/products">
+                  Products
                 </Link>
-                <Link className="btn-link" to="/fruitwallah/cart/">
+                <Link className="btn-link" to="/cart">
                   Shopping Cart
                 </Link>
-                <Link className="btn-link" to="">
+                <Link className="btn-link" to="/orders">
                   Order History
                 </Link>
               </div>
@@ -135,7 +135,7 @@ const Footer = () => {
           <div className="row">
             <div className="col-md-6 text-center text-md-start mb-3 mb-md-0">
               <span className="text-light">
-                <Link to="/fruitwallah/">
+                <Link to="/">
                   <FaRegCopyright className="text-light me-2"></FaRegCopyright>
                  <strong className="text-success"> FruitsWallah.in</strong>
                 </Link>
