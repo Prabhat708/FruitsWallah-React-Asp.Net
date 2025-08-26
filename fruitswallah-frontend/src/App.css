@@ -526,3 +526,15 @@ a {
   padding: .2% .8%;
   font-weight: 500;
 }
+
+/* Product Page  */
+.img-container{
+  padding-top: 5%;
+  left:30%;
+  
+}
+.img-container img{
+  width: 150% !important;
+  text-align: center;
+  align-items: center;
+}

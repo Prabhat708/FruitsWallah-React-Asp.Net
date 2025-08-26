@@ -12,6 +12,7 @@ import TermAndConditionPage from "../Pages/TermAndConditionPage";
 import ChangePasswordPage from "../Pages/ChangePasswordPage";
 import ManageAddressPage from "../Pages/ManageAddressPage";
 import SavedPaymentPage from "../Pages/SavedPaymentPage";
+import Product from "../components/Product";
 
 const AppRoutes = () => {
   return (
@@ -28,7 +29,8 @@ const AppRoutes = () => {
       <Route path="/t&c" element={<TermAndConditionPage />} />
       <Route path="/changePassword" element={<ChangePasswordPage />} />
       <Route path="/address" element={<ManageAddressPage />} />
-      <Route path="/payment" element={<SavedPaymentPage/>}/>
+      <Route path="/payment" element={<SavedPaymentPage />} />
+      <Route path="/product/:id" element={<Product />}/>
     </Routes>
   );
 }

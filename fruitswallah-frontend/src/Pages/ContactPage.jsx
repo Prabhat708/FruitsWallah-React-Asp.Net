@@ -35,16 +35,8 @@ const ContactPage = () => {
   return (
     <>
       <Navbar />
-      <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Contact Us</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-          <li class="breadcrumb-item">
-            <Link to="/"className="text-white">Home</Link>
-          </li>
-          <li class="breadcrumb-item active text-primary">Contact Us</li>
-        </ol>
-      </div>
-      <div className="container mb-4">
+     
+      <div className="container mb-4 mt-5 pt-5">
         <h2 className="text-center mb-4">Get in Touch</h2>
         <p className="text-center w-responsive mx-auto mb-5">
           Do you have any questions? Please do not hesitate to contact us

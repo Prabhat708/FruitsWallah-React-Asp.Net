@@ -82,25 +82,7 @@ const Fruits_shop = () => {
                       <span className="text-dark ">All Products</span>
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link
-                      className="d-flex py-2 m-2 bg-warning rounded-pill p-3 text-decoration-none"
-                      data-bs-toggle="pill"
-                      to="#v"
-                    >
-                      <span className="text-dark ">Vegetables</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link
-                      className="d-flex m-2 py-2 bg-warning rounded-pill p-3 text-decoration-none"
-                      data-bs-toggle="pill"
-                      to="#f"
-                    >
-                      <span className="text-dark ">Fruits</span>
-                    </Link>
-                  </li>
-                </ul>
+                  </ul>
               </div>
             </div>
             <div className="tab-content">

@@ -90,7 +90,7 @@ const ProductsPage = () => {
       id: 10,
       name: "Carrots",
       price: 30,
-      image: "Carrots.webp",
+      image: "/Carrots.webp",
       discription: "Sweet and crunchy carrots, packed with vitamins and fiber.",
     },
     {
@@ -400,11 +400,11 @@ const ProductsPage = () => {
                   <div className="tab-content">
                     <div id="tab-1" className="tab-pane fade show p-0 active">
                       <div className="col-lg-12">
-                        <div className="row g-4">
+                        <div className="row g-3">
                           {Items.map((item) => (
                             <div
                               key={item.id}
-                              className="col-md-6 col-lg-4 col-xl-3"
+                              className="col-lg-4 col-md-6"
                               id="v"
                             >
                               <ItemCard item={item} />
