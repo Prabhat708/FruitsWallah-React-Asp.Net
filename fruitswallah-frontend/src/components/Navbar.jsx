@@ -1,10 +1,19 @@
+import { use, useEffect, useState } from "react";
 import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import {Link} from 'react-router-dom';
 function Navbar() {
+  const [numberOfItemsInCart, setNumberOfItemsInCart] = useState(0);
+  useEffect(() => {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let numberOfItemsInCart1 = cart.reduce((total, item) => total + item.quantity, 0);
+    setNumberOfItemsInCart(numberOfItemsInCart1);
+  }, []);
+
+ 
   return (
     <>
-      <div className="container-fluid fixed-top">
+      <div className="container-fluid fixed-top mb-5">
         <div className="container px-0">
           <nav className="navbar navbar-light bg-white navbar-expand-xl">
             <Link to="/home" className="navbar-brand">
@@ -34,7 +43,6 @@ function Navbar() {
                 <Link to="/Orders/" className="nav-item nav-link">
                   Orders
                 </Link>
-
                 <Link to="/contact/" className="nav-item nav-link">
                   Contact
                 </Link>
@@ -63,10 +71,13 @@ function Navbar() {
                 </div>
 
                 <Link to="/cart/" className="m-2">
+                <span className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 " style={{top:"20%",right:"3.5%"}}>{ numberOfItemsInCart}</span>
                   <FaShoppingCart
                     size={30}
                     className="text-success pb-1"
-                  ></FaShoppingCart>
+                  >
+                  </FaShoppingCart>
+                     
                 </Link>
                 <Link to="/login/" className="m-2">
                   <FaRegUserCircle className="text-success pb-1" size={30} />

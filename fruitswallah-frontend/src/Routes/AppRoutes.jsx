@@ -13,6 +13,8 @@ import ChangePasswordPage from "../Pages/ChangePasswordPage";
 import ManageAddressPage from "../Pages/ManageAddressPage";
 import SavedPaymentPage from "../Pages/SavedPaymentPage";
 import Product from "../components/Product";
+import LogoutPage from "../Pages/LogoutPage";
+import CheckoutPage from "../Pages/CheckoutPage";
 
 const AppRoutes = () => {
   return (
@@ -30,7 +32,9 @@ const AppRoutes = () => {
       <Route path="/changePassword" element={<ChangePasswordPage />} />
       <Route path="/address" element={<ManageAddressPage />} />
       <Route path="/payment" element={<SavedPaymentPage />} />
-      <Route path="/product/:id" element={<Product />}/>
+      <Route path="/product/:id" element={<Product />} />
+      <Route path="/logOut" element={<LogoutPage />} />
+      <Route path="/checkout" element={<CheckoutPage />} />
     </Routes>
   );
 }

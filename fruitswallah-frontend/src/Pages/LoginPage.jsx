@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
-import Navbar from '../components/Navbar'
-import Footer from '../components/Footer'
-import {Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const navigate=useNavigate()
+  const isLogin = localStorage.getItem("isLogin");
+  const navigate = useNavigate();
   const [data, setData] = useState({
-    email: '',  
-    password: ''
+    email: "",
+    password: "",
   });
   const handleLogin = (e) => {
     const { email, password } = data;
@@ -17,27 +18,29 @@ const LoginPage = () => {
     } else if (password.length < 6) {
       alert("Password must be at least 6 characters long");
       return;
-    }
-    else if (password === "password" && email === "Prabhat@gmail.com") {
-      navigate('/home')
-      setData({ email: '', password: '' });
+    } else if (password === "password" && email === "Prabhat@gmail.com") {
+  
+      localStorage.setItem("isLogin", true);
+      console.log("Login successful");
+      console.log(isLogin);
+      console.log("redirecting to home page");
+      navigate("/");
+      setData({ email: "", password: "" });
       return;
-    }
-    else {
+    } else {
       alert("Invalid Credentials");
     }
-  }
+  };
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
-  }
+  };
 
-  const[showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(false);
   const handleShowPassword = () => {
     setShowButton(!showButton);
-
-  }
+  };
   return (
-    <>
+    <>{isLogin && navigate("/profile")}
       <Navbar />
       <div className="container mt-5">
         <div className="row justify-content-center">
@@ -72,14 +75,13 @@ const LoginPage = () => {
                 </label>
                 <input
                   type={showButton ? "text" : "password"}
-                  className="form-control pe-5" 
+                  className="form-control pe-5"
                   id="password"
                   placeholder="Enter your password"
                   name="password"
                   value={data.password}
                   onChange={handleChange}
                   required
-
                 />
                 <button
                   type="button"
@@ -90,8 +92,11 @@ const LoginPage = () => {
                 </button>
               </div>
 
-              <button type="submit" className="btn btn-success w-100" 
-                onClick={handleLogin}>
+              <button
+                type="submit"
+                className="btn btn-success w-100"
+                onClick={handleLogin}
+              >
                 Login
               </button>
             </form>
@@ -107,6 +112,6 @@ const LoginPage = () => {
       <Footer />
     </>
   );
-}
+};
 
-export default LoginPage
+export default LoginPage;

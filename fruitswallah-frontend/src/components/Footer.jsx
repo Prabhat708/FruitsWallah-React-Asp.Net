@@ -1,6 +1,6 @@
 import React from "react";
-import { FaRegArrowAltCircleUp, FaRegCopyright } from "react-icons/fa";
-import { FaLinkedin } from "react-icons/fa6";
+import { FaFacebook, FaRegArrowAltCircleUp, FaRegCopyright, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaLinkedin, FaT, FaY } from "react-icons/fa6";
 import {Link} from 'react-router-dom';
 import payment from "../assets/payment.png";
 const Footer = () => {
@@ -38,26 +38,29 @@ const Footer = () => {
               </div>
               <div className="col-lg-3">
                 <div className="d-flex justify-content-end pt-3">
-                  <Link to=""
-                    className="btn  btn-outline-secondary me-2 btn-md-square rounded-circle"
-                    
+                  <Link
+                    to=""
+                    className="btn btn-outline-secondary  btn-md-square rounded-circle p-2 me-2"
                   >
-                    <i className="fab fa-twitter"></i>
+                    <FaTwitter
+                      size={30}
+                      className="d-flex justify-content-center align-items-center "
+                    />
                   </Link>
                   <Link
-                    className="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
+                    className="btn btn-outline-secondary me-2 btn-md-square rounded-circle p-2"
                     to=""
                   >
-                    <i className="fab fa-facebook-f"></i>
+                    <FaFacebook size={30} />
                   </Link>
                   <Link
-                    className="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
+                    className="btn btn-outline-secondary me-2 btn-md-square rounded-circle p-2"
                     to=""
                   >
-                    <i className="fab fa-youtube"></i>
+                    <FaYoutube size={30} />
                   </Link>
                   <Link
-                    className="btn btn-outline-secondary btn-md-square rounded-circle"
+                    className="btn btn-outline-secondary btn-md-square rounded-circle p-2"
                     to=""
                   >
                     <FaLinkedin size={30} />
@@ -137,7 +140,7 @@ const Footer = () => {
               <span className="text-light">
                 <Link to="/">
                   <FaRegCopyright className="text-light me-2"></FaRegCopyright>
-                 <strong className="text-success"> FruitsWallah.in</strong>
+                  <strong className="text-success"> FruitsWallah.in</strong>
                 </Link>
                 , All right reserved 2025
               </span>
@@ -146,8 +149,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <Link
-        to=""
+      <Link to={""} id="back-to-top"
         className="btn btn-success border-3 border-success rounded-circle back-to-top"
       >
         <FaRegArrowAltCircleUp className="fa fa-arrow-up"></FaRegArrowAltCircleUp>

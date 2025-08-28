@@ -1,7 +1,22 @@
 import React from "react";
 import { FaShoppingBag } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const ItemCard = ({ item }) => {
+  const navigation = useNavigate();
+  const handleAddToCart = (item) => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
+
+    if (existingItemIndex !== -1) {
+      cart[existingItemIndex].quantity += 1;
+    } else {
+      cart.push({ ...item, quantity: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Item added to cart");
+  };
 
   return (
     <>
@@ -16,29 +31,28 @@ const ItemCard = ({ item }) => {
         </div>
 
         <div className="p-4  position-relative border border-warning border-top-0 rounded-bottom min-h-80 max-h-80">
-                  <h4 id={`Namepr+${item.id}`} > {item.name }</h4>
-          <p className="text-secondary mb-2" style={{ minHeight: "60px" }}>
-                      {
-                        item.discription.slice(0, 60) + (item.discription.length > 60 ? "..." : "")
-                      }
-          </p>
+          <span onClick={() => {navigation(`/product/${item.id}`);}} style={{ cursor: "pointer" }}>
+            <h4 id={`Namepr+${item.id}`}> {item.name}</h4>
+            <p className="text-secondary mb-2" style={{ minHeight: "60px" }}>
+              {item.discription.slice(0, 60) +
+                (item.discription.length > 60 ? "..." : "")}
+            </p>
+          </span>
           <div className="d-flex justify-content-between flex-lg-wrap">
             <p id="pricepr{{i.id}}" className="text-dark fs-5 fw-bold mb-0">
               &#8377; {item.price}/ kg
             </p>
-            <form method="POST" action="{% url 'addToCart' %}">
-              <input type="hidden" name="product_id" value={item.id}/>
-              <input type="hidden" name="quantity" value="1" />
-              <button
-                type="submit"
-                className="btn cart border border-secondary rounded-pill px-3 text-success"
-              >
-                <FaShoppingBag
-                  size={30}
-                  className="text-success "
-                ></FaShoppingBag>
-              </button>
-            </form>
+
+            <button
+              type="submit"
+              className="btn cart border border-secondary rounded-pill px-3 text-success"
+            >
+              <FaShoppingBag
+                onClick={() =>handleAddToCart(item)}
+                size={30}
+                className="text-success "
+              ></FaShoppingBag>
+            </button>
           </div>
         </div>
       </div>

@@ -172,7 +172,7 @@ const ContactPage = () => {
           </div>
 
           <div className="col-md-3 text-center">
-            <img src={contactImg} alt="" srcset="" />
+            <img src={contactImg} alt=""  />
           </div>
         </div>
       </div>
