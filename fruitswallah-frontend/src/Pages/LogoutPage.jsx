@@ -9,7 +9,7 @@ const LogoutPage = () => {
     const handleLogout = () => {
 
     localStorage.removeItem("isLogin");
-        navigate("/home");
+        navigate("/home",{ state: { message: "You have been logged out successfully." } });
     }
     
   return (

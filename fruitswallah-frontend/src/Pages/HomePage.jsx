@@ -9,11 +9,26 @@ import Banner from "../components/Banner";
 import BestSellerProduct from "../components/BestSellerProduct";
 import Testimonial from "../components/Testimonial";
 import Footer from "../components/Footer";
+import { use, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Messeage from "../components/Messeage";
 
 const HomePage = () => {
+  const location =useLocation();
+  const [message, setMessage] = useState(location.state?.message || ""); 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        window.history.replaceState({}, document.title);
+        setMessage("");
+      }, 3000); 
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
   return (
     <>
       <Navbar />
+      {message && <Messeage message={message} />}
       <Hero />
       <Featurs />
       <Fruits_shop />

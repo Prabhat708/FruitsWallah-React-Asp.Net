@@ -24,7 +24,9 @@ const CartPage = () => {
   return (
     <>
       <Navbar />
-      {cartItems.length === 0 ? <h1 className="text-center mt-5 pt-5">No items in cart</h1> :
+      {cartItems.length === 0 ? (
+        <h1 className="text-center mt-5 pt-5">No items in cart</h1>
+      ) : (
         <div className="container-fluid mt-5 pt-2">
           <div className="container py-5">
             <div className="table-responsive">
@@ -70,20 +72,25 @@ const CartPage = () => {
                     <div className="d-flex justify-content-between mb-4">
                       <h5 className="mb-0 me-4 ">Subtotal:</h5>
                       <p id="subtotal " className="mb-0 fw-medium">
-                        {sum}
+                        &#8377; {sum}
                       </p>
                     </div>
                     <div className="d-flex justify-content-between">
                       <h5 className="mb-0 me-4">Shipping Charge:</h5>
                       <div className="">
                         <p id="ship" className="mb-0 fw-medium">
+                          &#8377; 
                           {sum > 300 ? (
-                          
-                            <><del>50</del><b>free</b></>
-                          )
-                            : (
-                              50
-                            )}
+                            <>
+                              <em>
+                                <del> 50 </del>
+                              </em>{" "}
+                              <br />
+                              <b> free</b>
+                            </>
+                          ) : (
+                            50
+                          )}
                         </p>
                       </div>
                     </div>
@@ -91,7 +98,7 @@ const CartPage = () => {
                   <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                     <h5 className="mb-0 ps-4 me-4">Total</h5>
                     <p id="total" className="mb-0 pe-4">
-                      {sum > 300 ? sum : sum + 50}
+                      &#8377; {sum > 300 ? sum : sum + 50}
                     </p>
                   </div>
                   <Link to="/checkout/">
@@ -108,7 +115,7 @@ const CartPage = () => {
             </div>
           </div>
         </div>
-      }
+      )}
       <Footer />
     </>
   );

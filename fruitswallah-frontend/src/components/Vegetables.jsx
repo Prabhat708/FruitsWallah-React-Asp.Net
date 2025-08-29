@@ -7,7 +7,7 @@ import "react-multi-carousel/lib/styles.css";
 const Vegetables = () => {
   const Vegetables = [
     {
-      id: 1,
+      id: 8,
       name: "Cauliflower",
       price: 40,
       image: Cauliflower,
@@ -15,7 +15,7 @@ const Vegetables = () => {
         "Fresh and healthy cauliflower, perfect for cooking and salads.",
     },
     {
-      id: 2,
+      id: 9,
       name: "Broccoli",
       price: 60,
       image: "/Broccoli.jpg",
@@ -23,28 +23,28 @@ const Vegetables = () => {
         "Crisp and nutritious broccoli, great for steaming and stir-fries.",
     },
     {
-      id: 3,
+      id: 10,
       name: "Carrots",
       price: 30,
       image: "/Carrots.webp",
       discription: "Sweet and crunchy carrots, packed with vitamins and fiber.",
     },
     {
-      id: 4,
+      id: 11,
       name: "Spinach",
       price: 50,
       image: "/Spinach.jpg",
       discription: "Fresh and leafy spinach, ideal for salads and smoothies.",
     },
     {
-      id: 5,
+      id: 12,
       name: "Tomatoes",
       price: 70,
       image: "/Tomatoes.jpg",
       discription: "Juicy and ripe tomatoes, perfect for sauces and salads.",
     },
     {
-      id: 6,
+      id:  13,
       name: "Cucumbers",
       price: 25,
       image: "/Cucumbers.jpg",
@@ -52,7 +52,7 @@ const Vegetables = () => {
         "Cool and refreshing cucumbers, great for snacking and salads.",
     },
     {
-      id: 7,
+      id: 14,
       name: "Bell Peppers",
       price: 80,
       image: "/Bell-Peppers.jpg",

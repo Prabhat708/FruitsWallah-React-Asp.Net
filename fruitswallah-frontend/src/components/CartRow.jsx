@@ -15,7 +15,7 @@ const CartRow = ({ item, onDelete }) => {
         <td>{item.quantity}</td>
         <td>&#8377;{item.price * item.quantity}</td>
         <td>
-          <button className="btn border-secondary rounded-pill">
+          <button className="btn border-danger text-danger rounded-pill">
             <MdDelete onClick={() => onDelete(item.id)} />
           </button>
         </td>

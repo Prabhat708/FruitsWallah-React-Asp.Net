@@ -71,7 +71,7 @@ function Navbar() {
                 </div>
 
                 <Link to="/cart/" className="m-2">
-                <span className="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 " style={{top:"20%",right:"3.5%"}}>{ numberOfItemsInCart}</span>
+                <span className="position-absolute  rounded-circle d-flex align-items-center justify-content-center text-success fw-medium px-1 " style={{top:"20%",right:"3.5%"}}>{ numberOfItemsInCart}</span>
                   <FaShoppingCart
                     size={30}
                     className="text-success pb-1"

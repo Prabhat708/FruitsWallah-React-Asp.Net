@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
-  const handleLogin = (e) => {
+  const handleLogin = () => {
     const { email, password } = data;
     if (!email || !password) {
       alert("Please fill all fields");
@@ -19,14 +19,10 @@ const LoginPage = () => {
       alert("Password must be at least 6 characters long");
       return;
     } else if (password === "password" && email === "Prabhat@gmail.com") {
-  
       localStorage.setItem("isLogin", true);
-      console.log("Login successful");
-      console.log(isLogin);
-      console.log("redirecting to home page");
-      navigate("/");
+      navigate("/home", { state: { message: " Welcome back! Keep shoping from FruitsWallah" } });
       setData({ email: "", password: "" });
-      return;
+
     } else {
       alert("Invalid Credentials");
     }
@@ -39,8 +35,14 @@ const LoginPage = () => {
   const handleShowPassword = () => {
     setShowButton(!showButton);
   };
+  useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+    if (isLogin === "true") {
+      navigate("/profile");
+    }
+  }, [navigate]);
   return (
-    <>{isLogin && navigate("/profile")}
+    <>
       <Navbar />
       <div className="container mt-5">
         <div className="row justify-content-center">
@@ -53,7 +55,10 @@ const LoginPage = () => {
             <h2 className="text-center mb-4 mt-2">
               Please! Login to your account.
             </h2>
-            <form>
+            <form onSubmit={(e) => {
+              e.preventDefault(); 
+              handleLogin(e);
+            }}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">
                   Email address
@@ -95,7 +100,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 className="btn btn-success w-100"
-                onClick={handleLogin}
+             
               >
                 Login
               </button>

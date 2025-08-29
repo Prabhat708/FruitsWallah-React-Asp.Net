@@ -1,22 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const ItemCard = ({ item }) => {
   const navigation = useNavigate();
-  const handleAddToCart = (item) => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
+  // Manage cart in local storage using state and useEffect (no reload)
+  const [cart, setCart] = useState(() => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  });
 
-    if (existingItemIndex !== -1) {
-      cart[existingItemIndex].quantity += 1;
-    } else {
-      cart.push({ ...item, quantity: 1 });
-    }
-
+  useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const minusPlus = (id, action) => {
+    setCart((prevCart) => {
+      const updatedCart = [...prevCart];
+      const existingItemIndex = updatedCart.findIndex((cartItem) => cartItem.id === id);
+      if (existingItemIndex !== -1) {
+        if (action === "increment") {
+          updatedCart[existingItemIndex].quantity += 1;
+        } else if (action === "decrement" && updatedCart[existingItemIndex].quantity > 1) {
+          updatedCart[existingItemIndex].quantity -= 1;
+        } else if (action === "decrement" && updatedCart[existingItemIndex].quantity === 1) {
+          updatedCart.splice(existingItemIndex, 1);
+        }
+      }
+      return updatedCart;
+    });
+  };
+
+  const handleAddToCart = (item) => {
+    setCart((prevCart) => {
+      const updatedCart = [...prevCart];
+      const existingItemIndex = updatedCart.findIndex((cartItem) => cartItem.id === item.id);
+
+      if (existingItemIndex !== -1) {
+        updatedCart[existingItemIndex].quantity += 1;
+      } else {
+        updatedCart.push({ ...item, quantity: 1 });
+      }
+
+      return updatedCart;
+    });
     alert("Item added to cart");
   };
+  
 
   return (
     <>
@@ -31,7 +60,12 @@ const ItemCard = ({ item }) => {
         </div>
 
         <div className="p-4  position-relative border border-warning border-top-0 rounded-bottom min-h-80 max-h-80">
-          <span onClick={() => {navigation(`/product/${item.id}`);}} style={{ cursor: "pointer" }}>
+          <span
+            onClick={() => {
+              navigation(`/product/${item.id}`);
+            }}
+            style={{ cursor: "pointer" }}
+          >
             <h4 id={`Namepr+${item.id}`}> {item.name}</h4>
             <p className="text-secondary mb-2" style={{ minHeight: "60px" }}>
               {item.discription.slice(0, 60) +
@@ -42,17 +76,43 @@ const ItemCard = ({ item }) => {
             <p id="pricepr{{i.id}}" className="text-dark fs-5 fw-bold mb-0">
               &#8377; {item.price}/ kg
             </p>
-
-            <button
-              type="submit"
-              className="btn cart border border-secondary rounded-pill px-3 text-success"
-            >
-              <FaShoppingBag
-                onClick={() =>handleAddToCart(item)}
-                size={30}
-                className="text-success "
-              ></FaShoppingBag>
-            </button>
+            {(cart || []).some((cartItem) => cartItem.id === item.id) ? (
+              <div className="d-flex align-items-center">
+                <button
+                  className=" rounded text-success border-0 fw-bold"
+                  onClick={() => {
+                    minusPlus(item.id, "decrement");
+                  }}
+                >
+                  -
+                </button>
+                <span className="mx-2 fw-bold text-success">
+                  {
+                    (cart || []).find((cartItem) => cartItem.id === item.id)
+                      .quantity
+                  }
+                </span>
+                <button
+                  className=" rounded text-success border-0 fw-bold"
+                  onClick={() => {
+                    minusPlus(item.id, "increment");
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="btn cart border border-secondary rounded-pill px-3 text-success"
+              >
+                <FaShoppingBag
+                  onClick={() => handleAddToCart(item)}
+                  size={30}
+                  className="text-success "
+                ></FaShoppingBag>
+              </button>
+            )}
           </div>
         </div>
       </div>
