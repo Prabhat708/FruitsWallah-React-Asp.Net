@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import banana from "../assets/best-product-3.jpg";
@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 const Product = () => {
  
   const { id } = useParams();
+  const [showPopup, setShowPopup] =useState(false);
 
   const Items = [
     {
@@ -118,9 +119,17 @@ const Product = () => {
       discription: "Juicy and ripe tomatoes, perfect for sauces and salads.",
     },
   ];
+ const [cart, setCart] = useState(() => {
+   return JSON.parse(localStorage.getItem("cart")) || [];
+ }); 
+ 
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
   const item = Items.find((itm) => itm.id === parseInt(id));
-   const handleAddToCart = () => {
-     let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const handleAddToCart = () => {
+   
+     
      const existingItemIndex = cart.findIndex(
        (cartItem) => cartItem.id === item.id
      );
@@ -132,12 +141,39 @@ const Product = () => {
      }
 
      localStorage.setItem("cart", JSON.stringify(cart));
-     alert("Item added to cart");
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
    };
-
+  const minusPlus = (id, action) => {
+  setCart((prevCart) => {
+    const updatedCart = [...prevCart];
+    const existingItemIndex = updatedCart.findIndex(
+      (cartItem) => cartItem.id === id
+    );
+    if (existingItemIndex !== -1) {
+      if (action === "increment") {
+        updatedCart[existingItemIndex].quantity += 1;
+      } else if (
+        action === "decrement" &&
+        updatedCart[existingItemIndex].quantity > 1
+      ) {
+        updatedCart[existingItemIndex].quantity -= 1;
+      } else if (
+        action === "decrement" &&
+        updatedCart[existingItemIndex].quantity === 1
+      ) {
+        updatedCart.splice(existingItemIndex, 1);
+      }
+    }
+    return updatedCart;
+  });
+};
   return (
     <>
       <Navbar />
+
       <div
         className="card border-0 mt-5 pt-5"
         style={{
@@ -146,6 +182,9 @@ const Product = () => {
           marginTop: "7%",
         }}
       >
+        {showPopup && (
+          <div className="alert alert-success">✅ Item added successfully!</div>
+        )}
         <div className="row g-0">
           <div className="col-md-6 d-flex justify-content-center">
             <span
@@ -171,11 +210,41 @@ const Product = () => {
               <h5 className="card-text text-danger mt-3">
                 &#8377; {item.price}/Kg
               </h5>
-              <button onClick={handleAddToCart} className="btn btn-success text-white rounded-pill mt-3">
+               {(cart || []).some((cartItem) => cartItem.id === item.id) ? (
+              <div className="d-flex align-items-center">
+                <button
+                  className=" rounded text-success border-0 fw-bold"
+                  onClick={() => {
+                    minusPlus(item.id, "decrement");
+                  }}
+                >
+                  -
+                </button>
+                <span className="mx-2 fw-bold text-success">
+                  {
+                    (cart || []).find((cartItem) => cartItem.id === item.id)
+                      .quantity
+                  }
+                </span>
+                <button
+                  className=" rounded text-success border-0 fw-bold"
+                  onClick={() => {
+                    minusPlus(item.id, "increment");
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className="btn btn-success text-white rounded-pill mt-3"
+              >
                 {" "}
                 Add to Cart
               </button>
-
+              )}
+              
               <h5 className="card-text mt-4">Health Benefits:</h5>
               <ul>
                 <li>Rich in fiber and antioxidants</li>

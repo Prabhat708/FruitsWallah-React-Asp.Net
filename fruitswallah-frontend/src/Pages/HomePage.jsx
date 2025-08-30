@@ -16,6 +16,8 @@ import Messeage from "../components/Messeage";
 const HomePage = () => {
   const location =useLocation();
   const [message, setMessage] = useState(location.state?.message || ""); 
+  const username = location.state?.Username || "";
+  const comingFrom = location.state?.comingFrom || "";
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -28,7 +30,7 @@ const HomePage = () => {
   return (
     <>
       <Navbar />
-      {message && <Messeage message={message} />}
+      {message && <Messeage message={message} username={username} comingFrom={comingFrom} />}
       <Hero />
       <Featurs />
       <Fruits_shop />

@@ -1,17 +1,38 @@
-import React from 'react'
+import React from "react";
 
-const Messeage = ({message}) => {
+const Messeage = ({ message, username, comingFrom }) => {
   return (
     <>
-      <div className='container' style={{marginTop:"100px",marginBottom:"0px"}}>
+      <div
+        className="container"
+        style={{ marginTop: "100px", marginBottom: "0px" }}
+      >
         <div
-          class="alert alert-success alert-dismissible fade show "
+          className="alert alert-success alert-dismissible fade show "
           role="alert"
         >
-          {message}
+          {comingFrom === "signup" && (
+            <>
+              <h6>Congratulations! {username}</h6>
+              {message}
+            </>
+          )}
+          {comingFrom === "login" && (
+            <>
+              <h6>Welcome back! {username}</h6>
+              {message}
+            </>
+          )}
+          {comingFrom === "LogOut" && (
+            <>
+              <h6>Thank You!</h6> {message}
+            </>
+          )}
+          {comingFrom === "addToCart" && <>{message}</>}
+          {comingFrom === "" && <>{message}</>}
           <button
             type="button"
-            class="btn-close"
+            className="btn-close"
             data-bs-dismiss="alert"
             aria-label="Close"
           ></button>
@@ -19,6 +40,6 @@ const Messeage = ({message}) => {
       </div>
     </>
   );
-}
+};
 
-export default Messeage
+export default Messeage;

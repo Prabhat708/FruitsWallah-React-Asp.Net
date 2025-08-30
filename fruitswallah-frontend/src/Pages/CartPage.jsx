@@ -8,17 +8,23 @@ import CartRow from "../components/CartRow";
 const CartPage = () => {
   const [cartItems, setCartItems] = useState( []
   );
+  const [showPopup, setShowPopup] = useState(false);
     useEffect(() => {
       const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
       setCartItems(storedCart);
     }, []);
 
-    const handleDeleteCartItem = (itemId) => {
+  const handleDeleteCartItem = (itemId) => {
+      
       const updatedCart = cartItems.filter(
         (cartItem) => cartItem.id !== itemId
       );
       setCartItems(updatedCart); // update state -> re-render
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
     };
   let sum=0;
   return (
@@ -27,8 +33,13 @@ const CartPage = () => {
       {cartItems.length === 0 ? (
         <h1 className="text-center mt-5 pt-5">No items in cart</h1>
       ) : (
-        <div className="container-fluid mt-5 pt-2">
+          <div className="container-fluid mt-5 pt-2">
           <div className="container py-5">
+            {showPopup && (
+        <div className="alert alert-danger">
+          Item removed successfully!
+        </div>
+      )}
             <div className="table-responsive">
               <table className="table " id="CartItem">
                 <thead className="">
@@ -97,7 +108,7 @@ const CartPage = () => {
                   </div>
                   <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                     <h5 className="mb-0 ps-4 me-4">Total</h5>
-                    <p id="total" className="mb-0 pe-4">
+                    <p id="total" className="mb-0 pe-4 fw-bold">
                       &#8377; {sum > 300 ? sum : sum + 50}
                     </p>
                   </div>

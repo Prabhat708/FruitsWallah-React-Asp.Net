@@ -118,6 +118,9 @@ const Footer = () => {
                 <Link className="btn-link" to="/orders">
                   Order History
                 </Link>
+                <Link className="btn-link" to="/FruitsWAllahAdmin">
+                  Admin Pannel
+                </Link>
               </div>
             </div>
             <div className="col-lg-3 col-md-6">
@@ -149,7 +152,9 @@ const Footer = () => {
         </div>
       </div>
 
-      <Link to={""} id="back-to-top"
+      <Link
+        to={""}
+        id="back-to-top"
         className="btn btn-success border-3 border-success rounded-circle back-to-top"
       >
         <FaRegArrowAltCircleUp className="fa fa-arrow-up"></FaRegArrowAltCircleUp>

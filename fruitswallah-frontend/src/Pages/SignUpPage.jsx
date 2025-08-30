@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 const SignUpPage = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     Username: "",
     email: "",
@@ -29,7 +30,7 @@ const SignUpPage = () => {
       alert("username already exists");
       return;
     } else {
-      alert("Account Created Successfully");
+      localStorage.setItem("IsLoggedIn", true);
       setData({
         Username: "",
         email: "",
@@ -37,8 +38,8 @@ const SignUpPage = () => {
         password: "",
         cpassword: "",
       });
-      window.location.href = "/";
-      return;
+      navigate("/home",{state:{message:"Your Account Created Successfully...",Username:Username,comingFrom:"signup"}});
+      return
     }
   };
   const [showPasswordBtn, setShowPasswordBtn] = useState(false);
@@ -49,6 +50,7 @@ const SignUpPage = () => {
   const handleShowConfirmPassword = () => {
     setShowConfirmPasswordBtn(!showConfirmPasswordBtn);
   };
+
   return (
     <>
       <Navbar />

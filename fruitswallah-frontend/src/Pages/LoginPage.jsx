@@ -20,9 +20,11 @@ const LoginPage = () => {
       return;
     } else if (password === "password" && email === "Prabhat@gmail.com") {
       localStorage.setItem("isLogin", true);
-      navigate("/home", { state: { message: " Welcome back! Keep shoping from FruitsWallah" } });
+      navigate("/home", {
+        state: { message: "Keep shoping from FruitsWallah", comingFrom: "login" ,Username:"username"},
+      });
       setData({ email: "", password: "" });
-
+      return;
     } else {
       alert("Invalid Credentials");
     }

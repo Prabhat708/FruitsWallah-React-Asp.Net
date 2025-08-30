@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const ItemCard = ({ item }) => {
   const navigation = useNavigate();
-  // Manage cart in local storage using state and useEffect (no reload)
+  const [showPopup, setShowPopup] = useState(false);
   const [cart, setCart] = useState(() => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   });
@@ -31,6 +31,10 @@ const ItemCard = ({ item }) => {
   };
 
   const handleAddToCart = (item) => {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
     setCart((prevCart) => {
       const updatedCart = [...prevCart];
       const existingItemIndex = updatedCart.findIndex((cartItem) => cartItem.id === item.id);
@@ -40,15 +44,19 @@ const ItemCard = ({ item }) => {
       } else {
         updatedCart.push({ ...item, quantity: 1 });
       }
-
       return updatedCart;
     });
-    alert("Item added to cart");
+    
   };
   
 
   return (
     <>
+      {showPopup && (
+        <div className="alert alert-success">
+          ✅ Item added successfully!
+        </div>
+      )}
       <div className="rounded position-relative fruite-item ">
         <div className="fruite-img">
           <img
