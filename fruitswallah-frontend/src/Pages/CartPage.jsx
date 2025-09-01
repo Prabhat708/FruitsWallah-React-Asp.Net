@@ -2,34 +2,34 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 import CartRow from "../components/CartRow";
 import { RemoveFromCart } from "../services/CartFeatures";
 
-
 const CartPage = () => {
- const [cartItems, setCartItems] = useState(() => {
+  const [cartItems, setCartItems] = useState(() => {
     return JSON.parse(localStorage.getItem("cart")) || [];
   });
   const [showPopup, setShowPopup] = useState(false);
-    useEffect(() => {
-      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      setCartItems(storedCart);
-    }, []);
-  let sum=0;
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartItems(storedCart);
+  }, []);
+  let sum = 0;
+
   return (
     <>
       <Navbar />
       {cartItems.length === 0 ? (
         <h1 className="text-center mt-5 pt-5">No items in cart</h1>
       ) : (
-          <div className="container-fluid mt-5 pt-2">
+        <div className="container-fluid mt-5 pt-2">
           <div className="container py-5">
             {showPopup && (
-        <div className="alert alert-danger">
-          Item removed successfully!
-        </div>
-      )}
+              <div className="alert alert-danger">
+                Item removed successfully!
+              </div>
+            )}
             <div className="table-responsive">
               <table className="table " id="CartItem">
                 <thead className="">
@@ -49,7 +49,14 @@ const CartPage = () => {
                       <CartRow
                         key={index}
                         item={item}
-                        onDelete={() => RemoveFromCart(item.id,setShowPopup, setCartItems, cartItems)}
+                        onDelete={() =>
+                          RemoveFromCart(
+                            item.id,
+                            setShowPopup,
+                            setCartItems,
+                            cartItems
+                          )
+                        }
                       />
                     );
                   })}
@@ -80,7 +87,7 @@ const CartPage = () => {
                       <h5 className="mb-0 me-4">Shipping Charge:</h5>
                       <div className="">
                         <p id="ship" className="mb-0 fw-medium">
-                          &#8377; 
+                          &#8377;
                           {sum > 300 ? (
                             <>
                               <em>
