@@ -4,28 +4,18 @@ import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
 import {Link} from 'react-router-dom';
 import CartRow from "../components/CartRow";
+import { RemoveFromCart } from "../services/CartFeatures";
+
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState( []
-  );
+ const [cartItems, setCartItems] = useState(() => {
+    return JSON.parse(localStorage.getItem("cart")) || [];
+  });
   const [showPopup, setShowPopup] = useState(false);
     useEffect(() => {
       const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
       setCartItems(storedCart);
     }, []);
-
-  const handleDeleteCartItem = (itemId) => {
-      
-      const updatedCart = cartItems.filter(
-        (cartItem) => cartItem.id !== itemId
-      );
-      setCartItems(updatedCart); // update state -> re-render
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    setShowPopup(true);
-      setTimeout(() => {
-        setShowPopup(false);
-      }, 2000);
-    };
   let sum=0;
   return (
     <>
@@ -59,7 +49,7 @@ const CartPage = () => {
                       <CartRow
                         key={index}
                         item={item}
-                        onDelete={handleDeleteCartItem}
+                        onDelete={() => RemoveFromCart(item.id,setShowPopup, setCartItems, cartItems)}
                       />
                     );
                   })}

@@ -1,16 +1,12 @@
 import React, { use, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { HandleLogout } from '../services/HandleLoginLogout';
 
 const LogoutPage = () => {
     const navigate = useNavigate(); 
     useEffect(() => {
-        handleLogout();
+        HandleLogout(navigate);
     }, []);
-    const handleLogout = () => {
-
-    localStorage.removeItem("isLogin");
-        navigate("/home",{ state: { message: "You have been logged out successfully..." ,comingFrom:"LogOut"} });
-    }
     
   return null;
 }

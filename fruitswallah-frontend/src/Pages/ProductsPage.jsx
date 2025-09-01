@@ -1,4 +1,3 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Link} from 'react-router-dom';
@@ -7,108 +6,11 @@ import featuredImg2 from "../assets/feature-2.jpg";
 import featuredImg3 from "../assets/feature-3.jpg";
 import bannerFruit from "../assets/banner-fruits.jpg";
 import { FaSearch, FaStar } from "react-icons/fa";
-import banana from "../assets/best-product-3.jpg";
-import orange from "../assets/best-product-1.jpg";
-import grapes from "../assets/best-product-5.jpg";
-import mango from "../assets/mango.webp";
-import pineapple from "../assets/pineApple.jpg";
-import strawberries from "../assets/feature-2.jpg";
 import ItemCard from "../components/ItemCard";
-import Cauliflower from "../assets/Cauliflower.jpg";
+import { Products } from "../data/Products";
 
 const ProductsPage = () => {
-  const Items = [
-    {
-      id: 1,
-      name: "Apple",
-      price: 120,
-      image: "/apple.jpg",
-      discription: "Fresh and juicy apples, perfect for snacking and baking.",
-    },
-    {
-      id: 2,
-      name: "Banana",
-      price: 60,
-      image: banana,
-      discription:
-        "Sweet and creamy bananas, great for smoothies and desserts.",
-    },
-    {
-      id: 3,
-      name: "Orange",
-      price: 80,
-      image: orange,
-      discription: "Citrusy and refreshing oranges, packed with vitamin C.",
-    },
-    {
-      id: 4,
-      name: "Grapes",
-      price: 150,
-      image: grapes,
-      discription: "Plump and flavorful grapes, ideal for snacking and salads.",
-    },
-    {
-      id: 5,
-      name: "Mango",
-      price: 200,
-      image: mango,
-      discription: "Ripe and fragrant mangoes, perfect for tropical treats.",
-    },
-    {
-      id: 6,
-      name: "Pineapple",
-      price: 90,
-      image: pineapple,
-      discription:
-        "Tangy and sweet pineapples, great for grilling and cocktails.",
-    },
-    {
-      id: 7,
-      name: "Strawberries",
-      price: 250,
-      image: strawberries,
-      discription:
-        "Juicy and vibrant strawberries, ideal for desserts and smoothies. Lorem ipsum dolor sit amet.",
-    },
-    {
-      id: 8,
-      name: "Cauliflower",
-      price: 40,
-      image: Cauliflower,
-      discription:
-        "Fresh and healthy cauliflower, perfect for cooking and salads.",
-    },
-    {
-      id: 9,
-      name: "Broccoli",
-      price: 60,
-      image: "/Broccoli.jpg",
-      discription:
-        "Crisp and nutritious broccoli, great for steaming and stir-fries.",
-    },
-    {
-      id: 10,
-      name: "Carrots",
-      price: 30,
-      image: "/Carrots.webp",
-      discription: "Sweet and crunchy carrots, packed with vitamins and fiber.",
-    },
-    {
-      id: 11,
-      name: "Spinach",
-      price: 50,
-      image: "Spinach.jpg",
-      discription: "Fresh and leafy spinach, ideal for salads and smoothies.",
-    },
-    {
-      id: 12,
-      name: "Tomatoes",
-      price: 70,
-      image: "Tomatoes.jpg",
-      discription: "Juicy and ripe tomatoes, perfect for sauces and salads.",
-    },
-  
-  ];
+ 
   return (
     <>
       <Navbar />
@@ -325,7 +227,7 @@ const ProductsPage = () => {
                     <div id="tab-1" className="tab-pane fade show p-0 active">
                       <div className="col-lg-12">
                         <div className="row g-3">
-                          {Items.map((item) => (
+                          {Products.map((item) => (
                             <div
                               key={item.id}
                               className="col-lg-4 col-md-6"

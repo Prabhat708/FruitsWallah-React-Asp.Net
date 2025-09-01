@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { PlusMinusButton ,AddToCart} from "../services/CartFeatures";
 
 const ItemCard = ({ item }) => {
   const navigation = useNavigate();
@@ -12,44 +13,7 @@ const ItemCard = ({ item }) => {
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
-
-  const minusPlus = (id, action) => {
-    setCart((prevCart) => {
-      const updatedCart = [...prevCart];
-      const existingItemIndex = updatedCart.findIndex((cartItem) => cartItem.id === id);
-      if (existingItemIndex !== -1) {
-        if (action === "increment") {
-          updatedCart[existingItemIndex].quantity += 1;
-        } else if (action === "decrement" && updatedCart[existingItemIndex].quantity > 1) {
-          updatedCart[existingItemIndex].quantity -= 1;
-        } else if (action === "decrement" && updatedCart[existingItemIndex].quantity === 1) {
-          updatedCart.splice(existingItemIndex, 1);
-        }
-      }
-      return updatedCart;
-    });
-  };
-
-  const handleAddToCart = (item) => {
-    setShowPopup(true);
-    setTimeout(() => {
-      setShowPopup(false);
-    }, 2000);
-    setCart((prevCart) => {
-      const updatedCart = [...prevCart];
-      const existingItemIndex = updatedCart.findIndex((cartItem) => cartItem.id === item.id);
-
-      if (existingItemIndex !== -1) {
-        updatedCart[existingItemIndex].quantity += 1;
-      } else {
-        updatedCart.push({ ...item, quantity: 1 });
-      }
-      return updatedCart;
-    });
-    
-  };
   
-
   return (
     <>
       {showPopup && (
@@ -89,7 +53,7 @@ const ItemCard = ({ item }) => {
                 <button
                   className=" rounded text-success border-0 fw-bold"
                   onClick={() => {
-                    minusPlus(item.id, "decrement");
+                    PlusMinusButton(item.id, "decrement", setCart);
                   }}
                 >
                   -
@@ -103,7 +67,7 @@ const ItemCard = ({ item }) => {
                 <button
                   className=" rounded text-success border-0 fw-bold"
                   onClick={() => {
-                    minusPlus(item.id, "increment");
+                    PlusMinusButton(item.id, "increment",setCart);
                   }}
                 >
                   +
@@ -115,7 +79,7 @@ const ItemCard = ({ item }) => {
                 className="btn cart border border-secondary rounded-pill px-3 text-success"
               >
                 <FaShoppingBag
-                  onClick={() => handleAddToCart(item)}
+                  onClick={() => AddToCart(item.id ,setCart,setShowPopup)}
                   size={30}
                   className="text-success "
                 ></FaShoppingBag>

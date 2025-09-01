@@ -2,33 +2,15 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link, useNavigate } from "react-router-dom";
+import { HandleLogin } from "../services/HandleLoginLogout";
 
 const LoginPage = () => {
-  const isLogin = localStorage.getItem("isLogin");
   const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-  const handleLogin = () => {
-    const { email, password } = data;
-    if (!email || !password) {
-      alert("Please fill all fields");
-      return;
-    } else if (password.length < 6) {
-      alert("Password must be at least 6 characters long");
-      return;
-    } else if (password === "password" && email === "Prabhat@gmail.com") {
-      localStorage.setItem("isLogin", true);
-      navigate("/home", {
-        state: { message: "Keep shoping from FruitsWallah", comingFrom: "login" ,Username:"username"},
-      });
-      setData({ email: "", password: "" });
-      return;
-    } else {
-      alert("Invalid Credentials");
-    }
-  };
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -58,8 +40,18 @@ const LoginPage = () => {
               Please! Login to your account.
             </h2>
             <form onSubmit={(e) => {
-              e.preventDefault(); 
-              handleLogin(e);
+              e.preventDefault();
+              const result=HandleLogin(data)
+              if (result.success) {
+                navigate("/home", {
+                  state: {
+                    message: "Keep shoping from FruitsWallah",
+                    comingFrom: "login",
+                    Username: "username",
+                  },
+                });
+                 setData({ email: "", password: "" });
+              }
             }}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">

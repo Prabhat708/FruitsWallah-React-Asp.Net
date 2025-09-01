@@ -6,7 +6,7 @@ import {
   FaMoneyBillAlt,
 } from "react-icons/fa";
 import CreditCard from "../components/CreditCard";
-import UPI from "../components/UPI";
+import UPI from "../components/Upi";
 import NetBanking from "../components/NetBanking";
 
 import { useState } from "react";
