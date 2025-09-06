@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FruitsWallahBackend", "FruitsWallahBackend\FruitsWallahBackend.csproj", "{829A537E-8D78-4A76-A6A0-A470DF021BBE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{829A537E-8D78-4A76-A6A0-A470DF021BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{829A537E-8D78-4A76-A6A0-A470DF021BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{829A537E-8D78-4A76-A6A0-A470DF021BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{829A537E-8D78-4A76-A6A0-A470DF021BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1F37ED4F-187B-47BB-9FDC-E3A97A1BCA19}
+	EndGlobalSection
+EndGlobal
