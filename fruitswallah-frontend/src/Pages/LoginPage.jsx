@@ -25,6 +25,7 @@ const LoginPage = () => {
       navigate("/profile");
     }
   }, [navigate]);
+
   return (
     <>
       <Navbar />
@@ -39,20 +40,12 @@ const LoginPage = () => {
             <h2 className="text-center mb-4 mt-2">
               Please! Login to your account.
             </h2>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const result=HandleLogin(data)
-              if (result.success) {
-                navigate("/home", {
-                  state: {
-                    message: "Keep shoping from FruitsWallah",
-                    comingFrom: "login",
-                    Username: "username",
-                  },
-                });
-                 setData({ email: "", password: "" });
-              }
-            }}>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                await HandleLogin(data, navigate);
+              }}
+            >
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">
                   Email address
@@ -91,11 +84,7 @@ const LoginPage = () => {
                 </button>
               </div>
 
-              <button
-                type="submit"
-                className="btn btn-success w-100"
-             
-              >
+              <button type="submit" className="btn btn-success w-100">
                 Login
               </button>
             </form>

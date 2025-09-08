@@ -22,18 +22,25 @@ namespace FruitsWallahBackend.Controllers
         }
 
         // GET: api/Login/
-        [HttpGet("{Email},{Password}")]
+        [HttpGet("{Email}/{Password}")]
         public async Task<ActionResult<UserAuth>> GetUserAuth(string Email,string Password)
         {
-            var user = await (from u in _context.Users where u.Email == Email select new {u.UserId}).FirstOrDefaultAsync();
+            Console.WriteLine("Backend Working"+Email+" "+ Password);
+            var user = await (from u in _context.Users where u.Email == Email select u).FirstOrDefaultAsync();
             if (user == null)
             {
                 return NotFound("No User Found");
             }
             var UserAuth = await (from UA in _context.UsersAuth where UA.UserID== user.UserId select new {UA.HashPassword}).FirstOrDefaultAsync();
-            if (MatchPassword(Password, UserAuth.HashPassword))
+            if (MatchPassword(Password, HashedPassword: UserAuth.HashPassword))
             {
-                return Ok("Login Successfull");
+                return Ok(new
+                {
+                    user.UserId,
+                    user.Name,
+                    user.Email,
+                    user.PhoneNumber
+                });
             }
             else
             {

@@ -26,11 +26,22 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("{UserId}")]
         public async Task<ActionResult<Orders>> GetOrders(int UserId)
         {
-            var orders = await (from o in _context.Orders where o.CustomerId==UserId join p in _context.Products on o.ProductID equals p.ProductId join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId join a in _context.Addresses on o.AddId equals a.AddId select new {o.OrderId,p.ProductName,o.OrderDate,o.IsPaid,o.ProductQty,p.ProductPrice,p.ProductImg,ot.OrderStatus,ot.DeliveredOn,a.UserName,a.AddressType,a.HouseNo,a.Locality,a.Address,a.City,a.PostalCode,a.State,a.LandMark}).ToListAsync();
-
-            if (orders == null)
+            var orders = await (from o in _context.Orders where o.UserId==UserId 
+                                join OI in _context.OrderItems on o.OrderId equals OI.OrderId  
+                                join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId 
+                                join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId 
+                                join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID 
+                                 select new {
+                                  o.OrderId,o.OrderDate,o.IsPaid,
+                                  OI.ProductImg, OI.ProductName, OI.ProductPrice, OI.ProductQty, OI.ShipingCharge, OI.TotalPrice, OI.TransactionType,
+                                  OTrans.TransactionId,OTrans.TransactionStatus,OTrans.TransactionTime,
+                                  ot.OrderStatus,ot.DeliveredOn,
+                                  oa.UserName,oa.AddressType,oa.HouseNo,oa.Locality,oa.Address,oa.City, oa.State,oa.PostalCode,oa.LandMark,oa.PhoneNumber 
+                                }).ToListAsync();
+            
+            if (orders.Count == 0)
             {
-                return NotFound();
+                return NotFound("No order Found");
             }
             return Ok(orders);
         }
@@ -58,36 +69,86 @@ namespace FruitsWallahBackend.Controllers
             {
                 foreach (var cart in carts)
                 {
+                    var product = await _context.Products.FindAsync(cart.ProductId);
+                    if (product == null)
+                    {
+                        return BadRequest("No product Found");
+                    }
                     _context.Carts.Remove(cart);
-                    await _context.SaveChangesAsync();
-
+                    
                     var order = new Orders()
                     {
-                        CustomerId = cart.UserId,
-                        ProductID = cart.ProductId,
-                        ProductQty = cart.ProductQuantity,
+                        UserId = cart.UserId,
                         IsPaid = orders.IsPaid,
-                        AddId= addresss.AddId,
                     };
-
                     _context.Add(order);
                     await _context.SaveChangesAsync();
-                    var OrderTracker = new OrderTracker()
+                    var OrderItem = new OrderItem()
                     {
                         OrderId = order.OrderId,
-                        OrderStatus = orders.OrderStatus,
-                        DeliveredOn = DateTime.Now.AddDays(1),
+                        ProductId = cart.ProductId,
+                        ProductName =product?.ProductName,
+                        ProductPrice=product.ProductPrice,
+                        ProductImg=product?.ProductImg,
+                        ProductQty=cart.ProductQuantity,
+                        ShipingCharge= product.ProductPrice * cart.ProductQuantity >300 ? 0:50,
+                        TotalPrice=product.ProductPrice * cart.ProductQuantity >300 ? product.ProductPrice * cart.ProductQuantity : product.ProductPrice * cart.ProductQuantity+50,
+                        TransactionType = orders.TransactionType,
                     };
+                    _context.Add(OrderItem);
+                    var OrderAddress = new OrderAddress()
+                    {
+                        OrderId= order.OrderId,
+                        UserName= addresss.UserName,
+                        Address= addresss.Address,
+                        AddressType= addresss.AddressType,
+                        HouseNo=addresss.HouseNo,
+                        Locality=addresss.Locality,
+                        City=addresss.City,
+                        State=addresss.State,
+                        PostalCode = addresss.PostalCode,
+                        LandMark = addresss.LandMark,
+                        PhoneNumber = addresss.PhoneNumber
+                    };
+                    _context.Add(OrderAddress);
+                    if (orders.TransactionType == "COD")
+                    {
+                        var orderTransaction = new OrderTransactions()
+                        {
+                            TransactionType = orders.TransactionType,
+                            OrderID = order.OrderId,
+                            TransactionId = "Generated Automatic on Delivery",
+                            TransactionStatus = "PENDING",
+                            TransactionTime = DateTime.Now.AddDays(1),
+                        };
+                        _context.Add(orderTransaction);
+                    }
+                    else
+                    {
+                        var orderTransaction = new OrderTransactions()
+                        {
+                            TransactionType = orders.TransactionType,
+                            OrderID= order.OrderId,
+                            TransactionId="Generated By Paymentgateway",
+                            TransactionStatus="Sended by Paymentgateway",
+                            TransactionTime = DateTime.Now,
+                        };
+                        _context.Add(orderTransaction);
+                    }
+                    
+                        var OrderTracker = new OrderTracker()
+                        {
+                            OrderId = order.OrderId,
+                            DeliveredOn = DateTime.Now.AddDays(1),
+                            OrderStatus = ["Placed"]
+                        };
                     _context.Add(OrderTracker);
+                    product.ProductStock -= cart.ProductQuantity;
                     await _context.SaveChangesAsync();
                 }
             }
             return Ok("Ordered Successfully");
         }
        
-        private bool OrdersExists(int id)
-        {
-            return _context.Orders.Any(e => e.OrderId == id);
-        }
     }
 }

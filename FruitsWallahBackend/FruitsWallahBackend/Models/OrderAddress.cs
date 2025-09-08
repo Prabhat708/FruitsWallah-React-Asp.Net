@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FruitsWallahBackend.Models
 {
-    public class Addresses
+    public class OrderAddress
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int AddId { get; set; }
-        public int UserId { get; set; }
+        public int OrderAddressId { get; set; }
+        public int OrderId { get; set; }
         [MaxLength(30)]
         public string? AddressType { get; set; }
         public string? UserName { get; set; }
@@ -25,7 +25,5 @@ namespace FruitsWallahBackend.Models
         public long PhoneNumber { get; set; }
         [MaxLength(100)]
         public string? LandMark { get; set; }
-        public bool IsPrimary { get; set; }
-       
     }
 }

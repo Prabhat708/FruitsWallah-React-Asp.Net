@@ -89,10 +89,10 @@ namespace FruitsWallahBackend.Controllers
                 return NotFound();
             }
 
-            _context.Products.Remove(products);
+            products.IsActive = false;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Product deleted successfully but for my reference i store the product details");
         }
 
         private bool ProductsExists(int id)

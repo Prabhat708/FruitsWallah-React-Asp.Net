@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Package, User, Lock, CreditCard, MapPin, LogOut } from "lucide-react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SidePannel from "../components/SidePannel";
+import axios from "axios";
 
 const ManageAddressPage = () => {
   const [hideForm, sethideForm] = useState(true)
@@ -28,24 +29,18 @@ const ManageAddressPage = () => {
   ];
   const [activeItem, setActiveItem] = useState("Manage addresses");
 
-  const Addresses = [
-    {
-      addressType: "home",
-      customerName: "Prabhat Verma",
-      customerMobile: 7084312912,
-      shippingAddress:
-        "148, Shri balaji printers, Daudapur, lashkarpur, Biswan , Sitapur, Biswan, Uttar Pradesh",
-      shippingPincode: 261201,
-    },
-    {
-      addressType: "Work",
-      customerName: "Prabhat Verma",
-      customerMobile: 7084312912,
-      shippingAddress:
-        "Chandrakala Universal pvt ltd, Lane 1, Tagore Town, Prayagraj Division, Uttar Pradesh",
-      shippingPincode: 211002,
-    },
-  ];
+  const [Addresses ,setAddresses]=useState(null)
+
+  useEffect(() => {
+    const UserId=localStorage.getItem("UserId")
+    getAddress(UserId)
+  },[])
+  const getAddress = async (UserId) => {
+    const res = await axios.get(`https://localhost:7293/api/Addresses/${UserId}`);
+    if (res.data) {
+     setAddresses(res.data)
+   } 
+  }
   return (
     <>
       <Navbar />
@@ -184,7 +179,6 @@ const ManageAddressPage = () => {
                         id="addressType"
                         className="col-3 "
                       />
-
                       <span>work</span>
                     </div>
                   </div>
@@ -199,25 +193,40 @@ const ManageAddressPage = () => {
                   CANCEL
                 </button>
               </form>
-              {Addresses.map((address, index) => {
+              {Addresses?.map((address, index) => {
                 return (
                   <div
                     key={index}
                     className="position-relative p-3"
                     style={{ border: "1px solid #cfd6df" }}
                   >
-                    <span className="Address-type">{address.addressType}</span>
+                    <span className="Address-type">{address?.addressType}</span>
                     <span className="btn position-absolute end-0 pe-4 border-0">
                       <BsThreeDotsVertical />
                     </span>
                     <br />
-                    <span className="fw-medium">{address.customerName}</span>
+                    <span className="fw-medium">{address?.userName}</span>
                     <span className="fw-medium ms-5">
-                      - {address.customerMobile}
+                      - {address?.phoneNumber}
                     </span>{" "}
                     <br />
-                    <span>{address.shippingAddress}</span> <br />
-                    <span className="fw-medium">{address.shippingPincode}</span>
+                    <span>
+                      {address?.houseNo +
+                        " " +
+                        address?.locality +
+                        " " +
+                        address?.address +
+                        " " +
+                        address?.city +
+                        " " +
+                        address?.state}
+                    </span>{" "}
+                    <br />
+                    <span>
+                      { "Landmark : "+address?.landMark}
+                    </span>{" "}
+                    <br />
+                    <span className="fw-medium">{address?.postalCode}</span>
                   </div>
                 );
               })}

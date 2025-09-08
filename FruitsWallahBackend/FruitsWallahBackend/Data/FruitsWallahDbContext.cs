@@ -15,6 +15,9 @@ namespace FruitsWallahBackend.Data
         public DbSet<OrderTracker> OrderTrackers { get; set; }
 
         public DbSet<Addresses> Addresses { get; set; }
+        public DbSet<OrderAddress> OrderAddresses { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderTransactions> OrderTransactions { get; set; }
        
        
     }
