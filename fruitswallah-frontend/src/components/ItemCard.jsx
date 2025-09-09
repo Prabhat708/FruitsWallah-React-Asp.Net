@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { PlusMinusButton ,AddToCart} from "../services/CartFeatures";
+import { PlusMinusButton ,AddToCart, getCartItems} from "../services/CartFeatures";
 
 const ItemCard = ({ item }) => {
   const navigation = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const [cart, setCart] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  });
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
+    console.log(cart?.productQuantity)
   }, [cart]);
   
   return (
@@ -48,7 +46,7 @@ const ItemCard = ({ item }) => {
             <p id="pricepr{{i.id}}" className="text-dark fs-5 fw-bold mb-0">
               &#8377; {item.price}/ kg
             </p>
-            {(cart || []).some((cartItem) => cartItem.id === item.id) ? (
+            {cart.productQuantity>0? (
               <div className="d-flex align-items-center">
                 <button
                   className=" rounded text-success border-0 fw-bold"
@@ -60,8 +58,8 @@ const ItemCard = ({ item }) => {
                 </button>
                 <span className="mx-2 fw-bold text-success">
                   {
-                    (cart || []).find((cartItem) => cartItem.id === item.id)
-                      .quantity
+                   
+                      cart?.productQuantity
                   }
                 </span>
                 <button

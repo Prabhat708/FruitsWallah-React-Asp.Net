@@ -1,70 +1,51 @@
-import React, { useState } from "react";
-import { Products as Items } from "../data/Products";
+import axios from "axios";
 
-const cart = JSON.parse(localStorage.getItem("cart")) || [];
-export const AddToCart = (itemId, setCart, setShowPopup) => {
-  const item = Items.find((itm) => itm.id === parseInt(itemId));
-  setCart((prevCart) => {
-    const updatedCart = [...prevCart];
-    const existingItemIndex = updatedCart.findIndex(
-      (cartItem) => cartItem.id === item.itemId
-    );
+const UserId = localStorage.getItem('UserId');
 
-    if (existingItemIndex !== -1) {
-      updatedCart[existingItemIndex].quantity += 1;
-    } else {
-      updatedCart.push({ ...item, quantity: 1 });
-    }
-    return updatedCart;
-  });
+export const getCartItems = async (setCartItems) => {
+  const res = await axios.get(`https://localhost:7293/api/Carts/${UserId}`);
+  if (res.data) {
+    setCartItems(res.data);
+  }
+}
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-  setShowPopup(true);
-  setTimeout(() => {
-    setShowPopup(false);
-  }, 2000);
+export const AddToCart = async (itemId, setCart, setShowPopup) => {
+  const AddCart = {
+    UserId: UserId,
+    productId: itemId,
+    productQuantity: 1
+  };
+  const res = await axios.post(`https://localhost:7293/api/Carts/`, AddCart);
+  if (res.data) {
+    setCart(res.data);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+  }
 };
 
-export const RemoveFromCart = (
-  itemId,
+export const RemoveFromCart = async(
+  cartId,
   setShowPopup,
-  setCartItems,
-  cartItems
 ) => {
-
-  const updatedCart = cartItems.filter((cartItem) => cartItem.id !== itemId);
-  setCartItems(updatedCart); // update state -> re-render
-  localStorage.setItem("cart", JSON.stringify(updatedCart));
-  setShowPopup(true);
-  setTimeout(() => {
-    setShowPopup(false);
-  }, 2000);
-  return cartItems;
+  const res = await axios.delete(`https://localhost:7293/api/Carts/${cartId}`);
+  if (res.status == 200) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+  }
 };
 
-export const PlusMinusButton = (itemId, action, setCart) => {
-  setCart((prevCart) => {
-    const updatedCart = [...prevCart];
-    const existingItemIndex = updatedCart.findIndex(
-      (cartItem) => cartItem.id === itemId
-    );
-    if (existingItemIndex !== -1) {
+export const PlusMinusButton = async (cartId, action, quantity) => {
       if (action === "increment") {
-        updatedCart[existingItemIndex].quantity += 1;
+        quantity += 1;
       } else if (
-        action === "decrement" &&
-        updatedCart[existingItemIndex].quantity > 1
+        action === "decrement"
       ) {
-          updatedCart[existingItemIndex].quantity -= 1;
-          
-      } else if (
-        action === "decrement" &&
-        updatedCart[existingItemIndex].quantity === 1
-      ) {
-          updatedCart.splice(existingItemIndex, 1);
-          
-      }
-    }
-    return updatedCart;
-  });
-};
+          quantity -= 1;
+  } 
+  const res = await axios.put(`https://localhost:7293/api/Carts/${cartId},${quantity}`);
+  };
+

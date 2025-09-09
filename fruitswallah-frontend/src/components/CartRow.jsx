@@ -1,43 +1,26 @@
 import { MdDelete } from "react-icons/md";
 import { PlusMinusButton } from "../services/CartFeatures";
-import React, { useEffect, useState } from "react";
 const CartRow = ({ item, onDelete }) => {
-  const [cart, setCart] = useState (() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
- 
   return (
     <>
       <tr>
         <td>
-          <img src={item.image} alt="" style={{ width: "50px" }} />
+          <img src={item?.productImg} alt="No Img" style={{ width: "50px" }} />
         </td>
-        <td>{item.name}</td>
-        <td>&#8377;{item.price}</td>
+        <td>{item?.productName}</td>
+        <td>&#8377;{item?.productPrice}</td>
         <td>
           <div className="d-flex align-items-center">
             <button
-              className={`rounded text-success border-0 fw-bold ${
-                (cart || []).find((cartItem) => cartItem.id === item.id)
-                  ?.quantity === 1
+              className={`rounded text-success border-0 fw-bold ${item?.productQuantity === 1
                   ? "disabled"
                   : ""
               }`}
               onClick={() => {
-                const cartItem = (cart || []).find(
-                  (cartItem) => cartItem.id === item.id
-                );
-                if (cartItem?.quantity > 1) {
-                  PlusMinusButton(item.id, "decrement", setCart);
-                }
+                  PlusMinusButton(item?.cartId, "decrement", item?.productQuantity);
               }}
               disabled={
-                (cart || []).find((cartItem) => cartItem.id === item.id)
-                  ?.quantity === 1
+                  item?.productQuantity === 1
               }
             >
               -
@@ -45,14 +28,13 @@ const CartRow = ({ item, onDelete }) => {
 
             <span className="mx-2 fw-bold text-success">
               {
-                (cart || []).find((cartItem) => cartItem.id === item.id)
-                  .quantity
+                item?.productQuantity
               }
             </span>
             <button
               className=" rounded text-success border-0 fw-bold"
               onClick={() => {
-                PlusMinusButton(item.id, "increment", setCart);
+                PlusMinusButton(item?.cartId, "increment", item?.productQuantity);
               }}
             >
               +
@@ -61,12 +43,12 @@ const CartRow = ({ item, onDelete }) => {
         </td>
         <td>
           &#8377;
-          {item.price *
-            (cart || []).find((cartItem) => cartItem.id === item.id).quantity}
+          {item?.productPrice *
+              item?.productQuantity}
         </td>
         <td>
           <button className="btn border-danger text-danger rounded-pill">
-            <MdDelete onClick={() => onDelete(item.id)} />
+            <MdDelete onClick={() => onDelete(item?.cartId)} />
           </button>
         </td>
       </tr>

@@ -82,17 +82,22 @@ namespace FruitsWallahBackend.Controllers
         public async Task<ActionResult<User>> PostUser(UserDTO user)
 
         {
+            Console.WriteLine("user backend working"+user.Email);
             var HashedPassword= BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password, 13);
             if (user.Email == null)
             {
                 return BadRequest("Email required");
             }
-            
+            var userEmail= await _context.Users.FirstOrDefaultAsync(u=>u.Email==user.Email);
+            if (userEmail != null)
+            {
+                return Ok("User Alredy Exists");
+            }
             if (user.Password != null)
             {
                 var user1 = new User()
                 {
-                    Name = user.Name,
+                    Name = user.Username,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                 };
@@ -118,6 +123,12 @@ namespace FruitsWallahBackend.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    return Ok(new
+                    {
+                        user1.UserId,
+                        message= "User Created Successfully",
+                        status="success"
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,7 +140,7 @@ namespace FruitsWallahBackend.Controllers
                 return BadRequest();
             }
 
-                return Ok("User Created Successfully");
+               
         }
 
         // DELETE: api/Users/5

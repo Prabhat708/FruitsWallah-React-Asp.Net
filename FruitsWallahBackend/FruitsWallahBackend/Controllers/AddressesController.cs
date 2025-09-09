@@ -63,7 +63,6 @@ namespace FruitsWallahBackend.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
 
@@ -72,6 +71,9 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Addresses>> PostAddresses(Addresses addresses)
         {
+            var userAdddress=await (from A in _context.Addresses where A.UserId == addresses.UserId select A).ToListAsync(); 
+            if (userAdddress.Count == 5) { return Ok("You can't add more than 5 Address"); }
+
             _context.Addresses.Add(addresses);
             await _context.SaveChangesAsync();
 

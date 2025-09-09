@@ -27,11 +27,12 @@ namespace FruitsWallahBackend.Controllers
             {
                 try
                 {
-                    var cartItems = await (from c in _context.Carts where c.UserId == UserId join p in _context.Products on c.ProductId equals p.ProductId select new { p.ProductImg, p.ProductName, p.ProductPrice, c.ProductQuantity }).ToListAsync(); ;
+                    var cartItems = await (from c in _context.Carts where c.UserId == UserId join p in _context.Products on c.ProductId equals p.ProductId select new {c.CartId,
+                                           p.ProductImg, p.ProductName, p.ProductPrice, c.ProductQuantity }).ToListAsync(); ;
 
                     if (cartItems.Count == 0)
                     {
-                        return NotFound("No data Found");
+                        return Ok(cartItems);
                     }
                     return Ok(cartItems);
                 }
@@ -90,7 +91,7 @@ namespace FruitsWallahBackend.Controllers
             _context.Carts.Add(carts);
             await _context.SaveChangesAsync();
 
-            return Ok(carts);
+            return Ok();
         }
 
         // DELETE: api/Carts/5
@@ -106,7 +107,7 @@ namespace FruitsWallahBackend.Controllers
             _context.Carts.Remove(carts);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         private bool CartsExists(int id)

@@ -2,46 +2,21 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Link, useNavigate} from 'react-router-dom';
+import { handleSignUp } from "../services/Singup";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({
     Username: "",
-    email: "",
-    mobile: "",
-    password: "",
+    Email: "",
+    PhoneNumber: "",
+    Password: "",
     cpassword: "",
   });
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-  const handleSignUp = (e) => {
-    const { Username, email, mobile, password, cpassword } = data;
-    if (!Username || !email || !mobile || !password || !cpassword) {
-      alert("Please fill all fields");
-      return;
-    } else if (password.length < 6) {
-      alert("Password must be at least 6 characters long");
-      return;
-    } else if (password !== cpassword) {
-      alert("Passwords do not match");
-      return;
-    } else if (password === "password" && email === "Prabhat@gmail.com") {
-      alert("username already exists");
-      return;
-    } else {
-      localStorage.setItem("IsLoggedIn", true);
-      setData({
-        Username: "",
-        email: "",
-        mobile: "",
-        password: "",
-        cpassword: "",
-      });
-      navigate("/home",{state:{message:"Your Account Created Successfully...",Username:Username,comingFrom:"signup"}});
-      return
-    }
-  };
+ 
   const [showPasswordBtn, setShowPasswordBtn] = useState(false);
   const handleShowPassword = () => {
     setShowPasswordBtn(!showPasswordBtn);
@@ -85,25 +60,25 @@ const SignUpPage = () => {
                 </label>
                 <input
                   type="email"
-                  name="email"
+                  name="Email"
                   className="form-control"
-                  id="email"
-                  value={data.email}
+                  id="Email"
+                  value={data.Email}
                   onChange={handleChange}
                   placeholder="Enter your email"
                   required
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="mobile" className="form-label">
+                <label htmlFor="PhoneNumber" className="form-label">
                   Mobile Number
                 </label>
                 <input
                   type="number"
-                  name="mobile"
+                  name="PhoneNumber"
                   className="form-control"
-                  id="mobile"
-                  value={data.mobile}
+                  id="PhoneNumber"
+                  value={data.PhoneNumber}
                   onChange={handleChange}
                   placeholder="Enter your Mobile Number"
                   maxLength={"10"}
@@ -112,15 +87,15 @@ const SignUpPage = () => {
                 />
               </div>
               <div className="mb-3 position-relative">
-                <label htmlFor="password" className="form-label">
+                <label htmlFor="Password" className="form-label">
                   Password
                 </label>
                 <input
                   type={showPasswordBtn ? "text" : "password"}
-                  name="password"
+                  name="Password"
                   className="form-control pe-5"
-                  id="password"
-                  value={data.password}
+                  id="Password"
+                  value={data.Password}
                   onChange={handleChange}
                   placeholder="Enter your password"
                   required
@@ -156,7 +131,14 @@ const SignUpPage = () => {
                 </button>
               </div>
 
-              <button type="submit" onClick={handleSignUp} className="btn btn-success w-100">
+              <button
+                type="submit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSignUp(data, navigate, setData);
+                }}
+                className="btn btn-success w-100"
+              >
                 Create Account
               </button>
             </form>

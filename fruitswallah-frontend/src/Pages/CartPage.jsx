@@ -4,19 +4,17 @@ import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
 import { Link } from "react-router-dom";
 import CartRow from "../components/CartRow";
-import { RemoveFromCart } from "../services/CartFeatures";
+import { RemoveFromCart,getCartItems } from "../services/CartFeatures";
+
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  });
+  const [cartItems, setCartItems] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(storedCart);
-  }, []);
+    getCartItems(setCartItems)
+  }, [cartItems]);
   let sum = 0;
-
+  
   return (
     <>
       <Navbar />
@@ -43,18 +41,16 @@ const CartPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cartItems.map((item, index) => {
-                    sum = sum + item.price * item.quantity;
+                  {cartItems?.map((item, index) => {
+                    sum = sum + item.productPrice * item.productQuantity;
                     return (
                       <CartRow
                         key={index}
                         item={item}
                         onDelete={() =>
                           RemoveFromCart(
-                            item.id,
-                            setShowPopup,
-                            setCartItems,
-                            cartItems
+                          item.cartId,
+                            setShowPopup
                           )
                         }
                       />
@@ -88,7 +84,7 @@ const CartPage = () => {
                       <div className="">
                         <p id="ship" className="mb-0 fw-medium">
                           &#8377;
-                          {sum > 300 ? (
+                          {sum >= 300 ? (
                             <>
                               <em>
                                 <del> 50 </del>

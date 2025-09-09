@@ -4,7 +4,7 @@ namespace FruitsWallahBackend.Models.DTOModels
 {
     public class UserDTO
     {
-        public string? Name { get; set; }
+        public string? Username { get; set; }
         [MaxLength(100)]
         [EmailAddress]
         public string? Email { get; set; }
