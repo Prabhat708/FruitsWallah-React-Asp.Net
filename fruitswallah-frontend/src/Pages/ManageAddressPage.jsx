@@ -4,10 +4,17 @@ import Footer from "../components/Footer";
 import { Package, User, Lock, CreditCard, MapPin, LogOut } from "lucide-react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SidePannel from "../components/SidePannel";
-import { addAddress, getAddress } from "../services/ManageAddress";
+import {
+  addAddress,
+  getAddress,
+  handleDeleteAddress,
+  makePrimary,
+} from "../services/ManageAddress";
 
 const ManageAddressPage = () => {
-const UserId = localStorage.getItem("UserId");
+  const [res,setRes]=useState({})
+  const [showPopup, setShowPopup] = useState(false);
+  const UserId = localStorage.getItem("UserId");
   const [data, setData] = useState({
     UserId: UserId,
     UserName: "",
@@ -22,15 +29,19 @@ const UserId = localStorage.getItem("UserId");
     State: "",
     IsPrimary: true,
   });
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
-    };
-   
- 
-  const [hideForm, sethideForm] = useState(true)
+  };
+  const [menuOpenIndex, setMenuOpenIndex] = useState(null);
+
+  const handleMenuToggle = (index) => {
+    setMenuOpenIndex(menuOpenIndex === index ? null : index);
+  };
+  const [hideForm, sethideForm] = useState(true);
   const handleAddressForm = () => {
-    sethideForm(!hideForm)
-  }
+    sethideForm(!hideForm);
+  };
   const sidebarItems = [
     { icon: Package, label: "View orders", href: "/orders" },
     {
@@ -49,15 +60,17 @@ const UserId = localStorage.getItem("UserId");
   ];
   const [activeItem, setActiveItem] = useState("Manage addresses");
 
-  const [Addresses ,setAddresses]=useState(null)
+  const [Addresses, setAddresses] = useState(null);
 
   useEffect(() => {
-    getAddress(UserId, setAddresses);
-  },[])
-  
+    getAddress(setAddresses);
+  }, []);
+
   return (
     <>
       <Navbar />
+      {showPopup && <div className={`alert ${res.status?'alert-success':'alert-danger'}` } style={{ marginTop: '100px' }}>{res.message
+      }</div>}
       <div
         className="d-flex min-vh-100 mt-5 pt-5"
         style={{ backgroundColor: "#f8f9fa" }}
@@ -83,9 +96,14 @@ const UserId = localStorage.getItem("UserId");
                 {" "}
                 + Add New Address
               </button>
-              <form className={`${hideForm ? "d-none" : null} mb-5`} onSubmit={(e) => {e.preventDefault()
-                addAddress(data)
-              }}>
+              <form
+                className={`${hideForm ? "d-none" : null} mb-5`}
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                 setRes(await addAddress(data, setAddresses, setShowPopup));
+                  sethideForm(!hideForm);
+                }}
+              >
                 <div className="nameSection">
                   <div className="fw-bolder text-primary name">
                     Add New Address
@@ -244,13 +262,13 @@ const UserId = localStorage.getItem("UserId");
                     />
                   </div>
                   <div className="col-3 ">
-                    <label className="fw-medium ms-5" htmlFor="addressType">
+                    <label className="fw-medium ms-5" htmlFor="addressTypehome">
                       Address Type{" "}
                     </label>
                     <div className="ms-5 pt-3">
                       <input
                         type="radio"
-                        id="addressType"
+                        id="addressTypehome"
                         className="col-3 "
                         value={"HOME"}
                         name="AddressType"
@@ -279,7 +297,7 @@ const UserId = localStorage.getItem("UserId");
                       className="ms-5 ps-2"
                       id="IsPrimary"
                       name="IsPrimary"
-                      value={data.IsPrimary=true}
+                      value={data.IsPrimary}
                       onChange={handleChange}
                       required
                       style={{ height: "50px" }}
@@ -291,7 +309,7 @@ const UserId = localStorage.getItem("UserId");
                 </button>
                 <button
                   onClick={handleAddressForm}
-                  type="cancel"
+                  type="button"
                   className="btn border-0 bg-transparent text-primary"
                 >
                   CANCEL
@@ -305,9 +323,66 @@ const UserId = localStorage.getItem("UserId");
                     style={{ border: "1px solid #cfd6df" }}
                   >
                     <span className="Address-type">{address?.addressType}</span>
-                    <span className="btn position-absolute end-0 pe-4 border-0">
-                      <BsThreeDotsVertical />
+                    <span
+                      className="btn position-absolute end-0 pe-4 border-0"
+                      onClick={() => handleMenuToggle(index)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <span
+                        className={`fw-medium text-dark ${
+                          !address.isPrimary ? "d-none" : "d-block "
+                        }`}
+                      >
+                        Primary
+                      </span>
+                      <BsThreeDotsVertical
+                        className={`${
+                          address.isPrimary ? "d-none" : "d-block "
+                        }`}
+                      />
                     </span>
+                    {menuOpenIndex === index && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: "45px",
+                          right: "0px",
+                          background: "#fff",
+                          borderRadius: "4px",
+                          zIndex: 10,
+                          padding: "8px",
+                        }}
+                      >
+                        <button
+                          className={`btn text-secondary border-secondary mb-2 ${
+                            address.isPrimary ? "d-none" : "d-block "
+                          }`}
+                          onClick={async () => {
+                           await makePrimary(
+                              address,
+                              setAddresses,
+                            );
+                            
+                          }}
+                        >
+                          Primary
+                        </button>
+                        <button
+                          className={`btn text-danger border-danger ${address.isPrimary ? "d-none" : "d-block "
+                            }`}
+                          onClick={async () => {
+
+                          setRes(await handleDeleteAddress(
+                              address?.addId,
+                              setAddresses,
+                              setShowPopup
+                            ))
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                     <br />
                     <span className="fw-medium">{address?.userName}</span>
                     <span className="fw-medium ms-5">

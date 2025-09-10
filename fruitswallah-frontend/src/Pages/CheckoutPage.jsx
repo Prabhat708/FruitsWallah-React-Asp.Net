@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import {
   FaCreditCard,
@@ -11,12 +11,12 @@ import NetBanking from "../components/NetBanking";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CashOnDelivery from "../components/CashOnDelivery";
+import { getCartItems } from "../services/CartFeatures";
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const [cartItems, setCartItems] = useState(() => {
-        return JSON.parse(localStorage.getItem("cart")) || [];    
-    });
+    const [cartItems, setCartItems] = useState([]);
     let sum = 0;
     const [selectedPayment, setSelectedPayment] = useState('UPI');
     const [activeTab, setActiveTab] = useState('UPI');
@@ -29,11 +29,14 @@ const CheckoutPage = () => {
         } else if (method === "NetBanking") {
             setActiveTab('NetBanking');
         } else if (method === "CashOnDelivery") {
-            navigate('/home',{ state: { message: "Congratulations! Your order is successful. Now you can track your order." } });
-            return;
+           setActiveTab("CashOnDelivery");
         }
         setSelectedPayment(method);
-    };
+  };
+  
+  useEffect(() => {
+    getCartItems(setCartItems)
+  },[]);
 
   return (
     <>
@@ -49,48 +52,56 @@ const CheckoutPage = () => {
             <div className=" d-flex alert alert-info fw-medium justify-content-center">
               Overview of your order
             </div>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cartItems.map((item, index) => {
-                  sum = sum + item.price * item.quantity;
-                  return (
-                    <tr key={index}>
-                      <td>
-                        {item.name} x {item.quantity}
-                      </td>
-                      <td>&#8377; {item.price * item.quantity}</td>
-                    </tr>
-                  );
-                })}
-                <tr className="border-top-0 mt-5">
-                  <td className="border-top-0">
-                    <br /> <br />
-                  </td>
-                  <td className="border-top-0">
-                    {" "}
-                    <br /> <br />
-                  </td>
-                </tr>
-                <tr className="fw-medium">
-                  <td>Subtotal</td>
-                  <td>&#8377; {sum}</td>
-                </tr>
-                <tr className="fw-medium">
-                  <td>Shipping</td>
-                  <td>&#8377; {sum > 300 ? 0 : 50}</td>
-                </tr>
-                <tr className="fw-bold">
-                  <td>Total</td>
-                  <td>&#8377; {sum > 300 ? sum : sum + 50}</td>
-                </tr>
-              </tbody>
-            </table>
+            {cartItems.length > 0 ? (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map((item, index) => {
+                    sum = sum + item.productPrice * item.productQuantity;
+                    return (
+                      <tr key={index}>
+                        <td>
+                          {item.productName} x {item.productQuantity}
+                        </td>
+                        <td>
+                          &#8377; {item.productPrice * item.productQuantity}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr className="border-top-0 mt-5">
+                    <td className="border-top-0">
+                      <br /> <br />
+                    </td>
+                    <td className="border-top-0">
+                      {" "}
+                      <br /> <br />
+                    </td>
+                  </tr>
+                  <tr className="fw-medium">
+                    <td>Subtotal</td>
+                    <td>&#8377; {sum}</td>
+                  </tr>
+                  <tr className="fw-medium">
+                    <td>Shipping</td>
+                    <td>&#8377; {sum >= 300 ? 0 : 50}</td>
+                  </tr>
+                  <tr className="fw-bold">
+                    <td>Total</td>
+                    <td>&#8377; {sum >= 300 ? sum : sum + 50}</td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : (
+              <center>
+                <h5 className="fw-medium">No Items In Your Cart</h5>
+              </center>
+            )}
           </div>
           <div className="col-lg-6 mx-auto">
             <div className="card ">
@@ -158,6 +169,7 @@ const CheckoutPage = () => {
                   {selectedPayment === "UPI" && <UPI />}
                   {selectedPayment === "CreditCard" && <CreditCard />}
                   {selectedPayment === "NetBanking" && <NetBanking />}
+                  {selectedPayment === "CashOnDelivery" && <CashOnDelivery/>}
                 </div>{" "}
               </div>
             </div>

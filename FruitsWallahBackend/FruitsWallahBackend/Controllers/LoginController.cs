@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FruitsWallahBackend.Data;
+using FruitsWallahBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FruitsWallahBackend.Data;
-using FruitsWallahBackend.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -46,6 +47,36 @@ namespace FruitsWallahBackend.Controllers
             {
                 return BadRequest("Wrong Password");
             }
+        }
+
+        [HttpPut("{UserId},{Password},{newPassword}")]
+        public async Task<IActionResult> PutUserAuth(int UserId,string Password,string newPassword)
+        {
+            var UserAuth = await _context.UsersAuth.FirstOrDefaultAsync(u=>u.UserID==UserId);
+            Console.WriteLine(UserAuth.HashPassword);
+            if(UserAuth == null)
+            {
+                return NotFound();
+            }
+            if (MatchPassword(Password, HashedPassword: UserAuth.HashPassword))
+            {
+                UserAuth.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(newPassword, 13);
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok("Password Updated");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Password Not Matched");
+            }
+            
         }
 
         private static bool MatchPassword(string Password, string HashedPassword)

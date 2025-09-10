@@ -1,13 +1,14 @@
 import axios from "axios";
+const UserId = localStorage.getItem("UserId");
 
-export const getAddress = async (UserId, setAddresses) => {
+export const getAddress = async (setAddresses) => {
   const res = await axios.get(`https://localhost:7293/api/Addresses/${UserId}`);
   if (res.data) {
     setAddresses(res.data);
   }
 };
 
-export const addAddress = async (data) => {
+export const addAddress = async (data, setAddresses, setShowPopup) => {
   const { UserId, PhoneNumber, PostalCode } = data;
   if (UserId == null) {
     return;
@@ -19,5 +20,33 @@ export const addAddress = async (data) => {
     return;
   }
   const res = await axios.post("https://localhost:7293/api/Addresses", data);
-  if (res.data) alert(res.data);
+  await getAddress(setAddresses);
+  setShowPopup(true);
+  setTimeout(() => {
+    setShowPopup(false);
+  }, 2000);
+  return { status: true,message:"Address Added successfully" };
+};
+
+export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => {
+  const res = await axios.delete(
+    `https://localhost:7293/api/Addresses/${AddId}`
+  );
+  setShowPopup(true);
+  setTimeout(() => {
+    setShowPopup(false);
+  }, 2000);
+  await getAddress(setAddresses);
+  return { status: false, message: "Address Deleted Successfully" };
+};
+
+export const makePrimary = async (address, setAddresses) => {
+  address.isPrimary = true;
+  const res = await axios.put(
+    `https://localhost:7293/api/Addresses/${address.addId}`,
+    address
+  );
+  await getAddress(setAddresses);
+  
+  return {status: true};
 };

@@ -102,7 +102,7 @@ const CartPage = () => {
                   <div className="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                     <h5 className="mb-0 ps-4 me-4">Total</h5>
                     <p id="total" className="mb-0 pe-4 fw-bold">
-                      &#8377; {sum > 300 ? sum : sum + 50}
+                      &#8377; {sum >= 300 ? sum : sum + 50}
                     </p>
                   </div>
                   <Link to="/checkout/">

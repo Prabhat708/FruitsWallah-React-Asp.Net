@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using FruitsWallahBackend.Data;
+using FruitsWallahBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using FruitsWallahBackend.Data;
-using FruitsWallahBackend.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -46,6 +47,17 @@ namespace FruitsWallahBackend.Controllers
                 return BadRequest();
             }
 
+           
+            var address=await (from a in _context.Addresses where a.UserId== addresses.UserId && a.IsPrimary select a).ToListAsync();
+            foreach (var add in address)
+            {
+                if (address.Count > 0)
+                {
+                    add.IsPrimary = false;
+                }
+
+            }
+            await _context.SaveChangesAsync();
             _context.Entry(addresses).State = EntityState.Modified;
 
             try
@@ -63,7 +75,8 @@ namespace FruitsWallahBackend.Controllers
                     throw;
                 }
             }
-            return NoContent();
+            
+            return Ok("Updated");
         }
 
         // POST: api/Addresses
@@ -71,6 +84,16 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Addresses>> PostAddresses(Addresses addresses)
         {
+            var address = await (from a in _context.Addresses where a.UserId == addresses.UserId && a.IsPrimary select a).ToListAsync();
+            foreach (var add in address)
+            {
+                if (address.Count > 0)
+                {
+                    add.IsPrimary = false;
+                }
+
+            }
+            await _context.SaveChangesAsync();
             var userAdddress=await (from A in _context.Addresses where A.UserId == addresses.UserId select A).ToListAsync(); 
             if (userAdddress.Count == 5) { return Ok("You can't add more than 5 Address"); }
 
@@ -93,7 +116,7 @@ namespace FruitsWallahBackend.Controllers
             _context.Addresses.Remove(addresses);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Address Deleted Successful");
         }
 
         private bool AddressesExists(int id)

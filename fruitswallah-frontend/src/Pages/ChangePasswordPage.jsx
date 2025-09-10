@@ -12,6 +12,15 @@ import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 
 const ChangePasswordPage = () => {
+  const [data, setData] = useState({
+    Password: "",
+    newPassword: "",
+    confirmPassword:""
+    });
+  
+    const handleChange = (e) => {
+      setData({ ...data, [e.target.name]: e.target.value });
+    };
   const sidebarItems = [
     { icon: Package, label: "View orders", href: "/orders" },
     {
@@ -56,10 +65,13 @@ const ChangePasswordPage = () => {
                 <div className="row pt-2">
                   <div className="col-3 ">
                     <input
-                      type="text"
+                      type="password"
                       className="ms-5 ps-2"
-                      name="currentPassword"
+                      name="Password"
+                      id="Password"
                       required
+                      value={data.Password}
+                      onChange={handleChange}
                       placeholder="Enter Current password"
                       style={{ height: "50px" }}
                     />
@@ -143,8 +155,8 @@ const ChangePasswordPage = () => {
             </div>
           </div>
         </div>
-          </div>
-          <Footer/>
+      </div>
+      <Footer />
     </>
   );
 };
