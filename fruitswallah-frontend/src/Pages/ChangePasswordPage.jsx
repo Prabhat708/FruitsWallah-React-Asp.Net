@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
+import { HandlePasswordChange } from "../services/HandleLoginLogout";
+
 
 const ChangePasswordPage = () => {
   const [data, setData] = useState({
@@ -58,7 +60,12 @@ const ChangePasswordPage = () => {
               <h1 className="h2 fw-bold text-dark mb-2">Change Password</h1>
             </div>
             <div className="profile">
-              <form>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  HandlePasswordChange(data);
+                }}
+              >
                 <div className="nameSection">
                   <span className="fw-medium name">Current Password</span>
                 </div>
@@ -85,7 +92,9 @@ const ChangePasswordPage = () => {
                     <input
                       type="text"
                       className="ms-5 ps-2"
-                      name="currentPassword"
+                      name="newPassword"
+                      value={data.newPassword}
+                      onChange={handleChange}
                       required
                       placeholder="Enter New password"
                       style={{ height: "50px" }}
@@ -100,7 +109,9 @@ const ChangePasswordPage = () => {
                     <input
                       type="text"
                       className="ms-5 ps-2"
-                      name="currentPassword"
+                      name="confirmPassword"
+                      value={data.confirmPassword}
+                      onChange={handleChange}
                       required
                       placeholder="Confirm password"
                       style={{ height: "50px" }}

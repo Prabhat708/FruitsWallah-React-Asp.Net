@@ -33,7 +33,7 @@ namespace FruitsWallahBackend.Controllers
                                 join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID 
                                  select new {
                                   o.OrderId,o.OrderDate,o.IsPaid,
-                                  OI.ProductImg, OI.ProductName, OI.ProductPrice, OI.ProductQty, OI.ShipingCharge, OI.TotalPrice, OI.TransactionType,
+                                  OI.ProductName, OI.ProductPrice, OI.ProductQty, OI.ShipingCharge, OI.TotalPrice, OI.TransactionType,OI.ProductImg,
                                   OTrans.TransactionId,OTrans.TransactionStatus,OTrans.TransactionTime,
                                   ot.OrderStatus,ot.DeliveredOn,
                                   oa.UserName,oa.AddressType,oa.HouseNo,oa.Locality,oa.Address,oa.City, oa.State,oa.PostalCode,oa.LandMark,oa.PhoneNumber 
@@ -51,6 +51,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Orders>> PostOrders(OrderDTO orders)
         {
+
             if (orders == null)
             {
                 return BadRequest();
@@ -89,7 +90,6 @@ namespace FruitsWallahBackend.Controllers
                         ProductId = cart.ProductId,
                         ProductName =product?.ProductName,
                         ProductPrice=product.ProductPrice,
-                        ProductImg=product?.ProductImg,
                         ProductQty=cart.ProductQuantity,
                         ShipingCharge= product.ProductPrice * cart.ProductQuantity >300 ? 0:50,
                         TotalPrice=product.ProductPrice * cart.ProductQuantity >300 ? product.ProductPrice * cart.ProductQuantity : product.ProductPrice * cart.ProductQuantity+50,

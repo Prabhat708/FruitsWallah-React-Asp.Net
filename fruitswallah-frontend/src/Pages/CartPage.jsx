@@ -2,22 +2,29 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CartRow from "../components/CartRow";
 import { RemoveFromCart,getCartItems } from "../services/CartFeatures";
 
 
 const CartPage = () => {
+ const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+    if (isLogin === "false") {
+      navigate("/login");
+    }
     getCartItems(setCartItems)
-  }, [cartItems]);
+  }, []);
   let sum = 0;
   
   return (
     <>
+      
       <Navbar />
+
       {cartItems.length === 0 ? (
         <h1 className="text-center mt-5 pt-5">No items in cart</h1>
       ) : (
@@ -47,10 +54,12 @@ const CartPage = () => {
                       <CartRow
                         key={index}
                         item={item}
+                        setCartItems={setCartItems}
                         onDelete={() =>
                           RemoveFromCart(
-                          item.cartId,
-                            setShowPopup
+                            item.cartId,
+                            setShowPopup,
+                            setCartItems
                           )
                         }
                       />

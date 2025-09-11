@@ -1,7 +1,8 @@
 import axios from "axios";
+
+
 export const handleSignUp = async (data, navigate, setData) => {
   const { Username, Email, PhoneNumber, Password, cpassword } = data;
-  console.log("singup", data);
   if (!Username || !Email || !PhoneNumber || !Password || !cpassword) {
     alert("Please fill all fields");
     return;
@@ -22,7 +23,8 @@ export const handleSignUp = async (data, navigate, setData) => {
         cpassword: "",
       });
       localStorage.setItem('isLogin', true);
-      localStorage.setItem('UserId',res.data.userId)
+      localStorage.setItem('UserId', res.data.userId);
+      localStorage.setItem('isAdmin', res.data.isAdmin);
       navigate("/home", {
         state: {
           message: "Your Account Created Successfully...",
@@ -37,3 +39,5 @@ export const handleSignUp = async (data, navigate, setData) => {
     }
   }
 };
+
+

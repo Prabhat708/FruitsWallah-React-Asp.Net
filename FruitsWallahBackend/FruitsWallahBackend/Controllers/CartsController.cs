@@ -27,8 +27,8 @@ namespace FruitsWallahBackend.Controllers
             {
                 try
                 {
-                    var cartItems = await (from c in _context.Carts where c.UserId == UserId join p in _context.Products on c.ProductId equals p.ProductId select new {c.CartId,
-                                           p.ProductImg, p.ProductName, p.ProductPrice, c.ProductQuantity }).ToListAsync(); ;
+                    var cartItems = await (from c in _context.Carts where c.UserId == UserId join p in _context.Products on c.ProductId equals p.ProductId select new {c.CartId,p.ProductImg,p.ProductId,
+                                          p.ProductName, p.ProductPrice, c.ProductQuantity }).ToListAsync(); ;
 
                     if (cartItems.Count == 0)
                     {
@@ -41,7 +41,7 @@ namespace FruitsWallahBackend.Controllers
                     return BadRequest(ex.Message);
                 }
             }
-            return BadRequest();
+            return Ok();
                
         }
 

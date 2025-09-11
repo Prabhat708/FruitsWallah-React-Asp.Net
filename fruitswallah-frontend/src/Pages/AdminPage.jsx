@@ -1,39 +1,31 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
-import banana from '../assets/best-product-3.jpg'
-
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import banana from "../assets/best-product-3.jpg";
+import { GetProducts } from "../services/ProductController";
+import { AddProducts, DeleteProduct } from "../services/AdminOperations";
 
 const AdminPage = () => {
-    const Products = [
-        { id: 1, name: "Apple", category: "Fruit", price: 100, quantity: 50,Image:"https://www.collinsdictionary.com/images/full/apple_158989157.jpg" },
-        { id: 2, name: "Banana", category: "Fruit", price: 50, quantity: 100,Image: banana },
-        { id: 3, name: "Carrot", category: "Vegetable", price: 30, quantity: 200,Image:'Carrots.webp' },
-        { id: 4, name: "Broccoli", category: "Vegetable", price: 80, quantity: 75,Image:'Broccoli.jpg' },
-    ];
-    const handleAddProduct = (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const newProduct = {
-            category: form.productCategory.value,
-            name: form.productName.value,
-            description: form.productDescription.value,
-            price: form.productPrice.value,
-            image: form.productImage.value,
-            quantity: form.productQuantity.value,
-        };
-        console.log("New Product:", newProduct);
-        form.reset();
-        Products.push(newProduct);
-        alert("Product Added Successfully");
+  const [products, setProducts] = useState([]);
+    
+  useEffect(() => {
+    GetProducts(setProducts);
+  },[])
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const newProduct = {
+      ProductCatagory: form.productCategory.value,
+      ProductName: form.productName.value,
+      ProductDescription: form.productDescription.value,
+      ProductPrice: form.productPrice.value,
+      ProductImg: form.productImage.files[0],
+      ProductStock: form.productQuantity.value,
     };
-    const handleEditProduct = (productId) => {
-        // Logic to edit product
-        alert(`Edit Product with ID: ${productId}`);
-    };
-    const handleDeleteProduct = (productId) => {
-        // Logic to delete product
-        alert(`Delete Product with ID: ${productId}`);
-    }
+      await AddProducts(newProduct,setProducts)
+    form.reset();
+    
+    alert("Product Added Successfully");
+  };
 
   return (
     <>
@@ -43,38 +35,49 @@ const AdminPage = () => {
         <div className="col-6" style={{ width: "40%" }}>
           <h3 className="text-center alert alert-info container ms-5">
             Your All Products
-                  </h3>
-                  <table className="table table-bordered ms-5">
-                      <thead>
-                          <tr>
-                              <th scope="col">ID</th>
-                              <th scope="col">Name</th>
-                              <th scope="col">Category</th>
-                              <th scope="col">Price</th>
-                              <th scope="col">Quantity</th>
-                              <th scope="col">Image</th>
-                              <th scope="col">Action</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {Products.map((product) => (
-                                <tr key={product.id}>
-                                    <th scope="row">{product.id}</th>
-                                    <td>{product.name}</td>
-                                    <td>{product.category}</td>
-                                    <td>{product.price}</td>
-                                    <td>{product.quantity}</td>
+          </h3>
+          <table className="table table-bordered ms-5">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Image</th>
+                <th scope="col">Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">Price</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.filter((product) => product.isActive).map((product,index) => (
+                <tr key={product.productId}>
+                  <th scope="row">{index+1}</th>
+                  <td>
+                    <img
+                      src={
+                        "https://localhost:7293" +
+                        product.productImg
+                      }
+                      alt={product.productName}
+                      width="50"
+                      height="50"
+                    />
+                  </td>
+                  <td>{product.productName}</td>
+                  <td>{product.productCatagory}</td>
+                  <td>{product.productPrice}</td>
+                  <td>{product.productStock}</td>
 
-                                    <td><img src={product.Image} alt={product.name} width="50" height="50"/></td>
-                                  <td>
-                                      <button className="btn btn-sm btn-primary me-2">Edit</button>
-                                      <button className="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                              </tr>
-                          ))}
-                      </tbody>
-                  </table>
-                  
+                  <td>
+                    <button className="btn btn-sm btn-danger" onClick={() => {
+                      DeleteProduct(product.productId,setProducts)
+                    }}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+              
+            </tbody>
+          </table>
         </div>
         <div className="col-6 container" style={{ width: "40%" }}>
           <h3 className="text-center alert alert-info container ms-5">
@@ -122,7 +125,7 @@ const AdminPage = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="productQuantity" className="form-label">
-                Product Quantity
+                Product Stock
               </label>
               <input
                 type="number"
@@ -138,6 +141,6 @@ const AdminPage = () => {
       </div>
     </>
   );
-}
+};
 
-export default AdminPage
+export default AdminPage;

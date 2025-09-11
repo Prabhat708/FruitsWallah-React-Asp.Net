@@ -1,10 +1,20 @@
+import { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { Products } from "../data/Products";
+import { GetProducts } from "../services/ProductController";
 
 const Vegetables = () => {
-  const Vegetables = Products.filter((item) => item.catagory === "Vegetable");
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    GetProducts(setProducts)
+  },[]);
+  const Vegetables = products.filter(
+    (item) =>
+      (item.productCatagory === "Vegetable" ||
+        item.productCatagory === "vegetable") &&
+      item.isActive
+  );
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 1200 },
@@ -36,7 +46,7 @@ const Vegetables = () => {
         <Carousel
           responsive={responsive}
           infinite={true}
-          autoPlay={true} 
+          autoPlay={true}
           autoPlaySpeed={2000}
           keyBoardControl={true}
           customTransition="all .5"
@@ -46,7 +56,7 @@ const Vegetables = () => {
           itemClass="px-2"
         >
           {Vegetables.map((veg) => (
-            <ItemCard key={veg.id} item={veg} />
+            <ItemCard key={veg.productId} item={veg} />
           ))}
         </Carousel>
       </div>

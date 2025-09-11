@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using FruitsWallahBackend.Models.DTOModels;
+using static System.IO.Path;
+
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -71,12 +74,38 @@ namespace FruitsWallahBackend.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Products>> PostProducts(Products products)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<Products>> PostProducts([FromForm] ProductDTO products)
         {
-            _context.Products.Add(products);
+            Console.WriteLine("inside Product");
+            Console.WriteLine(products.ProductImg);
+            string? ImagePath = null;
+            if (products.ProductImg != null && products.ProductImg.Length > 0)
+            {
+                var uploadsFolder = Combine("wwwroot", "ProductImages");
+                Directory.CreateDirectory(uploadsFolder);
+                var FileName = Combine(products.ProductImg.FileName.Replace(GetExtension(products.ProductImg.FileName), "")+DateTime.Now.ToString("yyyyMMdd_HHmmss") + GetExtension(products.ProductImg.FileName));
+                ImagePath = Combine(uploadsFolder, FileName);
+                using (var fileStream = new FileStream(ImagePath, FileMode.Create))
+                {
+                    await products.ProductImg.CopyToAsync(fileStream);
+                }
+            }
+            var product=new Products()
+            {
+                ProductName = products.ProductName,
+                ProductCatagory = products.ProductCatagory,
+                ProductDescription = products.ProductDescription,
+                ProductPrice = products.ProductPrice,
+                ProductStock = products.ProductStock,
+                ProductImg=ImagePath?.Replace("wwwroot",""),
+                IsActive=true
+            };
+
+            _context.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProducts", new { id = products.ProductId }, products);
+            return Ok(product);
         }
 
         // DELETE: api/Products/5

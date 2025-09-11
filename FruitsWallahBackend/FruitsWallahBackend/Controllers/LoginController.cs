@@ -40,7 +40,8 @@ namespace FruitsWallahBackend.Controllers
                     user.UserId,
                     user.Name,
                     user.Email,
-                    user.PhoneNumber
+                    user.PhoneNumber,
+                    user.IsAdmin,
                 });
             }
             else
@@ -74,7 +75,7 @@ namespace FruitsWallahBackend.Controllers
             }
             else
             {
-                return BadRequest("Password Not Matched");
+                return Ok("Password Not Matched");
             }
             
         }

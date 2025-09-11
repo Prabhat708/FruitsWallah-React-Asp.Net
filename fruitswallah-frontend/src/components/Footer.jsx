@@ -4,6 +4,7 @@ import { FaLinkedin, FaT, FaY } from "react-icons/fa6";
 import {Link} from 'react-router-dom';
 import payment from "../assets/payment.png";
 const Footer = () => {
+  const isAdmin = localStorage.getItem('isAdmin');
   return (
     <>
       <div className="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
@@ -118,9 +119,11 @@ const Footer = () => {
                 <Link className="btn-link" to="/orders">
                   Order History
                 </Link>
-                <Link className="btn-link" to="/FruitsWAllahAdmin">
-                  Admin Pannel
-                </Link>
+                {isAdmin ==='true'&&
+                  <Link className="btn-link" to="/FruitsWAllahAdmin">
+                    Admin Pannel
+                  </Link>
+                }
               </div>
             </div>
             <div className="col-lg-3 col-md-6">

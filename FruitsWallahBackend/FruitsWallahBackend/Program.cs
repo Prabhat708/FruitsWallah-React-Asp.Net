@@ -41,7 +41,7 @@ namespace FruitsWallahBackend.Data
 
             app.UseCors();
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseAuthorization();
 
             app.MapControllers();

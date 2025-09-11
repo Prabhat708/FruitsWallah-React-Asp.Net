@@ -1,9 +1,14 @@
 import { FaShoppingBag } from "react-icons/fa";
 import ItemCard from "./ItemCard";
 import { Link } from 'react-router-dom';
-import { Products } from "../data/Products";
+import { useEffect, useState } from "react";
+import { GetProducts } from "../services/ProductController";
+
 const Fruits_shop = () => {
- 
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    GetProducts(setProducts)
+  }, []);
   return (
     <>
       <div className="container-fluid fruite">
@@ -24,22 +29,26 @@ const Fruits_shop = () => {
                       <span className="text-dark ">All Products</span>
                     </Link>
                   </li>
-                  </ul>
+                </ul>
               </div>
             </div>
             <div className="tab-content">
               <div id="tab-1" className="tab-pane fade show p-0 active">
                 <div className="col-lg-12">
-                    <div className="row g-4">
-                {Products?.map((fruit) => (
-                    <div key={fruit.id} className="col-md-6 col-lg-4 col-xl-3" id="v">
-                    <ItemCard item={ fruit} />
-                        </div>
-                  ))}
-                    </div>
+                  <div className="row g-4">
+                    {products?.map((fruit) => (fruit.isActive &&
+                      <div
+                        key={fruit.productId}
+                        className="col-md-6 col-lg-4 col-xl-3"
+                        id="v"
+                      >
+                        <ItemCard item={fruit} />
+                      </div>
+                    ))}
                   </div>
+                </div>
               </div>
-              </div>
+            </div>
           </div>
         </div>
       </div>

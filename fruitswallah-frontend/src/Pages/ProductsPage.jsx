@@ -7,10 +7,14 @@ import featuredImg3 from "../assets/feature-3.jpg";
 import bannerFruit from "../assets/banner-fruits.jpg";
 import { FaSearch, FaStar } from "react-icons/fa";
 import ItemCard from "../components/ItemCard";
-import { Products } from "../data/Products";
+import { GetProducts } from "../services/ProductController";
+import { useEffect, useState } from "react";
 
 const ProductsPage = () => {
- 
+ const [products, setProducts] = useState([]);
+   useEffect(() => {
+     GetProducts(setProducts)
+   }, []);
   return (
     <>
       <Navbar />
@@ -102,7 +106,7 @@ const ProductsPage = () => {
                         </ul>
                       </div>
                     </div>
-                    
+
                     <div className="col-lg-12">
                       <h4 className="mb-3">Featured products</h4>
                       <div className="d-flex align-items-center justify-content-start">
@@ -227,11 +231,11 @@ const ProductsPage = () => {
                     <div id="tab-1" className="tab-pane fade show p-0 active">
                       <div className="col-lg-12">
                         <div className="row g-3">
-                          {Products.map((item) => (
+                          {products.map((item) => ( item.isActive &&
                             <div
-                              key={item.id}
+                              key={item.productId}
                               className="col-lg-4 col-md-6"
-                              id="v"
+                            
                             >
                               <ItemCard item={item} />
                             </div>

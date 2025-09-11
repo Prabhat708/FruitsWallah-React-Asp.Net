@@ -19,9 +19,9 @@ namespace FruitsWallahBackend.Models
         public string? Email { get; set; }
         [MaxLength(10)]
         [Phone]
-        
         public string? PhoneNumber { get; set; }
 
+        public bool IsAdmin { get; set; } = false;
 
     }
 }

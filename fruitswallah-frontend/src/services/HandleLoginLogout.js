@@ -1,5 +1,7 @@
 import axios from "axios";
-export const HandleLogin = async ( data,navigate) => {
+
+const UserId = localStorage.getItem("UserId");
+export const HandleLogin = async (data, navigate) => {
   const { email, password } = data;
   if (!email || !password) {
     alert("Please fill all fields");
@@ -21,6 +23,7 @@ export const HandleLogin = async ( data,navigate) => {
     });
     localStorage.setItem("isLogin", true);
     localStorage.setItem("UserId", res.data.userId);
+    localStorage.setItem("isAdmin", res.data.isAdmin);
   } else {
     return { success: false, message: "Invalid Creditial" };
   }
@@ -35,4 +38,19 @@ export const HandleLogout = (navigate) => {
       comingFrom: "LogOut",
     },
   });
+};
+
+
+export const HandlePasswordChange = async (data) => {
+  const { Password, newPassword, confirmPassword } = data;
+  if (newPassword != confirmPassword) {
+    alert("Password not matched");
+    return;
+  } else if (newPassword.length < 6) {
+    alert("Password must be 6 digit");
+    return;
+  } else {
+    const res = await axios.put(`https://localhost:7293/api/Login/${UserId},${Password},${newPassword}`);
+    alert(res.data)
+  }
 };

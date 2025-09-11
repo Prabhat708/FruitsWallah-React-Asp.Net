@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { Products as Items } from "../data/Products";
-import { AddToCart, PlusMinusButton } from "../services/CartFeatures";
+import {
+  AddToCart,
+  getCartItems,
+  PlusMinusButton,
+} from "../services/CartFeatures";
 
 import { useParams } from "react-router-dom";
+import { GetProducts } from "../services/ProductController";
+import { FaShoppingBag } from "react-icons/fa";
 
 const Product = () => {
   const { id } = useParams();
   const [showPopup, setShowPopup] = useState(false);
-
-  const [cart, setCart] = useState(() => {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  });
+  const [products, setProducts] = useState([]);
+  const [CartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-  const item = Items.find((itm) => itm.id === parseInt(id));
-
+    getCartItems(setCartItems);
+  }, []);
+  useEffect(() => {
+    GetProducts(setProducts);
+  }, []);
+  
+  
+  const item = products.find(it => it?.productId == id);
+  const cartItem = CartItems.find((ci) => ci.productId === item.productId);
+  const quantity = cartItem?.productQuantity || 0;
+ 
   return (
     <>
       <Navbar />
@@ -40,10 +50,10 @@ const Product = () => {
               className="card-title bg-warning text-white rounded p-2 d-block fw-medium "
               style={{ width: "50%", height: "fit-content" }}
             >
-              <center> {item.catagory}</center>
+              <center> {item?.productCatagory}</center>
               <center>
                 <img
-                  src={item.image}
+                  src={"https://localhost:7293" + item?.productImg}
                   className="img-fluid rounded-start"
                   width={500}
                   height={500}
@@ -54,43 +64,53 @@ const Product = () => {
           </div>
           <div className="col-md-6">
             <div className="card-body">
-              <h4 className="card-title">{item.name}</h4>
-              <h6 className="card-text">{item.discription}</h6>
+              <h4 className="card-title">{item?.productName}</h4>
+              <h6 className="card-text">{item?.productDescription}</h6>
               <h5 className="card-text text-danger mt-3">
-                &#8377; {item.price}/Kg
+                &#8377; {item?.productPrice}/Kg
               </h5>
-              {(cart || []).some((cartItem) => cartItem.id === item.id) ? (
+              {quantity > 0 ? (
                 <div className="d-flex align-items-center">
                   <button
-                    className=" rounded text-success border-0 fw-bold"
-                    onClick={() => {
-                      PlusMinusButton(item.id, "decrement", setCart);
-                    }}
+                    className="rounded text-success border-0 fw-bold"
+                    disabled={quantity === 1}
+                    onClick={() =>
+                      PlusMinusButton(
+                        cartItem?.cartId,
+                        "decrement",
+                        cartItem?.productQuantity,
+                        setCartItems
+                      )
+                    }
                   >
                     -
                   </button>
-                  <span className="mx-2 fw-bold text-success">
-                    {
-                      (cart || []).find((cartItem) => cartItem.id === item.id)
-                        .quantity
-                    }
-                  </span>
+                  <span className="mx-2 fw-bold text-success">{quantity}</span>
                   <button
-                    className=" rounded text-success border-0 fw-bold"
-                    onClick={() => {
-                      PlusMinusButton(item.id, "increment", setCart);
-                    }}
+                    className="rounded text-success border-0 fw-bold"
+                    onClick={() =>
+                      PlusMinusButton(
+                        cartItem?.cartId,
+                        "increment",
+                        cartItem?.productQuantity,
+                        setCartItems
+                      )
+                    }
                   >
                     +
                   </button>
                 </div>
               ) : (
                 <button
-                  onClick={() => AddToCart(item.id, setShowPopup)}
-                  className="btn btn-success text-white rounded-pill mt-3"
+                  type="submit"
+                 className="btn btn-success text-white rounded-pill mt-3"
+                  onClick={() =>
+                    AddToCart(item.productId, setCartItems, setShowPopup)
+                  }
                 >
-                  {" "}
-                  Add to Cart
+                    {" "}
+                    Add to Cart
+                 
                 </button>
               )}
 
