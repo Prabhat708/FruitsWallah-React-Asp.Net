@@ -1,7 +1,8 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
-const OrderCard = ({ order, borderColor, getStatusIcon, getStatusText }) => {
-  console.log(order)
+const OrderCard = ({ order, borderColor, getStatusIcon }) => {
+  const navigation = useNavigate();
   return (
     <>
       <div
@@ -13,12 +14,17 @@ const OrderCard = ({ order, borderColor, getStatusIcon, getStatusText }) => {
             <div className="d-flex align-items-center gap-2">
               {getStatusIcon(order?.orderStatus)}
               <span className="fw-medium text-dark">
-                {getStatusText(order?.orderStatus)}
+                {order.orderStatus.at(-1).toUpperCase()}
               </span>
             </div>
-            {(order?.orderStatus.at(-1) === "dispatched" ||
-              order?.orderStatus.at(-1) === "expected") && (
-              <button className="btn btn-success btn-sm">Track order</button>
+            {(order?.orderStatus.at(-1).toLowerCase() === "dispatched" ||
+              order?.orderStatus.at(-1).toLowerCase() === "en route") && (
+              <button
+                className="btn btn-success btn-sm"
+                onClick={() => navigation(`/order/${order.orderId}`)}
+              >
+                Track order
+              </button>
             )}
           </div>
 
@@ -54,7 +60,10 @@ const OrderCard = ({ order, borderColor, getStatusIcon, getStatusText }) => {
               </div>
 
               <div className="d-flex flex-column gap-2">
-                <button className="btn btn-outline-primary btn-sm">
+                <button
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() => navigation(`/order/${order.orderId}`)}
+                >
                   View details
                 </button>
               </div>

@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Package, User, Lock, CreditCard, MapPin, LogOut } from "lucide-react";
 import SidePannel from "../components/SidePannel";
+import { GetPaymentId, PostPaymentId } from "../services/PaymentController";
+const UserId = localStorage.getItem("UserId");
 
 const SavedPaymentPage = () => {
+  const [paymentId, setPaymentId] = useState('');
+  const [data, setData] = useState({
+    UserId: UserId,
+    UPI:""
+  });
+  const [isActive,setIsActive]= useState(false)
+  useEffect(() => {
+    GetPaymentId(setPaymentId);
+  }, []);
+
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+  
+  const handleEditButton = async () => {
+  setIsActive(!isActive)
+}
   const sidebarItems = [
     { icon: Package, label: "View orders", href: "/orders" },
     {
@@ -47,16 +66,25 @@ const SavedPaymentPage = () => {
             <div className="profile">
               <div className="nameSection">
                 <span className="fw-medium name">Saved UPI</span>
-                <span className="editButton">Edit</span>
+                <span className="editButton" onClick={handleEditButton}>
+                  Edit
+                </span>
               </div>
-              <form>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                PostPaymentId(data, setPaymentId);
+                data 
+              }}>
                 <input
                   type="text"
                   className="ms-5 mt-2 p-3"
-                  style={{ width: "80%" }}
-                  value="7084312912@apl"
-                  disabled
+                  style={{ width: "40%" }}
+                  name="UPI"
+                  value={!isActive ? paymentId : data.UPI}
+                  onChange={handleChange}
+                  disabled={!isActive}
                 />
+                <button type="submit" className="btn btn-primary ms-2" disabled={!isActive}>Submit</button>
               </form>
               <div className="nameSection mt-5">
                 <span className="fw-medium name">FAQs</span>
@@ -65,8 +93,8 @@ const SavedPaymentPage = () => {
                 </h6>
                 <p className="ms-5">
                   It's quicker. You can save the hassle of typing in the
-                  complete UPI information every time you shop at fruitsWallah by
-                  saving your UPI details. You can make your payment by
+                  complete UPI information every time you shop at fruitsWallah
+                  by saving your UPI details. You can make your payment by
                   selecting the saved UPI ID of your choice at checkout. While
                   this is obviously faster, it is also very secure.
                 </p>
@@ -82,8 +110,8 @@ const SavedPaymentPage = () => {
                   What all UPI information does fruitsWallah store?
                 </h6>
                 <p className="ms-5">
-                  FruitsWallah only stores UPI ID and payment provider details. We
-                  do not store UPI PIN/MPIN.
+                  FruitsWallah only stores UPI ID and payment provider details.
+                  We do not store UPI PIN/MPIN.
                 </p>
                 <h6 className="ms-5 mt-3">Can I delete my saved UPI?</h6>
                 <p className="ms-5">

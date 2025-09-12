@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import banana from "../assets/best-product-3.jpg";
 import { GetProducts } from "../services/ProductController";
 import { AddProducts, DeleteProduct } from "../services/AdminOperations";
+import UpdateStatus from "../components/UpdateStatus";
+import Footer from "../components/Footer";
 
 const AdminPage = () => {
   const [products, setProducts] = useState([]);
@@ -137,8 +139,11 @@ const AdminPage = () => {
               Add Product
             </button>
           </form>
+        <UpdateStatus/>
         </div>
       </div>
+
+      <Footer/>
     </>
   );
 };

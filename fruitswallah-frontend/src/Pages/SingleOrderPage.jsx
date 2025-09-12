@@ -1,0 +1,73 @@
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import SidePannel from "../components/SidePannel";
+import { CreditCard, Lock, LogOut, MapPin, Package, User } from "lucide-react";
+import OrderTracking from "../components/orderTracking";
+import Footer from "../components/Footer";
+import { useParams } from "react-router-dom";
+import { GetOrders } from "../services/OrdersController";
+
+const SingleOrderPage = () => {
+  const { OrderId } = useParams();
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    GetOrders(setOrders); 
+  }, []);
+
+    
+    const order = orders.find((or) => (or.orderId) == OrderId);
+    
+
+  const sidebarItems = [
+    {
+      icon: Package,
+      label: "View orders",
+      href: "/orders",
+      active: true,
+   
+    },
+    { icon: User, label: "Personal details", href: "/profile" },
+    { icon: Lock, label: "Change password", href: "/changePassword" },
+    { icon: CreditCard, label: "Payment methods", href: "/payment" },
+    { icon: MapPin, label: "Manage addresses", href: "/address" },
+    { icon: LogOut, label: "Log out", href: "/logOut" },
+  ];
+
+  const [activeItem, setActiveItem] = useState("View orders");
+
+  return (
+    <>
+      <Navbar />
+      <div
+        className="d-flex min-vh-100 mt-5 pt-5"
+        style={{ backgroundColor: "#f8f9fa" }}
+      >
+        <SidePannel
+          sidebarItems={sidebarItems}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+        />
+        <div className="flex-grow-1 p-4">
+          <div className="container-fluid" style={{ maxWidth: "1024px" }}>
+            <div className="mb-4">
+              <h1 className="h2 fw-bold text-dark mb-2">Order history</h1>
+            </div>
+            <div className="d-flex flex-column gap-4 fw-medium h5">
+              Order Status
+            </div>
+
+            {order ? (
+              <OrderTracking order={order} />
+            ) : (
+              <div className="text-muted mt-4">Loading order details...</div>
+            )}
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default SingleOrderPage;

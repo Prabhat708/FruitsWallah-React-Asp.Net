@@ -13,7 +13,7 @@ const SidePannel = ({sidebarItems,activeItem,setActiveItem}) => {
           <div className=" row">
             <CircleUserRound height="50px" width="50px"></CircleUserRound>
             <div className="d-flex justify-content-center fw-medium pt-2">
-              Prabhat Verma
+             {localStorage.getItem('user')}
             </div>
           </div>
           <div className="d-flex flex-column gap-1">

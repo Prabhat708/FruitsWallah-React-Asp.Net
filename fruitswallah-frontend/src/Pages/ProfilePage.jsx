@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
   Package,
@@ -6,12 +6,28 @@ import {
   Lock,
   CreditCard,
   MapPin,
-  Users,
   LogOut,
 } from "lucide-react";
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getAddress } from "../services/ManageAddress";
+
+
 const ProfilePage = () => {
+  const [user, setUser] = useState({})
+  const [address,setAddresses]=useState([])
+  const navigate = useNavigate();
+  useEffect(() => {
+    getUser()
+    getAddress(setAddresses)
+  }, []);
+  const getUser = async () => {
+    const UserId = localStorage.getItem("UserId")
+    const res = await axios.get(`https://localhost:7293/api/Users/${UserId}`);
+    setUser(res.data)
+  }
   const sidebarItems = [
     { icon: Package, label: "View orders", href: "/orders" },
     { icon: User, label: "Personal details", href: "/profile", active: true },
@@ -21,6 +37,8 @@ const ProfilePage = () => {
     { icon: LogOut, label: "Log out", href: "/logOut" },
   ];
   const [activeItem, setActiveItem] = useState("Personal details");
+ const add = address.filter((a) => a.isPrimary == true);
+ console.log(add[0]?.city);
   return (
     <>
       <Navbar />
@@ -44,7 +62,6 @@ const ProfilePage = () => {
             <div className="profile">
               <div className="nameSection">
                 <span className="fw-medium name">Profile Name</span>
-                <span className="editButton">Edit</span>
               </div>
               <form>
                 <div className="row pt-2">
@@ -55,61 +72,16 @@ const ProfilePage = () => {
                       name="firstName"
                       required=""
                       disabled
-                      value="Prabhat"
+                      value={user?.name}
                       style={{ height: "50px" }}
                     />
                   </div>
-                  <div className="col-3">
-                    <div>
-                      <input
-                        type="text"
-                        name="lastName"
-                        className="ps-2"
-                        disabled
-                        value="Verma"
-                        style={{ height: "50px" }}
-                      />
-                    </div>
-                  </div>
                 </div>
-                <div className="fw-medium mt-2 ms-4"> Your Gender </div>
-                <div className="row mt-2">
-                  <label htmlFor="Male" className="col-3 d-flex ps-5">
-                    <input
-                      disabled
-                      type="radio"
-                      name="gender"
-                      id="Male"
-                      checked
-                      className="col-3 ps-5"
-                    />
-                    <div>
-                      <span disabled>
-                        Male
-                      </span>
-                    </div>
-                  </label>
-                  <label htmlFor="Female" className="col-3 d-flex">
-                    <input
-                      disabled
-                      type="radio"
-                      name="gender"
-                      id="Female"
-                      className="col-3"
-                    />
-                    <div>
-                      <span disabled >
-                        Female
-                      </span>
-                    </div>
-                  </label>
+
+                <div className="nameSection mt-3">
+                  <span className="fw-medium name">Email</span>
                 </div>
-              </form>
-              <div className="nameSection mt-3">
-                <span className="fw-medium name">Email</span>
-                <span className="editButton">Edit</span>
-              </div>
-              <form>
+
                 <div className="mt-2">
                   <input
                     type="email"
@@ -117,15 +89,14 @@ const ProfilePage = () => {
                     className="ms-5 ps-2"
                     disabled
                     style={{ height: "50px" }}
-                    value="Prabhat@gmail.com"
+                    value={user?.email}
                   />
                 </div>
-              </form>
-              <div className="nameSection mt-3">
-                <span className="fw-medium name">Mobile Number</span>
-                <span className="editButton">Edit</span>
-              </div>
-              <form>
+
+                <div className="nameSection mt-3">
+                  <span className="fw-medium name">Mobile Number</span>
+                </div>
+
                 <div className="mt-2">
                   <input
                     type="number"
@@ -133,13 +104,18 @@ const ProfilePage = () => {
                     className="ms-5 ps-2"
                     disabled
                     style={{ height: "50px" }}
-                    value="7084312912"
+                    value={user?.phoneNumber}
                   />
                 </div>
               </form>
               <div className="nameSection mt-3">
                 <span className="fw-medium name">Primary Address</span>
-                <span className="editButton">Edit</span>
+                <span
+                  className="editButton"
+                  onClick={() => navigate("/address")}
+                >
+                  Edit
+                </span>
               </div>
               <form>
                 <div className="mt-2">
@@ -149,7 +125,7 @@ const ProfilePage = () => {
                     className="ms-5 ps-2"
                     disabled
                     style={{ height: "50px" }}
-                    value="Lucknow"
+                    value={add[0]?.city}
                   />
                 </div>
               </form>
@@ -165,16 +141,16 @@ const ProfilePage = () => {
                   updated email address (or mobile number).
                 </p>
                 <h6 className="ms-5 mt-3">
-                  When will my FruitsWallah account be updated with the new email
-                  address (or mobile number)?
+                  When will my FruitsWallah account be updated with the new
+                  email address (or mobile number)?
                 </h6>
                 <p className="ms-5">
                   It happens as soon as you confirm the verification code sent
                   to your email (or mobile) and save the changes.
                 </p>
                 <h6 className="ms-5 mt-3">
-                  What happens to my existing FruitsWallah account when I update my
-                  email address (or mobile number)?
+                  What happens to my existing FruitsWallah account when I update
+                  my email address (or mobile number)?
                 </h6>
                 <p className="ms-5">
                   Updating your email address (or mobile number) doesn't
@@ -204,7 +180,7 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

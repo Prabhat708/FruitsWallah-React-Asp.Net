@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaMobileAlt } from 'react-icons/fa';
+import { PostOrders } from '../services/OrdersController';
 
 const NetBanking = () => {
   return (
@@ -30,7 +31,9 @@ const NetBanking = () => {
         <div className="form-group">
           <p>
             {" "}
-            <button type="button" className="btn btn-primary mt-2 ms-3" disabled>
+            <button type="button" className="btn btn-primary mt-2 ms-3" disabled onClick={() => {
+                      PostOrders("Net Banking")
+                      }}>
              <FaMobileAlt/> Proceed Payment
             </button>{" "}
           </p>

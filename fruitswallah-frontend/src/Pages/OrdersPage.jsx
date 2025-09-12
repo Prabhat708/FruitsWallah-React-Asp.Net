@@ -13,15 +13,10 @@ import {
   CheckCircle,
   Truck,
 } from "lucide-react";
-import banana from "../assets/best-product-3.jpg";
-import orange from "../assets/best-product-1.jpg";
-import grapes from "../assets/best-product-5.jpg";
-import mango from "../assets/mango.webp";
-import pineapple from "../assets/pineApple.jpg";
-import strawberries from "../assets/feature-2.jpg";
 import SidePannel from "../components/SidePannel";
 import OrderCard from "../components/OrderCard";
 import { GetOrders } from "../services/OrdersController";
+import { RiEBike2Fill } from "react-icons/ri";
 
 const OrdersPage = () => {
  
@@ -39,19 +34,15 @@ const OrdersPage = () => {
     { icon: LogOut, label: "Log out", href: "/logOut" },
   ];
   const getStatusIcon = (orderStatus ) => {
-    if (orderStatus.at(-1) === "dispatched")
+    if (orderStatus.at(-1).toLowerCase() === "dispatched")
       return <Truck className="text-primary" size={20} />;
-    if (orderStatus.at(-1) === "expected")
+    if (orderStatus.at(-1).toLowerCase() === "expected")
       return <Clock className="text-warning" size={20} />;
-    if (orderStatus.at(-1) === "delivered")
+    if (orderStatus.at(-1).toLowerCase() === "delivered")
       return <CheckCircle className="text-success" size={20} />;
-    return null;
-  };
-  const getStatusText = (orderStatus) => {
-    if (orderStatus.at(-1) === "dispatched") return "Dispatched";
-    if (orderStatus.at(-1) === "expected") return "Expected";
-    if (orderStatus.at(-1) === "delivered") return "Delivered";
-    return orderStatus.at(-1).toUpperCase();
+    if(orderStatus.at(-1).toLowerCase()=== "out for delivery")
+      return <RiEBike2Fill className="text-success" size={20} />;
+    return <Truck className="text-primary" size={20} />;
   };
   const [activeItem, setActiveItem] = useState("View orders");
   return (
@@ -71,12 +62,13 @@ const OrdersPage = () => {
             <div className="d-flex flex-column gap-4">
               {orders.map((order) => {
                 let borderColor = "#dee2e6";
-                if (order.orderStatus.at(-1) === "dispatched")
+                if (order.orderStatus.at(-1).toLowerCase() === "dispatched")
                   borderColor = "#0d6efd";
-                if (order.orderStatus.at(-1) === "expected")
+                if (order.orderStatus.at(-1).toLowerCase() === "out for delivery")
                   borderColor = "#fd7e14";
-                if (order.orderStatus.at(-1) === "delivered")
+                if (order.orderStatus.at(-1).toLowerCase() === "delivered")
                   borderColor = "#198754";
+                
 
                 return (
                   <OrderCard
@@ -84,7 +76,6 @@ const OrdersPage = () => {
                     order={order}
                     borderColor={borderColor}
                     getStatusIcon={getStatusIcon}
-                    getStatusText={getStatusText}
                   />
                 );
               })}

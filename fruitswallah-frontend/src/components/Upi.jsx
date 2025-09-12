@@ -1,4 +1,5 @@
 import React from 'react'
+import { PostOrders } from '../services/OrdersController';
 
 const UPI = () => {
   return (
@@ -13,7 +14,9 @@ const UPI = () => {
                       required
                   />
               </div>
-          <button type="button" className="btn btn-primary mt-2 ms-3 "> Proceed
+        <button type="button" className="btn btn-primary mt-2 ms-3 " onClick={() => {
+          PostOrders("UPI")
+          }}> Proceed
           </button>{" "}
         
         <p className="text-muted">

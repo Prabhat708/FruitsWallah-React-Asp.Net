@@ -16,6 +16,7 @@ import Product from "../components/Product";
 import LogoutPage from "../Pages/LogoutPage";
 import CheckoutPage from "../Pages/CheckoutPage";
 import AdminPage from "../Pages/AdminPage";
+import SingleOrderPage from "../Pages/SingleOrderPage";
 
 const AppRoutes = () => {
   return (
@@ -37,6 +38,7 @@ const AppRoutes = () => {
       <Route path="/logOut" element={<LogoutPage />} />
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/FruitsWAllahAdmin" element={<AdminPage />} />
+      <Route path="/order/:OrderId" element={<SingleOrderPage/>}/>
     </Routes>
   );
 }

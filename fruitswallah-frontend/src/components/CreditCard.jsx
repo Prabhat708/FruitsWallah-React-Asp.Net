@@ -1,4 +1,5 @@
 import React from 'react'
+import { PostOrders } from '../services/OrdersController';
 
 const CreditCard = () => {
   return (
@@ -92,7 +93,9 @@ const CreditCard = () => {
               <button
                 type="button"
                 className="subscribe btn btn-primary btn-block shadow-sm"
-              >
+              onClick={() => {
+                        PostOrders("Credit Card")
+                        }}>
                 {" "}
                 Confirm Payment{" "}
               </button>

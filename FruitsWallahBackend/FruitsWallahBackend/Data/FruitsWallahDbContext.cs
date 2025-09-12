@@ -18,6 +18,8 @@ namespace FruitsWallahBackend.Data
         public DbSet<OrderAddress> OrderAddresses { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderTransactions> OrderTransactions { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Reviews> Reviews { get; set; }
        
        
     }

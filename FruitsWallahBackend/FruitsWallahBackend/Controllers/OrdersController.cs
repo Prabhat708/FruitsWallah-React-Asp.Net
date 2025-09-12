@@ -22,6 +22,11 @@ namespace FruitsWallahBackend.Controllers
         {
             _context = context;
         }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
+        {
+            return await _context.Orders.ToListAsync();
+        }
         // GET: api/Orders/5
         [HttpGet("{UserId}")]
         public async Task<ActionResult<Orders>> GetOrders(int UserId)
@@ -41,7 +46,7 @@ namespace FruitsWallahBackend.Controllers
             
             if (orders.Count == 0)
             {
-                return NotFound("No order Found");
+                return Ok("No order Found");
             }
             return Ok(orders);
         }
@@ -80,7 +85,7 @@ namespace FruitsWallahBackend.Controllers
                     var order = new Orders()
                     {
                         UserId = cart.UserId,
-                        IsPaid = orders.IsPaid,
+                        IsPaid = orders.TransactionType=="COD"?false:true,
                     };
                     _context.Add(order);
                     await _context.SaveChangesAsync();
@@ -91,6 +96,7 @@ namespace FruitsWallahBackend.Controllers
                         ProductName =product?.ProductName,
                         ProductPrice=product.ProductPrice,
                         ProductQty=cart.ProductQuantity,
+                        ProductImg=product.ProductImg,
                         ShipingCharge= product.ProductPrice * cart.ProductQuantity >300 ? 0:50,
                         TotalPrice=product.ProductPrice * cart.ProductQuantity >300 ? product.ProductPrice * cart.ProductQuantity : product.ProductPrice * cart.ProductQuantity+50,
                         TransactionType = orders.TransactionType,

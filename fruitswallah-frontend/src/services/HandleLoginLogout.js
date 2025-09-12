@@ -24,6 +24,7 @@ export const HandleLogin = async (data, navigate) => {
     localStorage.setItem("isLogin", true);
     localStorage.setItem("UserId", res.data.userId);
     localStorage.setItem("isAdmin", res.data.isAdmin);
+    localStorage.setItem("user", res.data.name);
   } else {
     return { success: false, message: "Invalid Creditial" };
   }

@@ -4,6 +4,7 @@ using FruitsWallahBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FruitsWallahBackend.Migrations
 {
     [DbContext(typeof(FruitsWallahDbContext))]
-    partial class FruitsWallahDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912111203_AddingSomeNewModel")]
+    partial class AddingSomeNewModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,26 +268,6 @@ namespace FruitsWallahBackend.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("FruitsWallahBackend.Models.PaymentMethod", b =>
-                {
-                    b.Property<int>("PaymentMethodId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PaymentMethodId"));
-
-                    b.Property<string>("UPI")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PaymentMethodId");
-
-                    b.ToTable("PaymentMethods");
-                });
-
             modelBuilder.Entity("FruitsWallahBackend.Models.Products", b =>
                 {
                     b.Property<int>("ProductId")
@@ -321,26 +304,6 @@ namespace FruitsWallahBackend.Migrations
                     b.HasKey("ProductId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("FruitsWallahBackend.Models.Reviews", b =>
-                {
-                    b.Property<int>("ReviewId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ReviewId"));
-
-                    b.Property<string>("Review")
-                        .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReviewId");
-
-                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("FruitsWallahBackend.Models.User", b =>
