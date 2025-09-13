@@ -41,7 +41,7 @@ const Featurs = () => {
                 </div>
                 <div className="featurs-content text-center">
                   <h5>1 Day Return</h5>
-                  <p className="mb-0">1 day money guarantee</p>
+                  <p className="mb-0">1 day money back Guarantee</p>
                 </div>
               </div>
             </div>

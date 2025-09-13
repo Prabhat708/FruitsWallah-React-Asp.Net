@@ -53,14 +53,16 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Orders>> PostOrders(OrderDTO orders)
         {
+            Console.WriteLine(orders.UserID);
 
             if (orders == null)
             {
+                Console.WriteLine("null orders");
                 return BadRequest();
             }
             var carts= await (from c in _context.Carts where c.UserId==orders.UserID select c).ToListAsync();
             var addresss= await _context.Addresses.FirstOrDefaultAsync(t=>t.UserId==orders.UserID && t.IsPrimary);
-            
+            Console.WriteLine("cart count"+carts.Count);
             if (addresss==null)
             {
                 return BadRequest("Address Not Found");
@@ -72,9 +74,11 @@ namespace FruitsWallahBackend.Controllers
             {
                 foreach (var cart in carts)
                 {
+                    Console.WriteLine("product id in cart"+cart.ProductId);
                     var product = await _context.Products.FindAsync(cart.ProductId);
                     if (product == null)
                     {
+                        Console.WriteLine("product is null");
                         return BadRequest("No product Found");
                     }
                     _context.Carts.Remove(cart);

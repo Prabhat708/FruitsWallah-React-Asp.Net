@@ -2,20 +2,18 @@ import { use, useEffect, useState } from "react";
 import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import {Link} from 'react-router-dom';
-import { getCartItems } from "../services/CartFeatures";
+import { useCart } from "./CartContext";
 function Navbar() {
-  var total = 0;
-  const [cartItems, setCartItems] = useState([]);
+  var [total,setTotal]=useState(0)
+  const {cartItems} = useCart();
   useEffect(() => {
+    var total1=0
+    cartItems.map((cartitem) => {
+      total1 = cartitem.productQuantity + total1;
+    });
+    setTotal(total1);
+  }, [cartItems]);
    
-    getCartItems(setCartItems);
-   
-     
-  }, []);
-   cartItems.map((cartitem) => {
-     total = cartitem.productQuantity + total;
-   });
-    
   return (
     <>
       <div className="container-fluid fixed-top mb-5">

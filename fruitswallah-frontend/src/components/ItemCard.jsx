@@ -3,22 +3,17 @@ import { FaShoppingBag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import {
   PlusMinusButton,
-  AddToCart,
-  getCartItems,
+  AddToCart
 } from "../services/CartFeatures";
+import { useCart } from "./CartContext";
 
 const ItemCard = ({ item }) => {
   const navigation = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const [CartItems, setCartItems] = useState([]);
-
-  useEffect(() => {
-   
- getCartItems(setCartItems); 
-  }, []);
-
-  const cartItem = CartItems.find((ci) => ci.productId === item.productId);
+  const { cartItems, setCartItems } = useCart();
+  const cartItem = cartItems?.find((ci) => ci.productId === item.productId);
   const quantity = cartItem?.productQuantity || 0;
+  if (!cartItems) return null;
   return (
     <>
       {showPopup && (

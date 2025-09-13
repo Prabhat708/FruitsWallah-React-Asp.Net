@@ -2,8 +2,10 @@ import React from "react";
 import { FaMobileAlt } from "react-icons/fa";
 import { PostOrders } from "../services/OrdersController";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "./CartContext";
 
 const CashOnDelivery = ({ setShowPopup }) => {
+  const { setCartItems } = useCart();
   const navigate = useNavigate();
   return (
     <div id="net-banking" className="tab-pane fade show active pt-3">
@@ -19,7 +21,7 @@ const CashOnDelivery = ({ setShowPopup }) => {
             type="button"
             className="btn btn-primary mt-2 ms-3"
             onClick={() => {
-              PostOrders("COD", setShowPopup, navigate);
+              PostOrders("COD", setShowPopup, navigate, setCartItems);
             }}
           >
             <FaMobileAlt /> Proceed Payment

@@ -5,21 +5,20 @@ import cartImg from "../assets/Cart.svg";
 import { Link, useNavigate } from "react-router-dom";
 import CartRow from "../components/CartRow";
 import { RemoveFromCart,getCartItems } from "../services/CartFeatures";
+import { useCart } from "../components/CartContext";
 
 
 const CartPage = () => {
- const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
+    const { cartItems, setCartItems } = useCart();
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
     const isLogin = localStorage.getItem("isLogin");
     if (isLogin === "false") {
       navigate("/login");
     }
-    getCartItems(setCartItems)
   }, []);
   let sum = 0;
-  
   return (
     <>
       
@@ -62,6 +61,8 @@ const CartPage = () => {
                             setCartItems
                           )
                         }
+
+
                       />
                     );
                   })}

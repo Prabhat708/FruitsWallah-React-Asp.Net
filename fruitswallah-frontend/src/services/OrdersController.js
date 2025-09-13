@@ -1,4 +1,5 @@
 import axios from "axios"
+import { getCartItems } from "./CartFeatures";
 
 const UserId=localStorage.getItem('UserId')
 export const GetOrders = async (setOrders) => {
@@ -6,7 +7,8 @@ export const GetOrders = async (setOrders) => {
     setOrders(res.data)
 }
 
-export const PostOrders = async (PaymentMethod,setShowPopup,navigate) => {
+export const PostOrders = async (PaymentMethod, setShowPopup, navigate,setCartItems) => {
+
     console.log(UserId, PaymentMethod);
     const OrderData = {
         UserID: UserId,
@@ -14,6 +16,7 @@ export const PostOrders = async (PaymentMethod,setShowPopup,navigate) => {
     }
     const res = await axios.post("https://localhost:7293/api/Orders", OrderData);
     setShowPopup(true);
+    getCartItems(setCartItems)
     setTimeout(() => {
       setShowPopup(false);
     }, 2000);

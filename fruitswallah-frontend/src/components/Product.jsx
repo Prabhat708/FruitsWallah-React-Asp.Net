@@ -3,30 +3,25 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import {
   AddToCart,
-  getCartItems,
   PlusMinusButton,
 } from "../services/CartFeatures";
 
 import { useParams } from "react-router-dom";
 import { GetProducts } from "../services/ProductController";
-import { FaShoppingBag } from "react-icons/fa";
+import { useCart } from "./CartContext";
 
 const Product = () => {
   const { id } = useParams();
   const [showPopup, setShowPopup] = useState(false);
   const [products, setProducts] = useState([]);
-  const [CartItems, setCartItems] = useState([]);
-
-  useEffect(() => {
-    getCartItems(setCartItems);
-  }, []);
+  const { cartItems, setCartItems } = useCart();
   useEffect(() => {
     GetProducts(setProducts);
   }, []);
   
   
   const item = products.find(it => it?.productId == id);
-  const cartItem = CartItems.find((ci) => ci.productId === item.productId);
+  const cartItem = cartItems.find((ci) => ci.productId === item.productId);
   const quantity = cartItem?.productQuantity || 0;
  
   return (

@@ -3,8 +3,8 @@ import { getCartItems } from '../services/CartFeatures';
 
 const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
-const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+export const CartProvider = ({ children }) => {
+    const [cartItems, setCartItems ] = useState([]);
 
   useEffect(() => {
     getCartItems(setCartItems);
@@ -18,4 +18,4 @@ const CartProvider = ({ children }) => {
     );
 };
 
-export default CartProvider;
+

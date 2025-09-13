@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+
 import Navbar from "../components/Navbar";
 import {
   FaCreditCard,
@@ -10,14 +10,12 @@ import UPI from "../components/Upi";
 import NetBanking from "../components/NetBanking";
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import CashOnDelivery from "../components/CashOnDelivery";
-import { getCartItems } from "../services/CartFeatures";
+import { useCart } from "../components/CartContext";
 
 const CheckoutPage = () => {
-  const navigate = useNavigate();
    const [showPopup, setShowPopup] = useState(false);
-    const [cartItems, setCartItems] = useState([]);
+  const { cartItems } = useCart();
     let sum = 0;
     const [selectedPayment, setSelectedPayment] = useState('UPI');
     const [activeTab, setActiveTab] = useState('UPI');
@@ -34,10 +32,7 @@ const CheckoutPage = () => {
         }
         setSelectedPayment(method);
   };
-  
-  useEffect(() => {
-    getCartItems(setCartItems)
-  },[]);
+
 
   return (
     <>
@@ -45,9 +40,9 @@ const CheckoutPage = () => {
       <div className="container py-5 mt-5">
         {showPopup && (
           <div className="alert alert-success " style={{ marginTop: "100px" }}>
-           Thank You! You Ordered Successfully. Now you can Track Your Order From Orders Page.
+            Thank You! You Ordered Successfully. Now you can Track Your Order
+            From Orders Page.
           </div>
-        
         )}
         <div className="row mb-4">
           <div className="col-lg-8 mx-auto text-center">
@@ -177,7 +172,10 @@ const CheckoutPage = () => {
                   {selectedPayment === "CreditCard" && <CreditCard />}
                   {selectedPayment === "NetBanking" && <NetBanking />}
                   {selectedPayment === "CashOnDelivery" && (
-                    <CashOnDelivery setShowPopup={setShowPopup} />
+                    <CashOnDelivery
+                      setShowPopup={setShowPopup}
+                    
+                    />
                   )}
                 </div>{" "}
               </div>
