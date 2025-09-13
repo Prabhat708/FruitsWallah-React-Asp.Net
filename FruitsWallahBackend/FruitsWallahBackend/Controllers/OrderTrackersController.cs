@@ -24,13 +24,18 @@ namespace FruitsWallahBackend.Controllers
         [HttpPut("{OrderId},{NewStatus}")]
         public async Task<IActionResult> PutOrderTracker(int OrderId, String NewStatus)
         {
+            
             var OrderTracker = await _context.OrderTrackers.FirstOrDefaultAsync(t => t.OrderId==OrderId);
             if (OrderTracker == null)
             {
                 return NotFound();
             }
             OrderTracker?.OrderStatus?.Add(NewStatus);
-           
+            if (NewStatus =="Delivered")
+            {
+               
+               OrderTracker.DeliveredOn=DateTime.Now;
+            }
             try
             {
                 await _context.SaveChangesAsync();

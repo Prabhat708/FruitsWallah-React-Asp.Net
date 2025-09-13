@@ -25,7 +25,9 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reviews>>> GetReviews()
         {
-            return await _context.Reviews.ToListAsync();
+            var reviews= await (from r in _context.Reviews join u in _context.Users on r.UserId equals u.UserId select new {r.ReviewId,u.Name,r.Review}).ToListAsync();
+            Console.WriteLine(reviews);
+            return Ok(reviews);
         }
 
         // GET: api/Reviews/5

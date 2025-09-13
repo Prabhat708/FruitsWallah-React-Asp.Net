@@ -79,10 +79,15 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<PaymentMethod>> PostPaymentMethod(PaymentMethod paymentMethod)
         {
+            var PaymentMethod= await _context.PaymentMethods.FirstOrDefaultAsync(m=>m.UserId== paymentMethod.UserId);
+            if (PaymentMethod != null)
+            {
+                _context.PaymentMethods.Remove(PaymentMethod);
+            }
             _context.PaymentMethods.Add(paymentMethod);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPaymentMethod", new { id = paymentMethod.PaymentMethodId }, paymentMethod);
+            return Ok("");
         }
 
         // DELETE: api/PaymentMethods/5
