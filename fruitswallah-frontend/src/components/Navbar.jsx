@@ -2,15 +2,20 @@ import { use, useEffect, useState } from "react";
 import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import {Link} from 'react-router-dom';
+import { getCartItems } from "../services/CartFeatures";
 function Navbar() {
-  const [numberOfItemsInCart, setNumberOfItemsInCart] = useState(0);
+  var total = 0;
+  const [cartItems, setCartItems] = useState([]);
   useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let numberOfItemsInCart1 = cart.reduce((total, item) => total + item.quantity, 0);
-    setNumberOfItemsInCart(numberOfItemsInCart1);
+   
+    getCartItems(setCartItems);
+   
+     
   }, []);
-
- 
+   cartItems.map((cartitem) => {
+     total = cartitem.productQuantity + total;
+   });
+    
   return (
     <>
       <div className="container-fluid fixed-top mb-5">
@@ -71,7 +76,7 @@ function Navbar() {
                 </div>
 
                 <Link to="/cart/" className="m-2">
-                <span className="position-absolute  rounded-circle d-flex align-items-center justify-content-center text-success fw-medium px-1 " style={{top:"20%",right:"3.5%"}}>{ numberOfItemsInCart}</span>
+                <span className="position-absolute  rounded-circle d-flex align-items-center justify-content-center text-success fw-medium px-1 " style={{top:"20%",right:"3.5%"}}>{ total}</span>
                   <FaShoppingCart
                     size={30}
                     className="text-success pb-1"

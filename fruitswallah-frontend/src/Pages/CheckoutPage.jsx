@@ -15,7 +15,8 @@ import CashOnDelivery from "../components/CashOnDelivery";
 import { getCartItems } from "../services/CartFeatures";
 
 const CheckoutPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+   const [showPopup, setShowPopup] = useState(false);
     const [cartItems, setCartItems] = useState([]);
     let sum = 0;
     const [selectedPayment, setSelectedPayment] = useState('UPI');
@@ -42,6 +43,12 @@ const CheckoutPage = () => {
     <>
       <Navbar />
       <div className="container py-5 mt-5">
+        {showPopup && (
+          <div className="alert alert-success " style={{ marginTop: "100px" }}>
+           Thank You! You Ordered Successfully. Now you can Track Your Order From Orders Page.
+          </div>
+        
+        )}
         <div className="row mb-4">
           <div className="col-lg-8 mx-auto text-center">
             <h1 className="">Complete Payment</h1>
@@ -169,7 +176,9 @@ const CheckoutPage = () => {
                   {selectedPayment === "UPI" && <UPI />}
                   {selectedPayment === "CreditCard" && <CreditCard />}
                   {selectedPayment === "NetBanking" && <NetBanking />}
-                  {selectedPayment === "CashOnDelivery" && <CashOnDelivery/>}
+                  {selectedPayment === "CashOnDelivery" && (
+                    <CashOnDelivery setShowPopup={setShowPopup} />
+                  )}
                 </div>{" "}
               </div>
             </div>

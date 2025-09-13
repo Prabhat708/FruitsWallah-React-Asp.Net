@@ -38,7 +38,7 @@ const ProfilePage = () => {
   ];
   const [activeItem, setActiveItem] = useState("Personal details");
  const add = address.filter((a) => a.isPrimary == true);
- console.log(add[0]?.city);
+
   return (
     <>
       <Navbar />

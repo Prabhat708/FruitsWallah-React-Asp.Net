@@ -18,7 +18,7 @@ const OrderCard = ({ order, borderColor, getStatusIcon }) => {
               </span>
             </div>
             {(order?.orderStatus.at(-1).toLowerCase() === "dispatched" ||
-              order?.orderStatus.at(-1).toLowerCase() === "en route") && (
+              order?.orderStatus.at(-1).toLowerCase() === "en route" || order?.orderStatus.at(-1).toLowerCase() === "placed") && (
               <button
                 className="btn btn-success btn-sm"
                 onClick={() => navigation(`/order/${order.orderId}`)}

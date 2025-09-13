@@ -8,6 +8,7 @@ const UserId = localStorage.getItem("UserId");
 
 const SavedPaymentPage = () => {
   const [paymentId, setPaymentId] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
   const [data, setData] = useState({
     UserId: UserId,
     UPI:""
@@ -49,6 +50,9 @@ const SavedPaymentPage = () => {
   return (
     <>
       <Navbar />
+      {showPopup && (
+        <div className="alert alert-success " style={{marginTop:"100px"}}>Payment Method Saved Successfully!</div>
+      )}
       <div
         className="d-flex min-vh-100 mt-5 pt-5"
         style={{ backgroundColor: "#f8f9fa" }}
@@ -70,11 +74,13 @@ const SavedPaymentPage = () => {
                   Edit
                 </span>
               </div>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                PostPaymentId(data, setPaymentId);
-                data 
-              }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  PostPaymentId(data, setPaymentId, setShowPopup);
+                  setIsActive(!isActive);
+                }}
+              >
                 <input
                   type="text"
                   className="ms-5 mt-2 p-3"
@@ -84,7 +90,13 @@ const SavedPaymentPage = () => {
                   onChange={handleChange}
                   disabled={!isActive}
                 />
-                <button type="submit" className="btn btn-primary ms-2" disabled={!isActive}>Submit</button>
+                <button
+                  type="submit"
+                  className="btn btn-primary ms-2"
+                  disabled={!isActive}
+                >
+                  Submit
+                </button>
               </form>
               <div className="nameSection mt-5">
                 <span className="fw-medium name">FAQs</span>

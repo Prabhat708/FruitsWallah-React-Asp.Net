@@ -48,27 +48,41 @@ const OrdersPage = () => {
   return (
     <>
       <Navbar />
-      
-      <div className="d-flex min-vh-100 mt-5 pt-5" style={{ backgroundColor: "#f8f9fa" }}>
-        <SidePannel sidebarItems={sidebarItems} activeItem={activeItem } setActiveItem={setActiveItem}/>
+
+      <div
+        className="d-flex min-vh-100 mt-5 pt-5"
+        style={{ backgroundColor: "#f8f9fa" }}
+      >
+        <SidePannel
+          sidebarItems={sidebarItems}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+        />
 
         <div className="flex-grow-1 p-4">
           <div className="container-fluid" style={{ maxWidth: "1024px" }}>
             <div className="mb-4">
-              <h1 className="h2 fw-bold text-dark mb-2">Order history</h1>
-              <p className="text-muted">{orders.length} orders</p>
+              {orders.length == 0 ? (
+                <h1 className="h2 fw-bold text-dark mb-2">No Orders Found</h1>
+              ) : (
+                <>
+                  <h1 className="h2 fw-bold text-dark mb-2">Order history</h1>
+                  <p className="text-muted">{orders.length} orders</p>
+                </>
+              )}
             </div>
-
+           
             <div className="d-flex flex-column gap-4">
-              {orders.map((order) => {
+              {orders.reverse()?.map((order) => {
                 let borderColor = "#dee2e6";
                 if (order.orderStatus.at(-1).toLowerCase() === "dispatched")
                   borderColor = "#0d6efd";
-                if (order.orderStatus.at(-1).toLowerCase() === "out for delivery")
+                if (
+                  order.orderStatus.at(-1).toLowerCase() === "out for delivery"
+                )
                   borderColor = "#fd7e14";
                 if (order.orderStatus.at(-1).toLowerCase() === "delivered")
                   borderColor = "#198754";
-                
 
                 return (
                   <OrderCard
@@ -78,8 +92,11 @@ const OrdersPage = () => {
                     getStatusIcon={getStatusIcon}
                   />
                 );
+              
               })}
+              
             </div>
+
           </div>
         </div>
       </div>

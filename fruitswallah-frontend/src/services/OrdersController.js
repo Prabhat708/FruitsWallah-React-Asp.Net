@@ -6,9 +6,21 @@ export const GetOrders = async (setOrders) => {
     setOrders(res.data)
 }
 
-export const PostOrders = async (PaymentMethod) => {
-    console.log(UserId,PaymentMethod)
-    
+export const PostOrders = async (PaymentMethod,setShowPopup,navigate) => {
+    console.log(UserId, PaymentMethod);
+    const OrderData = {
+        UserID: UserId,
+        TransactionType: PaymentMethod
+    }
+    const res = await axios.post("https://localhost:7293/api/Orders", OrderData);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    setTimeout(() => {
+        navigate('/home');
+    }, 2100);
+    return;
 }
 
 export const GetAllOrders = async (setOrders) => {
@@ -17,6 +29,5 @@ export const GetAllOrders = async (setOrders) => {
 };
 
 export const UpdatesStatus = async (orderId,status) => {
-    console.log(orderId, status)
     const res = await axios.put(`https://localhost:7293/api/OrderTrackers/${orderId},${status}`);
 }
