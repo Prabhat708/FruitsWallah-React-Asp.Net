@@ -30,7 +30,7 @@ namespace FruitsWallahBackend.Controllers
             var user = await (from u in _context.Users where u.Email == Email select u).FirstOrDefaultAsync();
             if (user == null)
             {
-                return NotFound("No User Found");
+                return Ok("No User Found");
             }
             var UserAuth = await (from UA in _context.UsersAuth where UA.UserID== user.UserId select new {UA.HashPassword}).FirstOrDefaultAsync();
             if (MatchPassword(Password, HashedPassword: UserAuth.HashPassword))
@@ -46,7 +46,7 @@ namespace FruitsWallahBackend.Controllers
             }
             else
             {
-                return BadRequest("Wrong Password");
+                return Ok("Wrong Password");
             }
         }
 

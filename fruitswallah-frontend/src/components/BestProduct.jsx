@@ -31,6 +31,7 @@ const BestProduct = ({ product }) => {
               <button onClick={() =>{ navigation(`/product/${product.id}`);}}
                 id="bp1"
                 className="btn cart cart border border-secondary rounded-pill px-3 text-success"
+                disabled
               >
                 Know More
               </button>

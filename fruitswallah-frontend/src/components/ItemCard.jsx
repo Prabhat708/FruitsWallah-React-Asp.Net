@@ -18,7 +18,7 @@ const ItemCard = ({ item }) => {
     <>
       {showPopup && (
         <div className="alert alert-success">
-          ✅ Item added successfully in Your Cart!
+          ✅ Item added successfully!
         </div>
       )}
       <div className="rounded position-relative fruite-item">
@@ -67,6 +67,7 @@ const ItemCard = ({ item }) => {
                 <span className="mx-2 fw-bold text-success">{quantity}</span>
                 <button
                   className="rounded text-success border-0 fw-bold"
+                  disabled={quantity == item.productStock}
                   onClick={() =>
                     PlusMinusButton(
                       cartItem?.cartId,
@@ -79,7 +80,7 @@ const ItemCard = ({ item }) => {
                   +
                 </button>
               </div>
-            ) : (
+            ) : ( item.productStock ==0? <p className="text-danger">Out of stock</p>:
               <button
                 type="submit"
                 className="btn cart border border-secondary rounded-pill px-3 text-success"

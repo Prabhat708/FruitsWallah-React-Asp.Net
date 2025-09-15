@@ -9,11 +9,18 @@ import Banner from "../components/Banner";
 import BestSellerProduct from "../components/BestSellerProduct";
 import Testimonial from "../components/Testimonial";
 import Footer from "../components/Footer";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Messeage from "../components/Messeage";
+import { GetProducts } from "../services/ProductController";
 
 const HomePage = () => {
+  const [activeSearch, setActiveSearch] = useState(false);
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    GetProducts(setProducts);
+    setActiveSearch(false);
+  }, []);
   const location =useLocation();
   const [message, setMessage] = useState(location.state?.message || ""); 
   const username = location.state?.Username || "";
@@ -29,13 +36,21 @@ const HomePage = () => {
   }, [message]);
   return (
     <>
-      <Navbar />
-      {message && <Messeage message={message} username={username} comingFrom={comingFrom} />}
-      <Hero />
-      <Featurs />
-      <Fruits_shop />
+      <Navbar setProducts={setProducts} setActiveSearch={setActiveSearch} />
+      {message && (
+        <Messeage
+          message={message}
+          username={username}
+          comingFrom={comingFrom}
+        />
+      )}
+      {!activeSearch && (
+        <Hero setProducts={setProducts} setActiveSearch={setActiveSearch} />
+      )}
+      {!activeSearch && <Featurs />}
+      <Fruits_shop products={products} />
       <Other_Features />
-      <Vegetables />
+      <Vegetables products={products} />
       <Banner />
       <BestSellerProduct />
       <Testimonial />

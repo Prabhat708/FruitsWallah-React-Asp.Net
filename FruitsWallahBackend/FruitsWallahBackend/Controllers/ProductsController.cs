@@ -77,8 +77,7 @@ namespace FruitsWallahBackend.Controllers
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<Products>> PostProducts([FromForm] ProductDTO products)
         {
-            Console.WriteLine("inside Product");
-            Console.WriteLine(products.ProductImg);
+           
             string? ImagePath = null;
             if (products.ProductImg != null && products.ProductImg.Length > 0)
             {

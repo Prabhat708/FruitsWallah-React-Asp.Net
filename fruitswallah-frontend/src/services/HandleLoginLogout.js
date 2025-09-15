@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const UserId = localStorage.getItem("UserId");
-export const HandleLogin = async (data, navigate) => {
+export const HandleLogin = async (data, navigate, setShowPopup) => {
   const { email, password } = data;
   if (!email || !password) {
     alert("Please fill all fields");
@@ -13,7 +13,8 @@ export const HandleLogin = async (data, navigate) => {
   const res = await axios.get(
     `https://localhost:7293/api/Login/${email}/${password}`
   );
-  if (res.data) {
+
+  if (res.data.name) {
     navigate("/home", {
       state: {
         message: "Keep shoping from FruitsWallah",
@@ -26,6 +27,10 @@ export const HandleLogin = async (data, navigate) => {
     localStorage.setItem("isAdmin", res.data.isAdmin);
     localStorage.setItem("user", res.data.name);
   } else {
+    setShowPopup(true);
+        setTimeout(() => {
+          setShowPopup(false);
+        }, 2000);
     return { success: false, message: "Invalid Creditial" };
   }
 };

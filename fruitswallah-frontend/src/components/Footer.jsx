@@ -96,10 +96,10 @@ const Footer = () => {
                 <Link className="btn-link" to="/t&c">
                   Terms & Condition
                 </Link>
-                <Link className="btn-link" to="returnPolicy">
+                <Link className="btn-link" to="/returnPolicy">
                   Return Policy
                 </Link>
-                <Link className="btn-link" to="faqs">
+                <Link className="btn-link" to="/faqs">
                   FAQs & Help
                 </Link>
               </div>
@@ -119,11 +119,11 @@ const Footer = () => {
                 <Link className="btn-link" to="/orders">
                   Order History
                 </Link>
-                {isAdmin ==='true'&&
+                {isAdmin === "true" && (
                   <Link className="btn-link" to="/FruitsWAllahAdmin">
                     Admin Pannel
                   </Link>
-                }
+                )}
               </div>
             </div>
             <div className="col-lg-3 col-md-6">
@@ -156,9 +156,10 @@ const Footer = () => {
       </div>
 
       <Link
-        to={""}
+        to=""
         id="back-to-top"
         className="btn btn-success border-3 border-success rounded-circle back-to-top"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
         <FaRegArrowAltCircleUp className="fa fa-arrow-up"></FaRegArrowAltCircleUp>
       </Link>

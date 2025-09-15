@@ -21,7 +21,7 @@ const Product = () => {
   
   
   const item = products.find(it => it?.productId == id);
-  const cartItem = cartItems.find((ci) => ci.productId === item.productId);
+  const cartItem = cartItems.find((ci) => ci?.productId === item?.productId);
   const quantity = cartItem?.productQuantity || 0;
  
   return (
@@ -83,6 +83,7 @@ const Product = () => {
                   <span className="mx-2 fw-bold text-success">{quantity}</span>
                   <button
                     className="rounded text-success border-0 fw-bold"
+                    disabled={quantity == item?.productStock}
                     onClick={() =>
                       PlusMinusButton(
                         cartItem?.cartId,
@@ -95,17 +96,18 @@ const Product = () => {
                     +
                   </button>
                 </div>
+              ) : item?.productStock == 0 ? (
+                <p className="text-danger fw-medium">Out of stock</p>
               ) : (
                 <button
                   type="submit"
-                 className="btn btn-success text-white rounded-pill mt-3"
+                  className="btn btn-success text-white rounded-pill mt-3"
                   onClick={() =>
-                    AddToCart(item.productId, setCartItems, setShowPopup)
+                    AddToCart(item?.productId, setCartItems, setShowPopup)
                   }
                 >
-                    {" "}
-                    Add to Cart
-                 
+                  {" "}
+                  Add to Cart
                 </button>
               )}
 

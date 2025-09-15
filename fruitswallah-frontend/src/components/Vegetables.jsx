@@ -1,14 +1,9 @@
-import { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { GetProducts } from "../services/ProductController";
 
-const Vegetables = () => {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    GetProducts(setProducts)
-  },[]);
+const Vegetables = ({products}) => {
+  
   const Vegetables = products.filter(
     (item) =>
       (item.productCatagory === "Vegetable" ||
@@ -54,8 +49,8 @@ const Vegetables = () => {
           containerClass="carousel-container"
           removeArrowOnDeviceType={["tablet", "mobile"]}
           itemClass="px-2"
-        >
-          {Vegetables.map((veg) => (
+        > 
+          {Vegetables?.map((veg) => (
             <ItemCard key={veg.productId} item={veg} />
           ))}
         </Carousel>

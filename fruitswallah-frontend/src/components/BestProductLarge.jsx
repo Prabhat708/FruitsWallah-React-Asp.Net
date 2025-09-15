@@ -24,7 +24,7 @@ const BestProductLarge = ({ product }) => {
             <button onClick={() =>{ navigation(`/product/${product.id}`);}}
               id="bp7"
               className="btn cart border border-secondary rounded-pill px-3 text-success"
-            >
+            disabled>
               Know More
             </button>
           </div>

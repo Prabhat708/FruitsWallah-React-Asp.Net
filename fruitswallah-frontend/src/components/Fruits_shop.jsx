@@ -1,14 +1,9 @@
 import { FaShoppingBag } from "react-icons/fa";
 import ItemCard from "./ItemCard";
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { GetProducts } from "../services/ProductController";
 
-const Fruits_shop = () => {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    GetProducts(setProducts)
-  }, []);
+const Fruits_shop = ({products}) => {
+  
   return (
     <>
       <div className="container-fluid fruite">
@@ -36,15 +31,20 @@ const Fruits_shop = () => {
               <div id="tab-1" className="tab-pane fade show p-0 active">
                 <div className="col-lg-12">
                   <div className="row g-4">
-                    {products?.map((fruit) => (fruit.isActive &&
-                      <div
-                        key={fruit.productId}
-                        className="col-md-6 col-lg-4 col-xl-3"
-                        id="v"
-                      >
-                        <ItemCard item={fruit} />
-                      </div>
-                    ))}
+                    {products.length == 0 ? (
+                      <h1 className="text-center mt-5 pt-5">
+                        Sorry ! No Items found..
+                      </h1>) :
+                      (products?.map((fruit) => (fruit.isActive &&
+                        <div
+                          key={fruit.productId}
+                          className="col-md-6 col-lg-4 col-xl-3"
+                          id="v"
+                        >
+                          <ItemCard item={fruit} />
+                        </div>
+                      )))
+                    }
                   </div>
                 </div>
               </div>

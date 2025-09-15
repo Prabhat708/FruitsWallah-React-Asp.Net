@@ -3,23 +3,26 @@ import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import {Link} from 'react-router-dom';
 import { useCart } from "./CartContext";
-function Navbar() {
-  var [total,setTotal]=useState(0)
-  const {cartItems} = useCart();
+import { GetSearchedProducts } from "../services/SearchController";
+function Navbar({ setProducts, setActiveSearch }) {
+  var [total, setTotal] = useState(0);
+
+  const [search, setSearch] = useState("");
+  const { cartItems } = useCart();
   useEffect(() => {
-    var total1=0
+    var total1 = 0;
     cartItems.map((cartitem) => {
       total1 = cartitem.productQuantity + total1;
     });
     setTotal(total1);
   }, [cartItems]);
-   
+
   return (
     <>
       <div className="container-fluid fixed-top mb-5">
         <div className="container px-0">
           <nav className="navbar navbar-light bg-white navbar-expand-xl">
-            <Link to="/home" className="navbar-brand">
+            <Link to="/" className="navbar-brand">
               <h1 className="text-success display-6" id="logo">
                 <strong>FruitsWallah</strong>
               </h1>
@@ -52,13 +55,21 @@ function Navbar() {
               </div>
               <div className="d-flex m-3 me-0">
                 <div className="position-relative mx-auto d-inline-block w-75">
-                  <form method="get" action="/search" className="w-100">
+                  <form
+                    className="w-100"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      GetSearchedProducts(search, setProducts);
+                      setActiveSearch(true);
+                    }}
+                  >
                     <input
                       className="form-control border-2 top-50 border-success rounded-pill "
                       type="search"
                       name="search"
                       id="search"
-                     
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search"
                     />
                     <button
@@ -74,13 +85,16 @@ function Navbar() {
                 </div>
 
                 <Link to="/cart/" className="m-2">
-                <span className="position-absolute  rounded-circle d-flex align-items-center justify-content-center text-success fw-medium px-1 " style={{top:"20%",right:"3.5%"}}>{ total}</span>
+                  <span
+                    className="position-absolute  rounded-circle d-flex align-items-center justify-content-center text-success fw-medium px-1 "
+                    style={{ top: "20%", right: "3.5%" }}
+                  >
+                    {total}
+                  </span>
                   <FaShoppingCart
                     size={30}
                     className="text-success pb-1"
-                  >
-                  </FaShoppingCart>
-                     
+                  ></FaShoppingCart>
                 </Link>
                 <Link to="/login/" className="m-2">
                   <FaRegUserCircle className="text-success pb-1" size={30} />

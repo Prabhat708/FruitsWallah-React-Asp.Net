@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 import featuredImg1 from "../assets/feature-1.jpg";
 import featuredImg2 from "../assets/feature-2.jpg";
 import featuredImg3 from "../assets/feature-3.jpg";
@@ -9,12 +9,14 @@ import { FaSearch, FaStar } from "react-icons/fa";
 import ItemCard from "../components/ItemCard";
 import { GetProducts } from "../services/ProductController";
 import { useEffect, useState } from "react";
+import { GetSearchedProducts } from "../services/SearchController";
 
 const ProductsPage = () => {
- const [products, setProducts] = useState([]);
-   useEffect(() => {
-     GetProducts(setProducts)
-   }, []);
+  const [search, setSearch] = useState("");
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    GetProducts(setProducts);
+  }, []);
   return (
     <>
       <Navbar />
@@ -40,10 +42,19 @@ const ProductsPage = () => {
                     <input
                       type="search"
                       className="form-control p-3"
-                      placeholder="keywords"
+                      placeholder="search"
                       aria-describedby="search-icon-1"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
                     />
-                    <span id="search-icon-1" className="input-group-text p-3">
+                    <span
+                      id="search-icon-1"
+                      className="input-group-text p-3"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        GetSearchedProducts(search, setProducts);
+                      }}
+                    >
                       <FaSearch className="text-secondary" />
                     </span>
                   </div>
@@ -231,15 +242,23 @@ const ProductsPage = () => {
                     <div id="tab-1" className="tab-pane fade show p-0 active">
                       <div className="col-lg-12">
                         <div className="row g-3">
-                          {products.map((item) => ( item.isActive &&
-                            <div
-                              key={item.productId}
-                              className="col-lg-4 col-md-6"
-                            
-                            >
-                              <ItemCard item={item} />
-                            </div>
-                          ))}
+                          {products.length == 0 ? (
+                            <h1 className="text-center mt-5 pt-5">
+                              Sorry ! No Items found..
+                            </h1>
+                          ) : (
+                            products.map(
+                              (item) =>
+                                item.isActive && (
+                                  <div
+                                    key={item.productId}
+                                    className="col-lg-4 col-md-6"
+                                  >
+                                    <ItemCard item={item} />
+                                  </div>
+                                )
+                            )
+                          )}
                         </div>
                       </div>
                     </div>

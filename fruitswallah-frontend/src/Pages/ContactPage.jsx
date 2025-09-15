@@ -86,7 +86,7 @@ const ContactPage = () => {
               <div className="row my-2">
                 <div className="col-md-6">
                   <div className="md-form mb-0">
-                    id="phone"
+                    
                     <label htmlFor="phone" className="">
                       Mobile Number
                     </label>

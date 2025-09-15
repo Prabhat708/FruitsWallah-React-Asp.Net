@@ -6,6 +6,7 @@ import { HandleLogin } from "../services/HandleLoginLogout";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -30,6 +31,11 @@ const LoginPage = () => {
     <>
       <Navbar />
       <div className="container mt-5">
+        {showPopup && (
+          <div className="alert alert-danger" style={{marginTop:"100px"}}>
+            Invalid Credintials 
+          </div>
+        )}
         <div className="row justify-content-center">
           <div className="col-md-6">
             <h1 className="text-center mb-4 mt-5">
@@ -43,7 +49,8 @@ const LoginPage = () => {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                await HandleLogin(data, navigate);
+                await HandleLogin(data, navigate,setShowPopup);
+              
               }}
             >
               <div className="mb-3">

@@ -74,7 +74,7 @@ namespace FruitsWallahBackend.Controllers
             {
                 foreach (var cart in carts)
                 {
-                    Console.WriteLine("product id in cart"+cart.ProductId);
+                    Console.WriteLine("product id in cart : "+cart.ProductId);
                     var product = await _context.Products.FindAsync(cart.ProductId);
                     if (product == null)
                     {
@@ -86,7 +86,7 @@ namespace FruitsWallahBackend.Controllers
                     var order = new Orders()
                     {
                         UserId = cart.UserId,
-                        IsPaid = orders.TransactionType=="COD"?false:true,
+                        IsPaid = orders.TransactionType != "COD",
                     };
                     _context.Add(order);
                     await _context.SaveChangesAsync();
