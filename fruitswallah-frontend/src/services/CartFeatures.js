@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const UserId = localStorage.getItem('UserId') || 0;
-
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 export const getCartItems = async (setCartItems) => {
-  const res = await axios.get(`https://localhost:7293/api/Carts/${UserId}`);
+  const res = await axios.get(`${BASE_URL}/api/Carts/${UserId}`);
   if (res.data) {
     setCartItems(res.data);
   }
@@ -15,7 +15,7 @@ export const AddToCart = async (itemId, setCartItems, setShowPopup) => {
     productId: itemId,
     productQuantity: 1
   };
-  const res = await axios.post(`https://localhost:7293/api/Carts/`, AddCart);
+  const res = await axios.post(`${BASE_URL}/api/Carts/`, AddCart);
  
     getCartItems(setCartItems);
     setShowPopup(true);
@@ -30,7 +30,7 @@ export const RemoveFromCart = async(
   setShowPopup,
     setCartItems
 ) => {
-  const res = await axios.delete(`https://localhost:7293/api/Carts/${cartId}`);
+  const res = await axios.delete(`${BASE_URL}/api/Carts/${cartId}`);
   if (res.status == 200) {
     await getCartItems(setCartItems);
     setShowPopup(true);
@@ -48,7 +48,7 @@ export const PlusMinusButton = async (cartId, action, quantity, setCartItems) =>
     quantity -= 1;
   }
   const res = await axios.put(
-    `https://localhost:7293/api/Carts/${cartId},${quantity}`
+    `${BASE_URL}/api/Carts/${cartId},${quantity}`
   );
  await getCartItems(setCartItems);
 };

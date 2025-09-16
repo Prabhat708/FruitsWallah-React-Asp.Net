@@ -1,8 +1,9 @@
 import axios from "axios";
 const UserId = localStorage.getItem("UserId");
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export const getAddress = async (setAddresses) => {
-  const res = await axios.get(`https://localhost:7293/api/Addresses/${UserId}`);
+  const res = await axios.get(`${BASE_URL}/api/Addresses/${UserId}`);
   if (res.data) {
     setAddresses(res.data);
   }
@@ -19,7 +20,7 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
     alert("Phone Number must be 10 Digit");
     return;
   }
-  const res = await axios.post("https://localhost:7293/api/Addresses", data);
+  const res = await axios.post(`${BASE_URL}/api/Addresses`, data);
   await getAddress(setAddresses);
   setShowPopup(true);
   setTimeout(() => {
@@ -30,7 +31,7 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
 
 export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => {
   const res = await axios.delete(
-    `https://localhost:7293/api/Addresses/${AddId}`
+    `${BASE_URL}/api/Addresses/${AddId}`
   );
   setShowPopup(true);
   setTimeout(() => {
@@ -43,7 +44,7 @@ export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => 
 export const makePrimary = async (address, setAddresses) => {
   address.isPrimary = true;
   const res = await axios.put(
-    `https://localhost:7293/api/Addresses/${address.addId}`,
+    `${BASE_URL}/api/Addresses/${address.addId}`,
     address
   );
   await getAddress(setAddresses);

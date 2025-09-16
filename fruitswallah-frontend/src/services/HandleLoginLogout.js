@@ -1,5 +1,5 @@
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const UserId = localStorage.getItem("UserId");
 export const HandleLogin = async (data, navigate, setShowPopup) => {
   const { email, password } = data;
@@ -11,7 +11,7 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
     return;
   }
   const res = await axios.get(
-    `https://localhost:7293/api/Login/${email}/${password}`
+    `${BASE_URL}/api/Login/${email}/${password}`
   );
 
   if (res.data.name) {
@@ -56,7 +56,7 @@ export const HandlePasswordChange = async (data) => {
     alert("Password must be 6 digit");
     return;
   } else {
-    const res = await axios.put(`https://localhost:7293/api/Login/${UserId},${Password},${newPassword}`);
+    const res = await axios.put(`${BASE_URL}/api/Login/${UserId},${Password},${newPassword}`);
     alert(res.data)
   }
 };

@@ -8,6 +8,7 @@ import {
 import { useCart } from "./CartContext";
 
 const ItemCard = ({ item }) => {
+ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const navigation = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const { cartItems, setCartItems } = useCart();
@@ -25,7 +26,7 @@ const ItemCard = ({ item }) => {
         <div className="fruite-img">
           <img
             id={item.productId}
-            src={"https://localhost:7293" + item.productImg}
+            src={BASE_URL + item.productImg}
             className="product img-fluid w-100 rounded-top"
             alt={item.productName}
           />

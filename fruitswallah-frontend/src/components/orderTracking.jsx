@@ -11,7 +11,7 @@ import { RiEBike2Fill } from "react-icons/ri";
 // Sample Component: expects `order` prop
 const OrderTracking = ({order}) => {
  
-
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   if (!order) return <div>Loading...</div>;
 
   const currentStep = order.orderStatus.length;
@@ -173,7 +173,7 @@ const OrderTracking = ({order}) => {
           <div className="row">
             <div className="col-4">
               <img
-                src={"https://localhost:7293/" + order.productImg}
+                src={BASE_URL+ order.productImg}
                 alt={order.productName}
                 className="img-fluid"
                 width={200}

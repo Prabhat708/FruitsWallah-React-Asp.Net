@@ -7,6 +7,7 @@ import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
 
 const AdminPage = () => {
+  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [products, setProducts] = useState([]);
     
   useEffect(() => {
@@ -57,7 +58,7 @@ const AdminPage = () => {
                   <td>
                     <img
                       src={
-                        "https://localhost:7293" +
+                        BASE_URL +
                         product.productImg
                       }
                       alt={product.productName}

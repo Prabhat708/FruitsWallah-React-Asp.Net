@@ -11,6 +11,7 @@ import { GetProducts } from "../services/ProductController";
 import { useCart } from "./CartContext";
 
 const Product = () => {
+  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const { id } = useParams();
   const [showPopup, setShowPopup] = useState(false);
   const [products, setProducts] = useState([]);
@@ -48,7 +49,7 @@ const Product = () => {
               <center> {item?.productCatagory}</center>
               <center>
                 <img
-                  src={"https://localhost:7293" + item?.productImg}
+                  src={BASE_URL + item?.productImg}
                   className="img-fluid rounded-start"
                   width={500}
                   height={500}

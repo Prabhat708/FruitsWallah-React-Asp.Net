@@ -1,15 +1,18 @@
 import React from 'react'
 import { PostOrders } from '../services/OrdersController';
+import { useCart } from './CartContext';
+import { useNavigate } from 'react-router-dom';
 
-const CreditCard = () => {
+const CreditCard = ({ setShowPopup, Amount }) => {
+    const { setCartItems } = useCart();
+    const navigate = useNavigate();
   return (
     <>
-      
-        <div id="credit-card" className="tab-pane fade show active pt-3">
-          <form role="form">
-            <div className="form-group">
+      <div id="credit-card" className="tab-pane fade show active pt-3">
+        <form role="form">
+          {/* <div className="form-group">
               {" "}
-              <label htmlFor="username">
+            <label htmlFor="username">
                 <h6>Card Owner</h6>
               </label>{" "}
               <input
@@ -87,24 +90,24 @@ const CreditCard = () => {
                   <input type="text" required className="form-control" />{" "}
                 </div>
               </div>
-            </div>
-            <div className="card-footer">
-              {" "}
-              <button
-                type="button"
-                className="subscribe btn btn-primary btn-block shadow-sm"
+            </div> */}
+          <div className="card-footer">
+            {" "}
+            <button
+              type="button"
+              className="subscribe btn btn-primary btn-block shadow-sm"
               onClick={() => {
-                        PostOrders("Credit Card")
-                        }}>
-                {" "}
-                Confirm Payment{" "}
-              </button>
-            </div>
-          </form>
-        </div>
-     
+                PostOrders("Credit Card",setShowPopup, navigate, setCartItems, Amount>=300?Amount:Amount+50);
+              }}
+            >
+              {" "}
+              Confirm Payment{" "}
+            </button>
+          </div>
+        </form>
+      </div>
     </>
   );
-}
+};
 
 export default CreditCard

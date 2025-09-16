@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const OrderCard = ({ order, borderColor, getStatusIcon }) => {
+  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const navigation = useNavigate();
   return (
     <>
@@ -42,7 +43,7 @@ const OrderCard = ({ order, borderColor, getStatusIcon }) => {
               <div className="d-flex align-items-center gap-3">
                 <div className="position-relative">
                   <img
-                    src={"https://localhost:7293" + order.productImg}
+                    src={BASE_URL + order.productImg}
                     alt={order.productName}
                     className="rounded border"
                     style={{

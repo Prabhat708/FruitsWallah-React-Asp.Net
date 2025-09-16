@@ -1,12 +1,13 @@
 import { MdDelete } from "react-icons/md";
 import { PlusMinusButton } from "../services/CartFeatures";
 const CartRow = ({ item, onDelete, setCartItems }) => {
+  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   return (
     <>
       <tr>
         <td>
           <img
-            src={"https://localhost:7293" + item?.productImg}
+            src={BASE_URL + item?.productImg}
             alt="No Img"
             style={{ width: "50px" }}
           />

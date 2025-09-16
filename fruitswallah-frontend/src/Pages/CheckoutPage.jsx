@@ -8,8 +8,7 @@ import {
 import CreditCard from "../components/CreditCard";
 import UPI from "../components/Upi";
 import NetBanking from "../components/NetBanking";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CashOnDelivery from "../components/CashOnDelivery";
 import { useCart } from "../components/CartContext";
 
@@ -33,7 +32,12 @@ const CheckoutPage = () => {
         setSelectedPayment(method);
   };
 
-
+useEffect(() => {
+  const script = document.createElement("script");
+  script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  script.async = true;
+  document.body.appendChild(script);
+}, []);
   return (
     <>
       <Navbar />
@@ -168,14 +172,15 @@ const CheckoutPage = () => {
                   </ul>
                 </div>
                 <div className="tab-content">
-                  {selectedPayment === "UPI" && <UPI />}
-                  {selectedPayment === "CreditCard" && <CreditCard />}
+                  {selectedPayment === "UPI" && (
+                    <UPI setShowPopup={setShowPopup} Amount={sum} />
+                  )}
+                  {selectedPayment === "CreditCard" && (
+                    <CreditCard setShowPopup={setShowPopup} Amount={sum} />
+                  )}
                   {selectedPayment === "NetBanking" && <NetBanking />}
                   {selectedPayment === "CashOnDelivery" && (
-                    <CashOnDelivery
-                      setShowPopup={setShowPopup}
-                    
-                    />
+                    <CashOnDelivery setShowPopup={setShowPopup} Amount={sum} />
                   )}
                 </div>{" "}
               </div>

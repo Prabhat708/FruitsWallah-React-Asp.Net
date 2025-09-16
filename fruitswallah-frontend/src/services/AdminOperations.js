@@ -1,8 +1,7 @@
 import axios from "axios";
 import { GetProducts } from "./ProductController";
-
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 export const AddProducts = async (NewProduct,setProducts) => {
-    console.log(NewProduct);
     const formData = new FormData();
     formData.append("ProductCatagory", NewProduct.ProductCatagory);
     formData.append("ProductName", NewProduct.ProductName);
@@ -11,7 +10,7 @@ export const AddProducts = async (NewProduct,setProducts) => {
     formData.append("ProductImg", NewProduct.ProductImg); // Make sure this is the actual File object, not just a string!
     formData.append("ProductStock", NewProduct.ProductStock);
 
-    axios.post("https://localhost:7293/api/Products", formData, {
+  axios.post(`${BASE_URL}/api/Products`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -22,7 +21,7 @@ export const AddProducts = async (NewProduct,setProducts) => {
 
 
 export const DeleteProduct = async (productId, setProducts) => {
-    const res = await axios.delete(`https://localhost:7293/api/Products/${productId}`);
+    const res = await axios.delete(`${BASE_URL}/api/Products/${productId}`);
     GetProducts(setProducts)
 }
 

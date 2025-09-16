@@ -9,6 +9,7 @@ namespace FruitsWallahBackend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int OrderId { get; set; }
         public int UserId { get; set; }
+        public string TransactionOrderID { get; set; }
         public DateTime OrderDate { get; set; }= DateTime.Now;
         public bool IsPaid { get; set; }
     }

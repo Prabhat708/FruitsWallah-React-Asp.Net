@@ -1,5 +1,6 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export const handleSignUp = async (data, navigate, setData) => {
   const { Username, Email, PhoneNumber, Password, cpassword } = data;
@@ -13,7 +14,7 @@ export const handleSignUp = async (data, navigate, setData) => {
     alert("Passwords do not match");
     return;
   } else {
-    const res = await axios.post("https://localhost:7293/api/Users", data);
+    const res = await axios.post(`${BASE_URL}/api/Users`, data);
     if (res.data.userId) {
       setData({
         Username: "",

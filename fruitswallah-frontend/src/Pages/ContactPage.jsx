@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import contactImg from "../assets/Contact-us-pana.svg";
-import {Link} from 'react-router-dom';
 
 const ContactPage = () => {
   const [contactData, setContactData] = useState({
