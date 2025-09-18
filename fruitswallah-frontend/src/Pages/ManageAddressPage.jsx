@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Package, User, Lock, CreditCard, MapPin, LogOut } from "lucide-react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SidePannel from "../components/SidePannel";
 import {
@@ -10,6 +9,7 @@ import {
   handleDeleteAddress,
   makePrimary,
 } from "../services/ManageAddress";
+import { sidebarItems } from "../data/Sidebar";
 
 const ManageAddressPage = () => {
   const [res,setRes]=useState({})
@@ -42,22 +42,7 @@ const ManageAddressPage = () => {
   const handleAddressForm = () => {
     sethideForm(!hideForm);
   };
-  const sidebarItems = [
-    { icon: Package, label: "View orders", href: "/orders" },
-    {
-      icon: User,
-      label: "Personal details",
-      href: "/profile",
-    },
-    {
-      icon: Lock,
-      label: "Change password",
-      href: "/changePassword",
-    },
-    { icon: CreditCard, label: "Payment methods", href: "/payment" },
-    { icon: MapPin, label: "Manage addresses", href: "/address", active: true },
-    { icon: LogOut, label: "Log out", href: "/logOut" },
-  ];
+  
   const [activeItem, setActiveItem] = useState("Manage addresses");
 
   const [Addresses, setAddresses] = useState(null);

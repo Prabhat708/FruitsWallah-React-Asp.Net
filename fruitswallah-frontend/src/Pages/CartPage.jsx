@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CartRow from "../components/CartRow";
 import { RemoveFromCart,getCartItems } from "../services/CartFeatures";
 import { useCart } from "../components/CartContext";
+import ErrorMessage from "../components/ErrorMessage";
 
 
 const CartPage = () => {
@@ -21,7 +22,6 @@ const CartPage = () => {
   let sum = 0;
   return (
     <>
-      
       <Navbar />
 
       {cartItems.length === 0 ? (
@@ -30,9 +30,7 @@ const CartPage = () => {
         <div className="container-fluid mt-5 pt-2">
           <div className="container py-5">
             {showPopup && (
-              <div className="alert alert-danger">
-                Item removed successfully!
-              </div>
+              <ErrorMessage message={"Item removed successfully!"} />
             )}
             <div className="table-responsive">
               <table className="table " id="CartItem">
@@ -61,8 +59,6 @@ const CartPage = () => {
                             setCartItems
                           )
                         }
-
-
                       />
                     );
                   })}

@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import {
-  Package,
-  User,
-  Lock,
-  CreditCard,
-  MapPin,
-  LogOut,
-} from "lucide-react";
+import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
@@ -28,14 +21,6 @@ const ProfilePage = () => {
     const res = await axios.get(`https://localhost:7293/api/Users/${UserId}`);
     setUser(res.data)
   }
-  const sidebarItems = [
-    { icon: Package, label: "View orders", href: "/orders" },
-    { icon: User, label: "Personal details", href: "/profile", active: true },
-    { icon: Lock, label: "Change password", href: "/changePassword" },
-    { icon: CreditCard, label: "Payment methods", href: "/payment" },
-    { icon: MapPin, label: "Manage addresses", href: "/address" },
-    { icon: LogOut, label: "Log out", href: "/logOut" },
-  ];
   const [activeItem, setActiveItem] = useState("Personal details");
  const add = address.filter((a) => a.isPrimary == true);
 
@@ -72,7 +57,7 @@ const ProfilePage = () => {
                       name="firstName"
                       required=""
                       disabled
-                      value={user?.name}
+                      value={user?.name || ""}
                       style={{ height: "50px" }}
                     />
                   </div>
@@ -89,7 +74,7 @@ const ProfilePage = () => {
                     className="ms-5 ps-2"
                     disabled
                     style={{ height: "50px" }}
-                    value={user?.email}
+                    value={user?.email || ""}
                   />
                 </div>
 
@@ -104,7 +89,7 @@ const ProfilePage = () => {
                     className="ms-5 ps-2"
                     disabled
                     style={{ height: "50px" }}
-                    value={user?.phoneNumber}
+                    value={user?.phoneNumber || ""}
                   />
                 </div>
               </form>
@@ -125,7 +110,7 @@ const ProfilePage = () => {
                     className="ms-5 ps-2"
                     disabled
                     style={{ height: "50px" }}
-                    value={add[0]?.city}
+                    value={add[0]?.city || ""}
                   />
                 </div>
               </form>

@@ -14,21 +14,18 @@ namespace FruitsWallahBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrdersController(FruitsWallahDbContext context) : ControllerBase
     {
-        private readonly FruitsWallahDbContext _context;
+        private readonly FruitsWallahDbContext _context = context;
 
         private readonly string _key = "rzp_test_RHpcBqvwhimDgq";
         private readonly string _secret_key = "bIHBCdbU24bVMn5q5W9RlYkL";
 
-        public OrdersController(FruitsWallahDbContext context)
-        {
-            _context = context;
-        }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            var orders = await (from o in _context.Orders join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId select new {o.OrderId, ot.OrderStatus }).ToListAsync();
+            return Ok(orders);
         }
         // GET: api/Orders/5
         [HttpGet("{UserId}")]
@@ -38,16 +35,15 @@ namespace FruitsWallahBackend.Controllers
                                 join OI in _context.OrderItems on o.OrderId equals OI.OrderId  
                                 join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId 
                                 join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId 
-                                join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID 
-                                 select new {
+                                join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
+                                orderby o.OrderDate descending
+                                select new {
                                   o.OrderId,o.OrderDate,o.IsPaid,
                                   OI.ProductName, OI.ProductPrice, OI.ProductQty, OI.ShipingCharge, OI.TotalPrice, OI.TransactionType,OI.ProductImg,
                                   OTrans.TransactionId,OTrans.TransactionStatus,OTrans.TransactionTime,
                                   ot.OrderStatus,ot.DeliveredOn,
                                   oa.UserName,oa.AddressType,oa.HouseNo,oa.Locality,oa.Address,oa.City, oa.State,oa.PostalCode,oa.LandMark,oa.PhoneNumber 
                                 }).ToListAsync();
-            
-            
             return Ok(orders);
         }
 
@@ -65,7 +61,7 @@ namespace FruitsWallahBackend.Controllers
             }
             var carts= await (from c in _context.Carts where c.UserId==orders.UserID select c).ToListAsync();
             var addresss= await _context.Addresses.FirstOrDefaultAsync(t=>t.UserId==orders.UserID && t.IsPrimary);
-            Console.WriteLine("cart count"+carts.Count);
+
             if (addresss==null)
             {
                 return BadRequest("Address Not Found");

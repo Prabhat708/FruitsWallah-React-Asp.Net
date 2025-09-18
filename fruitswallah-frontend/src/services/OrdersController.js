@@ -63,10 +63,14 @@ export const GetAllOrders = async (setOrders) => {
     setOrders(res.data);
 };
 
-export const UpdatesStatus = async (orderId,status) => {
+export const UpdatesStatus = async (orderId,status,setShowPopup) => {
     const res = await axios.put(
       `${BASE_URL}/api/OrderTrackers/${orderId},${status}`
-    );
+  );
+  setShowPopup(true);
+  setTimeout(() => {
+    setShowPopup(false);
+  }, 2000);
 }
 
 const getPayment = async (paymentDeatils, PaymentMethod) => {

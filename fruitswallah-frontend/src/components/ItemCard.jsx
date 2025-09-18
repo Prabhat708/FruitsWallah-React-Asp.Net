@@ -6,6 +6,7 @@ import {
   AddToCart
 } from "../services/CartFeatures";
 import { useCart } from "./CartContext";
+import SuccessMessage from "./SuccessMessage";
 
 const ItemCard = ({ item }) => {
  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -17,11 +18,7 @@ const ItemCard = ({ item }) => {
   if (!cartItems) return null;
   return (
     <>
-      {showPopup && (
-        <div className="alert alert-success">
-          ✅ Item added successfully!
-        </div>
-      )}
+      {showPopup && <SuccessMessage message={" ✅ Item added successfully!"} />}
       <div className="rounded position-relative fruite-item">
         <div className="fruite-img">
           <img
@@ -81,7 +78,9 @@ const ItemCard = ({ item }) => {
                   +
                 </button>
               </div>
-            ) : ( item.productStock ==0? <p className="text-danger">Out of stock</p>:
+            ) : item.productStock == 0 ? (
+              <p className="text-danger">Out of stock</p>
+            ) : (
               <button
                 type="submit"
                 className="btn cart border border-secondary rounded-pill px-3 text-success"

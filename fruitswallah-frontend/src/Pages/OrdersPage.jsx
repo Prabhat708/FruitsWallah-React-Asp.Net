@@ -17,14 +17,26 @@ import SidePannel from "../components/SidePannel";
 import OrderCard from "../components/OrderCard";
 import { GetOrders } from "../services/OrdersController";
 import { RiEBike2Fill } from "react-icons/ri";
+import Pagination from "../components/Pagination";
 
 const OrdersPage = () => {
  
   const [orders, setOrders] = useState([]);
-
   useEffect(() => {
     GetOrders(setOrders)
   }, []);
+
+const [currentPage, setCurrentPage] = useState(1);
+const [postPerPage, setPostPerPage] = useState(4);
+
+const lastPost = currentPage * postPerPage;
+const firstPost = lastPost - postPerPage;
+const currentPost = orders.slice(firstPost, lastPost);
+var pages = [];
+for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
+  pages.push(i);
+}
+
   const sidebarItems = [
     { icon: Package, label: "View orders", href: "/orders", active: true ,count:orders.length},
     { icon: User, label: "Personal details", href: "/profile" },
@@ -71,9 +83,9 @@ const OrdersPage = () => {
                 </>
               )}
             </div>
-           
+
             <div className="d-flex flex-column gap-4">
-              {orders.reverse()?.map((order) => {
+              {currentPost?.map((order) => {
                 let borderColor = "#dee2e6";
                 if (order.orderStatus.at(-1).toLowerCase() === "dispatched")
                   borderColor = "#0d6efd";
@@ -92,11 +104,13 @@ const OrdersPage = () => {
                     getStatusIcon={getStatusIcon}
                   />
                 );
-              
               })}
-              
+              <Pagination
+                pages={pages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
             </div>
-
           </div>
         </div>
       </div>

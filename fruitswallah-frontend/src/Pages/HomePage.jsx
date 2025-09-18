@@ -17,6 +17,8 @@ import { GetProducts } from "../services/ProductController";
 const HomePage = () => {
   const [activeSearch, setActiveSearch] = useState(false);
   const [products, setProducts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postPerPage, setPostPerPage] = useState(8);
   useEffect(() => {
     GetProducts(setProducts);
     setActiveSearch(false);
@@ -34,6 +36,11 @@ const HomePage = () => {
       return () => clearTimeout(timer);
     }
   }, [message]);
+
+  const lastPost  = currentPage * postPerPage;
+  const firstPost = lastPost - postPerPage;
+  const currentPost= products.slice(firstPost,lastPost)
+
   return (
     <>
       <Navbar setProducts={setProducts} setActiveSearch={setActiveSearch} />
@@ -48,7 +55,13 @@ const HomePage = () => {
         <Hero setProducts={setProducts} setActiveSearch={setActiveSearch} />
       )}
       {!activeSearch && <Featurs />}
-      <Fruits_shop products={products} />
+      <Fruits_shop
+        products={currentPost}
+        postPerPage={postPerPage}
+        allProducts={products.length}
+        setCurrentPage={setCurrentPage}
+        currentPage={currentPage}
+      />
       <Other_Features />
       <Vegetables products={products} />
       <Banner />

@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import {
-  Package,
-  User,
-  Lock,
-  CreditCard,
-  MapPin,
-  LogOut,
-} from "lucide-react";
+
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { HandlePasswordChange } from "../services/HandleLoginLogout";
-
+import { sidebarItems } from "../data/Sidebar";
 
 const ChangePasswordPage = () => {
   const [data, setData] = useState({
@@ -23,23 +16,7 @@ const ChangePasswordPage = () => {
     const handleChange = (e) => {
       setData({ ...data, [e.target.name]: e.target.value });
     };
-  const sidebarItems = [
-    { icon: Package, label: "View orders", href: "/orders" },
-    {
-      icon: User,
-      label: "Personal details",
-      href: "/profile",
-    },
-    {
-      icon: Lock,
-      label: "Change password",
-      href: "/changePassword",
-      active: true,
-    },
-    { icon: CreditCard, label: "Payment methods", href: "/payment" },
-    { icon: MapPin, label: "Manage addresses", href: "/address" },
-    { icon: LogOut, label: "Log out", href: "/logOut" },
-  ];
+  
   const [activeItem, setActiveItem] = useState("Change password");
   return (
     <>

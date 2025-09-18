@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Package, User, Lock, CreditCard, MapPin, LogOut } from "lucide-react";
+import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
 import { GetPaymentId, PostPaymentId } from "../services/PaymentController";
 const UserId = localStorage.getItem("UserId");
@@ -25,27 +25,7 @@ const SavedPaymentPage = () => {
   const handleEditButton = async () => {
   setIsActive(!isActive)
 }
-  const sidebarItems = [
-    { icon: Package, label: "View orders", href: "/orders" },
-    {
-      icon: User,
-      label: "Personal details",
-      href: "/profile",
-    },
-    {
-      icon: Lock,
-      label: "Change password",
-      href: "/changePassword",
-    },
-    {
-      icon: CreditCard,
-      label: "Payment methods",
-      href: "/payment",
-      active: true,
-    },
-    { icon: MapPin, label: "Manage addresses", href: "/address" },
-    { icon: LogOut, label: "Log out", href: "/logOut" },
-  ];
+  
   const [activeItem, setActiveItem] = useState("Payment methods");
   return (
     <>

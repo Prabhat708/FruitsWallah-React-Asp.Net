@@ -4,6 +4,7 @@ import review from "../assets/review.png";
 import CustomerReview from "./CustomerReview";
 import Carousel from "react-multi-carousel";
 import { GetReviews, PostReview } from "../services/ReviewController";
+import SuccessMessage from "./SuccessMessage";
 const Testimonial = () => {
    const [showPopup, setShowPopup] = useState(false);
   const [data, setData] = useState({
@@ -71,12 +72,10 @@ const Testimonial = () => {
 
         <div className="container py-5">
           {showPopup && (
-            <div
-              className="alert alert-success "
+            <SuccessMessage
               style={{ marginTop: "100px" }}
-            >
-              Thank You for Sharing Your thats about me.
-            </div>
+              message={"Thank You for Sharing Your Thoughts about me."}
+            />
           )}
           <div className="row g-4 align-items-center">
             <div className="col-lg-6 col-md-6">

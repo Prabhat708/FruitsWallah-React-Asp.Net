@@ -10,8 +10,8 @@ const OrderCard = ({ order, borderColor, getStatusIcon }) => {
         className="card border-0 shadow-sm"
         style={{ borderLeft: `4px solid ${borderColor}` }}
       >
-        <div className="card-body p-4">
-          <div className="d-flex align-items-start justify-content-between mb-3">
+        <div className="card-body pt-4">
+          <div className="d-flex align-items-start justify-content-between ">
             <div className="d-flex align-items-center gap-2">
               {getStatusIcon(order?.orderStatus)}
               <span className="fw-medium text-dark">
@@ -19,7 +19,8 @@ const OrderCard = ({ order, borderColor, getStatusIcon }) => {
               </span>
             </div>
             {(order?.orderStatus.at(-1).toLowerCase() === "dispatched" ||
-              order?.orderStatus.at(-1).toLowerCase() === "en route" || order?.orderStatus.at(-1).toLowerCase() === "placed") && (
+              order?.orderStatus.at(-1).toLowerCase() === "en route" ||
+              order?.orderStatus.at(-1).toLowerCase() === "placed") && (
               <button
                 className="btn btn-success btn-sm"
                 onClick={() => navigation(`/order/${order.orderId}`)}
@@ -29,9 +30,9 @@ const OrderCard = ({ order, borderColor, getStatusIcon }) => {
             )}
           </div>
 
-          {order?.deliveredOn && (
+          {order?.orderDate && (
             <p className="text-muted small mb-3">
-              {order?.deliveredOn.split("T")[0]}
+              Ordered On : {order?.orderDate.split("T")[0]}
             </p>
           )}
 

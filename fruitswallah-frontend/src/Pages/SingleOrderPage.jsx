@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import SidePannel from "../components/SidePannel";
-import { CreditCard, Lock, LogOut, MapPin, Package, User } from "lucide-react";
+import { sidebarItems } from "../data/Sidebar";
 import OrderTracking from "../components/orderTracking";
 import Footer from "../components/Footer";
 import { useParams } from "react-router-dom";
@@ -14,26 +14,7 @@ const SingleOrderPage = () => {
   useEffect(() => {
     GetOrders(setOrders); 
   }, []);
-
-    
-    const order = orders.find((or) => (or.orderId) == OrderId);
-    
-
-  const sidebarItems = [
-    {
-      icon: Package,
-      label: "View orders",
-      href: "/orders",
-      active: true,
-   
-    },
-    { icon: User, label: "Personal details", href: "/profile" },
-    { icon: Lock, label: "Change password", href: "/changePassword" },
-    { icon: CreditCard, label: "Payment methods", href: "/payment" },
-    { icon: MapPin, label: "Manage addresses", href: "/address" },
-    { icon: LogOut, label: "Log out", href: "/logOut" },
-  ];
-
+  const order = orders.find((or) => (or.orderId) == OrderId);
   const [activeItem, setActiveItem] = useState("View orders");
 
   return (

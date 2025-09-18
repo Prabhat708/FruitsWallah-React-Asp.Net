@@ -10,7 +10,7 @@ const CreditCard = ({ setShowPopup, Amount }) => {
     <>
       <div id="credit-card" className="tab-pane fade show active pt-3">
         <form role="form">
-          {/* <div className="form-group">
+          <div className="form-group">
               {" "}
             <label htmlFor="username">
                 <h6>Card Owner</h6>
@@ -90,7 +90,7 @@ const CreditCard = ({ setShowPopup, Amount }) => {
                   <input type="text" required className="form-control" />{" "}
                 </div>
               </div>
-            </div> */}
+            </div>
           <div className="card-footer">
             {" "}
             <button

@@ -538,3 +538,34 @@ a {
   text-align: center;
   align-items: center;
 }
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; 
+  margin: 20px 0;
+  gap: 6px;
+}
+
+.pagination-btn {
+  transition: all 0.2s ease-in-out;
+  min-width: 40px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pagination-btn:hover:not(.btn-primary):not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-ellipsis {
+  padding: 6px 12px;
+  font-weight: bold;
+  color: #888;
+  user-select: none;
+}

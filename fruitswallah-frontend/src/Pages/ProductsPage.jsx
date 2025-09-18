@@ -10,6 +10,7 @@ import ItemCard from "../components/ItemCard";
 import { GetProducts } from "../services/ProductController";
 import { useEffect, useState } from "react";
 import { GetSearchedProducts } from "../services/SearchController";
+import Pagination from "../components/Pagination";
 
 const ProductsPage = () => {
   const [search, setSearch] = useState("");
@@ -17,6 +18,18 @@ const ProductsPage = () => {
   useEffect(() => {
     GetProducts(setProducts);
   }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postPerPage, setPostPerPage] = useState(9);
+
+  const lastPost = currentPage * postPerPage;
+  const firstPost = lastPost - postPerPage;
+  const currentPost = products.slice(firstPost, lastPost);
+  var pages = [];
+  for (let i = 1; i <= Math.ceil(products.length / postPerPage); i++) {
+    pages.push(i);
+  }
+
   return (
     <>
       <Navbar />
@@ -39,24 +52,29 @@ const ProductsPage = () => {
               <div className="row g-4">
                 <div className="col-xl-3">
                   <div className="input-group w-100 mx-auto d-flex">
-                    <input
+                
+                      <input
                       type="search"
                       className="form-control p-3"
                       placeholder="search"
                       aria-describedby="search-icon-1"
                       value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                    <span
-                      id="search-icon-1"
-                      className="input-group-text p-3"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        GetSearchedProducts(search, setProducts);
+                      onChange={(e) => {
+                        setSearch(e.target.value)
+                        GetSearchedProducts(search,setProducts)
                       }}
-                    >
-                      <FaSearch className="text-secondary" />
-                    </span>
+                      />
+                      <span
+                        id="search-icon-1"
+                        className="input-group-text p-3"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          GetSearchedProducts(search, setProducts);
+                        }}
+                      >
+                        <FaSearch className="text-secondary" />
+                      </span>
+                 
                   </div>
                 </div>
                 <div className="col-6"></div>
@@ -247,17 +265,24 @@ const ProductsPage = () => {
                               Sorry ! No Items found..
                             </h1>
                           ) : (
-                            products.map(
-                              (item) =>
-                                item.isActive && (
-                                  <div
-                                    key={item.productId}
-                                    className="col-lg-4 col-md-6"
-                                  >
-                                    <ItemCard item={item} />
-                                  </div>
-                                )
-                            )
+                            <>
+                              {currentPost.map(
+                                (item) =>
+                                  item.isActive && (
+                                    <div
+                                      key={item.productId}
+                                      className="col-lg-4 col-md-6"
+                                    >
+                                      <ItemCard item={item} />
+                                    </div>
+                                  )
+                              )}
+                              <Pagination
+                                pages={pages}
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                              />
+                            </>
                           )}
                         </div>
                       </div>

@@ -9,6 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 import { GetProducts } from "../services/ProductController";
 import { useCart } from "./CartContext";
+import SuccessMessage from "./SuccessMessage";
 
 const Product = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -38,7 +39,7 @@ const Product = () => {
         }}
       >
         {showPopup && (
-          <div className="alert alert-success">✅ Item added successfully!</div>
+          <SuccessMessage message={"✅ Item added successfully!"} />
         )}
         <div className="row g-0">
           <div className="col-md-6 d-flex justify-content-center">

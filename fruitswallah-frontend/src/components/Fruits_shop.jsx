@@ -1,9 +1,20 @@
 import { FaShoppingBag } from "react-icons/fa";
 import ItemCard from "./ItemCard";
 import { Link } from 'react-router-dom';
+import Pagination from "./Pagination";
 
-const Fruits_shop = ({products}) => {
-  
+const Fruits_shop = ({
+  products,
+  allProducts,
+  postPerPage,
+  setCurrentPage,
+  currentPage,
+}) => {
+  var pages = [];
+  for (let i = 1; i <= Math.ceil(allProducts / postPerPage); i++) {
+    pages.push(i);
+  }
+
   return (
     <>
       <div className="container-fluid fruite">
@@ -34,17 +45,24 @@ const Fruits_shop = ({products}) => {
                     {products.length == 0 ? (
                       <h1 className="text-center mt-5 pt-5">
                         Sorry ! No Items found..
-                      </h1>) :
-                      (products?.map((fruit) => (fruit.isActive &&
-                        <div
-                          key={fruit.productId}
-                          className="col-md-6 col-lg-4 col-xl-3"
-                          id="v"
-                        >
-                          <ItemCard item={fruit} />
-                        </div>
-                      )))
-                    }
+                      </h1>
+                    ) : (
+                      <>
+                        {products?.map(
+                          (fruit) =>
+                            fruit.isActive && (
+                              <div
+                                key={fruit.productId}
+                                className="col-md-6 col-lg-4 col-xl-3"
+                                id="v"
+                              >
+                                <ItemCard item={fruit} />
+                              </div>
+                            )
+                        )}
+                          <Pagination pages={pages} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

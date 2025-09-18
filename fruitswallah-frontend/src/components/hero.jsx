@@ -30,8 +30,8 @@ const Hero = ({ setProducts, setActiveSearch }) => {
                     className="btn btn-success border-2 border-secondary py-3 px-4 position-absolute top-0 start-50 rounded-pill text-white hero-search-btn"
                     onClick={(e) => {
                       e.preventDefault();
-                        GetSearchedProducts(search, setProducts);
-                        setActiveSearch(true);
+                      GetSearchedProducts(search, setProducts);
+                      setActiveSearch(true);
                     }}
                   >
                     Submit Now
