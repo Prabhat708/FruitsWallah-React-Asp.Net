@@ -7,6 +7,7 @@ import {
   BsFillTruckFrontFill,
 } from "react-icons/bs";
 import { RiEBike2Fill } from "react-icons/ri";
+import { generateCustomInvoicePDF } from "../services/InvoiceDownload";
 
 
 const OrderTracking = ({order}) => {
@@ -183,7 +184,9 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
               <h6>Quantity: {order.productQty}</h6>
               <h6>Payment Method: {order.transactionType=="COD" ?"COD":"PREPAID"}</h6>
               <h6>Payment Status: {order.transactionStatus}</h6>
-              <button className="btn btn-primary">Get Invoice</button>
+              <button className="btn btn-primary" onClick={() => {
+                generateCustomInvoicePDF(order.transactionOrderID);
+              }}>Get Invoice</button>
             </div>
             <div className="col-4">
               <h4>Shipping Details</h4>

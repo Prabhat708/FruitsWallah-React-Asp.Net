@@ -347,7 +347,7 @@ const ManageAddressPage = () => {
                               address,
                               setAddresses,
                             );
-                            
+                            setMenuOpenIndex(null);
                           }}
                         >
                           Primary

@@ -20,7 +20,7 @@ namespace FruitsWallahBackend.Models
         }
         public string? TransactionType { get; set; }
         public string? TransactionStatus { get; set; }
-        public DateTime TransactionTime { get; set; }= DateTime.Now;
+        public DateTime TransactionTime { get; set; } = DateTime.Now;
 
     }
 }

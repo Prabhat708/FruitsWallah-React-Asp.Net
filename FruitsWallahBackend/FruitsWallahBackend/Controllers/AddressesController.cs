@@ -27,7 +27,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("{UserId}")]
         public async Task<ActionResult<Addresses>> GetAddresses(int UserId)
         {
-            var addresses = await (from A in _context.Addresses where A.UserId==UserId select A).ToListAsync();
+            var addresses = await (from A in _context.Addresses where A.UserId==UserId orderby A.IsPrimary descending select A ).ToListAsync();
 
             if (addresses == null)
             {
@@ -84,39 +84,50 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<Addresses>> PostAddresses(Addresses addresses)
         {
-            var address = await (from a in _context.Addresses where a.UserId == addresses.UserId && a.IsPrimary select a).ToListAsync();
-            foreach (var add in address)
+            try
             {
-                if (address.Count > 0)
+                var address = await (from a in _context.Addresses where a.UserId == addresses.UserId && a.IsPrimary select a).ToListAsync();
+                foreach (var add in address)
                 {
-                    add.IsPrimary = false;
+                    if (address.Count > 0)
+                    {
+                        add.IsPrimary = false;
+                    }
+
                 }
+                await _context.SaveChangesAsync();
+                var userAdddress = await (from A in _context.Addresses where A.UserId == addresses.UserId select A).ToListAsync();
+                if (userAdddress.Count == 5) { return Ok("You can't add more than 5 Address"); }
 
+                _context.Addresses.Add(addresses);
+                await _context.SaveChangesAsync();
+
+                return Ok("Address Added successfully!");
             }
-            await _context.SaveChangesAsync();
-            var userAdddress=await (from A in _context.Addresses where A.UserId == addresses.UserId select A).ToListAsync(); 
-            if (userAdddress.Count == 5) { return Ok("You can't add more than 5 Address"); }
-
-            _context.Addresses.Add(addresses);
-            await _context.SaveChangesAsync();
-
-            return Ok("Address Added");
+            catch
+            {
+                return BadRequest("Something Went Wrong");
+            }
         }
 
         // DELETE: api/Addresses/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddresses(int id)
         {
-            var addresses = await _context.Addresses.FindAsync(id);
-            if (addresses == null)
+            try
             {
-                return NotFound();
+                var addresses = await _context.Addresses.FindAsync(id);
+                
+
+                _context.Addresses.Remove(addresses);
+                await _context.SaveChangesAsync();
+
+                return Ok("Address Deleted Successful");
             }
-
-            _context.Addresses.Remove(addresses);
-            await _context.SaveChangesAsync();
-
-            return Ok("Address Deleted Successful");
+            catch
+            {
+                return BadRequest("Something Went Wrong");
+            }
         }
 
         private bool AddressesExists(int id)

@@ -20,25 +20,42 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
     alert("Phone Number must be 10 Digit");
     return;
   }
-  const res = await axios.post(`${BASE_URL}/api/Addresses`, data);
-  await getAddress(setAddresses);
-  setShowPopup(true);
-  setTimeout(() => {
-    setShowPopup(false);
-  }, 2000);
-  return { status: true,message:"Address Added successfully" };
+  try {
+    const res = await axios.post(`${BASE_URL}/api/Addresses`, data);
+    await getAddress(setAddresses);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { status: true, message: res.data};
+  } catch (e) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { status: false, message: e.response.data };
+  }
 };
 
 export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => {
-  const res = await axios.delete(
-    `${BASE_URL}/api/Addresses/${AddId}`
-  );
-  setShowPopup(true);
-  setTimeout(() => {
-    setShowPopup(false);
-  }, 2000);
-  await getAddress(setAddresses);
-  return { status: false, message: "Address Deleted Successfully" };
+  try {
+    const res = await axios.delete(
+      `${BASE_URL}/api/Addresses/${AddId}`
+    );
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    await getAddress(setAddresses);
+    return { status: false, message: res.data };
+  }
+  catch (e) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { status: false, message: e.response.data };
+  }
 };
 
 export const makePrimary = async (address, setAddresses) => {

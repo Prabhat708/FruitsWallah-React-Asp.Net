@@ -5,7 +5,8 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const Gateway_Key = import.meta.env.VITE_KEY;
 const UserId=localStorage.getItem('UserId')
 export const GetOrders = async (setOrders) => {
-    const res = await axios.get(`${BASE_URL}/api/Orders/${UserId}`);
+  const res = await axios.get(`${BASE_URL}/api/Orders/${UserId}`);
+  
     setOrders(res.data)
 }
 
