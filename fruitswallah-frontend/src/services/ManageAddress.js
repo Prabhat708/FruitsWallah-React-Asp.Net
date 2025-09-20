@@ -58,13 +58,25 @@ export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => 
   }
 };
 
-export const makePrimary = async (address, setAddresses) => {
-  address.isPrimary = true;
-  const res = await axios.put(
-    `${BASE_URL}/api/Addresses/${address.addId}`,
-    address
-  );
-  await getAddress(setAddresses);
-  
-  return {status: true};
+export const makePrimary = async (address, setAddresses, setShowPopup) => {
+  try {
+    address.isPrimary = true;
+    const res = await axios.put(
+      `${BASE_URL}/api/Addresses/${address.addId}`,
+      address
+    );
+    await getAddress(setAddresses);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    console.log(res.data);
+    return { status: true, message: res.data };
+  } catch (e) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { status: false, message: e.response.data };
+  }
 };

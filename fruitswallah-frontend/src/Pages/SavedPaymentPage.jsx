@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
 import { GetPaymentId, PostPaymentId } from "../services/PaymentController";
+import { useNavigate } from "react-router-dom";
 const UserId = localStorage.getItem("UserId");
 
 const SavedPaymentPage = () => {
@@ -13,7 +14,14 @@ const SavedPaymentPage = () => {
     UserId: UserId,
     UPI:""
   });
-  const [isActive,setIsActive]= useState(false)
+  const navigate = useNavigate();
+  const [isActive, setIsActive] = useState(false)
+  useEffect(() => {
+      const isLogin = localStorage.getItem("isLogin");
+      if (isLogin === "false") {
+        navigate("/login");
+      }
+    }, []);
   useEffect(() => {
     GetPaymentId(setPaymentId);
   }, []);

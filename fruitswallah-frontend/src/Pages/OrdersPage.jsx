@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {
   Package,
   User,
@@ -20,8 +20,14 @@ import { RiEBike2Fill } from "react-icons/ri";
 import Pagination from "../components/Pagination";
 
 const OrdersPage = () => {
- 
+ const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+  useEffect(() => {
+      const isLogin = localStorage.getItem("isLogin");
+      if (isLogin === "false") {
+        navigate("/login");
+      }
+    }, []);
   useEffect(() => {
     GetOrders(setOrders)
   }, []);

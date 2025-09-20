@@ -98,16 +98,23 @@ namespace FruitsWallahBackend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarts(int id)
         {
-            var carts = await _context.Carts.FindAsync(id);
-            if (carts == null)
+            try
             {
-                return NotFound();
+                var carts = await _context.Carts.FindAsync(id);
+                if (carts == null)
+                {
+                    return NotFound("Something Went Wrong");
+                }
+
+                _context.Carts.Remove(carts);
+                await _context.SaveChangesAsync();
+
+                return Ok("Item removed successfully!");
             }
-
-            _context.Carts.Remove(carts);
-            await _context.SaveChangesAsync();
-
-            return Ok();
+            catch
+            {
+                return BadRequest("Something Went Wrong");
+            }
         }
 
         private bool CartsExists(int id)

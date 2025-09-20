@@ -44,7 +44,7 @@ namespace FruitsWallahBackend.Controllers
         {
             if (id != addresses.AddId)
             {
-                return BadRequest();
+                return BadRequest("Something Went Wrong");
             }
 
            
@@ -68,15 +68,15 @@ namespace FruitsWallahBackend.Controllers
             {
                 if (!AddressesExists(id))
                 {
-                    return NotFound();
+                    return BadRequest("Address Not Found");
                 }
                 else
                 {
-                    throw;
+                    return BadRequest("Something Went Wrong");
                 }
             }
             
-            return Ok("Updated");
+            return Ok("Your Address set as Primary");
         }
 
         // POST: api/Addresses
@@ -97,8 +97,8 @@ namespace FruitsWallahBackend.Controllers
                 }
                 await _context.SaveChangesAsync();
                 var userAdddress = await (from A in _context.Addresses where A.UserId == addresses.UserId select A).ToListAsync();
-                if (userAdddress.Count == 5) { return Ok("You can't add more than 5 Address"); }
-
+                if (userAdddress.Count == 5) { return BadRequest("You can't add more than 5 Address"); }
+                
                 _context.Addresses.Add(addresses);
                 await _context.SaveChangesAsync();
 

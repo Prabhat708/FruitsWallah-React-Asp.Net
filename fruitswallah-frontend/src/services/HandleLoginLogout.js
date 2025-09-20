@@ -38,6 +38,7 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
 export const HandleLogout = (navigate) => {
   localStorage.setItem("isLogin", false);
   localStorage.removeItem("UserId");
+  localStorage.removeItem("isAdmin");
   navigate("/home", {
     state: {
       message: "You have been logged out successfully...",

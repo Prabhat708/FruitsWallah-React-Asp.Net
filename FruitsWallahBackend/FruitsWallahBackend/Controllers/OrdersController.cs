@@ -33,45 +33,51 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("{UserId}")]
         public async Task<ActionResult<Orders>> GetOrders(int UserId)
         {
-
-            var orders = await (from o in _context.Orders
-                                where o.UserId == UserId
-                                join OI in _context.OrderItems on o.OrderId equals OI.OrderId
-                                join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId
-                                join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId
-                                join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
-                                orderby o.OrderDate descending
-                                select new
-                                {
-                                    o.OrderId,
-                                    o.OrderDate,
-                                    o.IsPaid,
-                                    o.TransactionOrderID,
-                                    OI.ProductName,
-                                    OI.ProductPrice,
-                                    OI.ProductQty,
-                                    OI.ShipingCharge,
-                                    OI.TotalPrice,
-                                    OI.TransactionType,
-                                    OI.ProductImg,
-                                    OTrans.TransactionId,
-                                    OTrans.TransactionStatus,
-                                    OTrans.TransactionTime,
-                                    ot.OrderStatus,
-                                    ot.DeliveredOn,
-                                    oa.UserName,
-                                    oa.AddressType,
-                                    oa.HouseNo,
-                                    oa.Locality,
-                                    oa.Address,
-                                    oa.City,
-                                    oa.State,
-                                    oa.PostalCode,
-                                    oa.LandMark,
-                                    oa.PhoneNumber
-                                }).ToListAsync();
-            //Use.Skip(8).Take(4) for pagination -> Skip(pageNumber * numberOfReacords) Take(numberOfRecords)
-            return Ok(orders);
+            try
+            {
+                var orders = await (from o in _context.Orders
+                                    where o.UserId == UserId
+                                    join OI in _context.OrderItems on o.OrderId equals OI.OrderId
+                                    join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId
+                                    join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId
+                                    join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
+                                    orderby o.OrderDate descending
+                                    select new
+                                    {
+                                        o.OrderId,
+                                        o.OrderDate,
+                                        o.IsPaid,
+                                        o.TransactionOrderID,
+                                        OI.ProductName,
+                                        OI.ProductPrice,
+                                        OI.ProductQty,
+                                        OI.ShipingCharge,
+                                        OI.TotalPrice,
+                                        OI.TransactionType,
+                                        OI.ProductImg,
+                                        OTrans.TransactionId,
+                                        OTrans.TransactionStatus,
+                                        OTrans.TransactionTime,
+                                        ot.OrderStatus,
+                                        ot.DeliveredOn,
+                                        oa.UserName,
+                                        oa.AddressType,
+                                        oa.HouseNo,
+                                        oa.Locality,
+                                        oa.Address,
+                                        oa.City,
+                                        oa.State,
+                                        oa.PostalCode,
+                                        oa.LandMark,
+                                        oa.PhoneNumber
+                                    }).ToListAsync();
+                //Use.Skip(8).Take(4) for pagination -> Skip(pageNumber * numberOfReacords) Take(numberOfRecords)
+                return Ok(orders);
+            }
+            catch
+            {
+                return Ok("Login before");
+            }
         }
 
         // POST: api/Orders

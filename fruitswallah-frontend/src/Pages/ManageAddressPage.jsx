@@ -10,8 +10,11 @@ import {
   makePrimary,
 } from "../services/ManageAddress";
 import { sidebarItems } from "../data/Sidebar";
+import AlertMessage from "../components/AlertMessage";
+import { useNavigate } from "react-router-dom";
 
 const ManageAddressPage = () => {
+  const navigate = useNavigate();
   const [res,setRes]=useState({})
   const [showPopup, setShowPopup] = useState(false);
   const UserId = localStorage.getItem("UserId");
@@ -29,7 +32,12 @@ const ManageAddressPage = () => {
     State: "",
     IsPrimary: true,
   });
-
+useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+    if (isLogin === "false") {
+      navigate("/login");
+    }
+  }, []);
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -54,8 +62,7 @@ const ManageAddressPage = () => {
   return (
     <>
       <Navbar />
-      {showPopup && <div className={`alert ${res.status?'alert-success':'alert-danger'}` } style={{ marginTop: '100px' }}>{res.message
-      }</div>}
+      {showPopup && <AlertMessage status={res.status} message={res.message}/>}
       <div
         className="d-flex min-vh-100 mt-5 pt-5"
         style={{ backgroundColor: "#f8f9fa" }}
@@ -343,10 +350,11 @@ const ManageAddressPage = () => {
                             address.isPrimary ? "d-none" : "d-block "
                           }`}
                           onClick={async () => {
-                           await makePrimary(
-                              address,
-                              setAddresses,
-                            );
+                           setRes(await makePrimary(
+                             address,
+                             setAddresses,
+                             setShowPopup
+                           ));
                             setMenuOpenIndex(null);
                           }}
                         >

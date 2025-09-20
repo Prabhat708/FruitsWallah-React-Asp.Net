@@ -4,12 +4,12 @@ import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
 import { Link, useNavigate } from "react-router-dom";
 import CartRow from "../components/CartRow";
-import { RemoveFromCart,getCartItems } from "../services/CartFeatures";
+import { RemoveFromCart } from "../services/CartFeatures";
 import { useCart } from "../components/CartContext";
-import ErrorMessage from "../components/ErrorMessage";
-
+import AlertMessage from "../components/AlertMessage";
 
 const CartPage = () => {
+  const [res, setRes] = useState({});
   const navigate = useNavigate();
     const { cartItems, setCartItems } = useCart();
   const [showPopup, setShowPopup] = useState(false);
@@ -23,15 +23,12 @@ const CartPage = () => {
   return (
     <>
       <Navbar />
-
+      {showPopup && <AlertMessage status={res.status} message={res.message} />}
       {cartItems.length === 0 ? (
         <h1 className="text-center mt-5 pt-5">No items in cart</h1>
       ) : (
         <div className="container-fluid mt-5 pt-2">
           <div className="container py-5">
-            {showPopup && (
-              <ErrorMessage message={"Item removed successfully!"} />
-            )}
             <div className="table-responsive">
               <table className="table " id="CartItem">
                 <thead className="">
@@ -52,11 +49,13 @@ const CartPage = () => {
                         key={index}
                         item={item}
                         setCartItems={setCartItems}
-                        onDelete={() =>
-                          RemoveFromCart(
-                            item.cartId,
-                            setShowPopup,
-                            setCartItems
+                        onDelete={async () =>
+                          setRes(
+                            await RemoveFromCart(
+                              item.cartId,
+                              setShowPopup,
+                              setCartItems
+                            )
                           )
                         }
                       />

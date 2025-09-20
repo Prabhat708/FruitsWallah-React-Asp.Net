@@ -7,7 +7,7 @@ export const AddProducts = async (NewProduct,setProducts) => {
     formData.append("ProductName", NewProduct.ProductName);
     formData.append("ProductDescription", NewProduct.ProductDescription);
     formData.append("ProductPrice", NewProduct.ProductPrice);
-    formData.append("ProductImg", NewProduct.ProductImg); // Make sure this is the actual File object, not just a string!
+    formData.append("ProductImg", NewProduct.ProductImg);
     formData.append("ProductStock", NewProduct.ProductStock);
 
   axios.post(`${BASE_URL}/api/Products`, formData, {

@@ -2,39 +2,44 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import contactImg from "../assets/Contact-us-pana.svg";
+import { SendMsg } from "../services/contactController";
+import AlertMessage from "../components/AlertMessage";
 
 const ContactPage = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [res, setRes] = useState({});
   const [contactData, setContactData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    orderNo: "",
-    subject: "",
-    desc: ""
+    Name: "",
+    Email: "",
+    PhoneNumber: "",
+    OrderNumber: "",
+    Subject: "",
+    Desc: "",
   });
   const handleChange = (e) => {
     setContactData({ ...contactData, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!contactData.name || !contactData.email || !contactData.phone || !contactData.orderNo || !contactData.subject || !contactData.desc) {
+    if (!contactData.Name || !contactData.Email || !contactData.PhoneNumber || !contactData.OrderNumber || !contactData.Subject || !contactData.Desc) {
       alert("Please fill all fields");
       return;
     }
-    alert(`Message sent successfully.\n Our team will contact you soon.`);
+   
+    setRes(await SendMsg(contactData,setShowPopup))
     setContactData({
-      name: "",
-      email: "",
-      phone: "",
-      orderNo: "",
-      subject: "",
-      desc: ""
+      Name: "",
+      Email: "",
+      PhoneNumber: "",
+      OrderNumber: 0,
+      Subject: "",
+      Desc: ""
     });
   };
   return (
     <>
       <Navbar />
-
+      {showPopup && <AlertMessage status={res.status} message={res.message}/>}
       <div className="container mb-4 mt-5 pt-5">
         <h2 className="text-center mb-4">Get in Touch</h2>
         <p className="text-center w-responsive mx-auto mb-5">
@@ -54,9 +59,9 @@ const ContactPage = () => {
                     <input
                       type="text"
                       id="name"
-                      name="name"
+                      name="Name"
                       className="form-control"
-                      value={contactData.name}
+                      value={contactData.Name}
                       onChange={handleChange}
                       placeholder="Enter Your Name"
                       required
@@ -72,8 +77,8 @@ const ContactPage = () => {
                     <input
                       type="email"
                       id="email"
-                      name="email"
-                      value={contactData.email}
+                      name="Email"
+                      value={contactData.Email}
                       onChange={handleChange}
                       className="form-control"
                       placeholder="Enter Your Email id"
@@ -92,10 +97,10 @@ const ContactPage = () => {
                     <input
                       type="number"
                       id="phone"
-                      name="phone"
+                      name="PhoneNumber"
                       maxLength="10"
                       minLength="10"
-                      value={contactData.phone}
+                      value={contactData.PhoneNumber}
                       onChange={handleChange}
                       className="form-control"
                       placeholder="Enter Your Registered Number"
@@ -112,10 +117,10 @@ const ContactPage = () => {
                     <input
                       type="number"
                       id="OrderNo"
-                      name="orderNo"
+                      name="OrderNumber"
                       className="form-control"
                       placeholder="Enter Your order Number"
-                      value={contactData.orderNo}
+                      value={contactData.OrderNumber}
                       onChange={handleChange}
                       required
                     />
@@ -131,9 +136,9 @@ const ContactPage = () => {
                     <input
                       type="text"
                       id="subject"
-                      name="subject"
+                      name="Subject"
                       placeholder="Enter Your Subject"
-                      value={contactData.subject}
+                      value={contactData.Subject}
                       onChange={handleChange}
                       className="form-control"
                     />
@@ -147,11 +152,11 @@ const ContactPage = () => {
                     <textarea
                       type="text"
                       id="desc"
-                      name="desc"
+                      name="Desc"
                       rows="2"
                       className="form-control md-textarea"
                       placeholder="Discribe Your Problem"
-                      value={contactData.desc}
+                      value={contactData.Desc}
                       onChange={handleChange}
                       required
                     ></textarea>

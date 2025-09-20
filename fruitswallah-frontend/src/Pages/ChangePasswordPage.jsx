@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { HandlePasswordChange } from "../services/HandleLoginLogout";
 import { sidebarItems } from "../data/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const ChangePasswordPage = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+      const isLogin = localStorage.getItem("isLogin");
+      if (isLogin === "false") {
+        navigate("/login");
+      }
+    }, []);
   const [data, setData] = useState({
     Password: "",
     newPassword: "",

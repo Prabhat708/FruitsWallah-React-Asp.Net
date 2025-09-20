@@ -16,7 +16,6 @@ export const AddToCart = async (itemId, setCartItems, setShowPopup) => {
     productQuantity: 1
   };
   const res = await axios.post(`${BASE_URL}/api/Carts/`, AddCart);
- 
     getCartItems(setCartItems);
     setShowPopup(true);
     setTimeout(() => {
@@ -25,23 +24,31 @@ export const AddToCart = async (itemId, setCartItems, setShowPopup) => {
   
 };
 
-export const RemoveFromCart = async(
+export const RemoveFromCart = async (
   cartId,
   setShowPopup,
-    setCartItems
+  setCartItems
 ) => {
+  try{
   const res = await axios.delete(`${BASE_URL}/api/Carts/${cartId}`);
-  if (res.status == 200) {
     await getCartItems(setCartItems);
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
     }, 2000);
-  }
+    return { status: false, message: res.data };
+  } catch (e) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { status: false, message: e.response.data };
+}
 };
 
 
 export const PlusMinusButton = async (cartId, action, quantity, setCartItems) => {
+
   if (action === "increment") {
     quantity += 1;
   } else if (action === "decrement") {

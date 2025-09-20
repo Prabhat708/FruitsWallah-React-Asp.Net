@@ -4,13 +4,20 @@ import SidePannel from "../components/SidePannel";
 import { sidebarItems } from "../data/Sidebar";
 import OrderTracking from "../components/orderTracking";
 import Footer from "../components/Footer";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GetOrders } from "../services/OrdersController";
 
 const SingleOrderPage = () => {
   const { OrderId } = useParams();
   const [orders, setOrders] = useState([]);
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    const isLogin = localStorage.getItem("isLogin");
+    if (isLogin === "false") {
+      navigate("/login");
+    }
+    return;
+  }, []);
   useEffect(() => {
     GetOrders(setOrders); 
   }, []);

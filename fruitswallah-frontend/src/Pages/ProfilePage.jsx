@@ -13,6 +13,12 @@ const ProfilePage = () => {
   const [address,setAddresses]=useState([])
   const navigate = useNavigate();
   useEffect(() => {
+      const isLogin = localStorage.getItem("isLogin");
+      if (isLogin === "false") {
+        navigate("/login");
+      }
+    }, []);
+  useEffect(() => {
     getUser()
     getAddress(setAddresses)
   }, []);

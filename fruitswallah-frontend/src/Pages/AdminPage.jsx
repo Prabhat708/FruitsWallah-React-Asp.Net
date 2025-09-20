@@ -5,14 +5,21 @@ import { GetProducts } from "../services/ProductController";
 import { AddProducts, DeleteProduct } from "../services/AdminOperations";
 import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom";
 
 const AdminPage = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [products, setProducts] = useState([]);
-    
+    const navigate = useNavigate();
   useEffect(() => {
     GetProducts(setProducts);
-  },[])
+  }, []);
+  useEffect(() => {
+      const isLogin = localStorage.getItem("isLogin");
+      if (isLogin === "false") {
+        navigate("/login");
+      }
+    }, []);
   const handleAddProduct = async (e) => {
     e.preventDefault();
     const form = e.target;

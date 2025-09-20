@@ -11,14 +11,22 @@ import NetBanking from "../components/NetBanking";
 import { useEffect, useState } from "react";
 import CashOnDelivery from "../components/CashOnDelivery";
 import { useCart } from "../components/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
+  const navigate = useNavigate();
    const [showPopup, setShowPopup] = useState(false);
   const { cartItems } = useCart();
     let sum = 0;
     const [selectedPayment, setSelectedPayment] = useState('UPI');
     const [activeTab, setActiveTab] = useState('UPI');
 
+  useEffect(() => {
+      const isLogin = localStorage.getItem("isLogin");
+      if (isLogin === "false") {
+        navigate("/login");
+      }
+    }, []);
     const handleTogglePaymentMethod = (method) => {
         if (method === "CreditCard") {
             setActiveTab('CreditCard');
