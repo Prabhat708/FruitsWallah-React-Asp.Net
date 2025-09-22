@@ -22,11 +22,11 @@ const CheckoutPage = () => {
     const [activeTab, setActiveTab] = useState('UPI');
 
   useEffect(() => {
-      const isLogin = localStorage.getItem("isLogin");
-      if (isLogin === "false") {
-        navigate("/login");
-      }
-    }, []);
+        const token= localStorage.getItem("Token");
+        if (token==null) {
+          navigate("/login");
+        }
+      }, []);
     const handleTogglePaymentMethod = (method) => {
         if (method === "CreditCard") {
             setActiveTab('CreditCard');

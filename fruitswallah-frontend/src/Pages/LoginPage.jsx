@@ -21,11 +21,11 @@ const LoginPage = () => {
     setShowButton(!showButton);
   };
   useEffect(() => {
-    const isLogin = localStorage.getItem("isLogin");
-    if (isLogin === "true") {
-      navigate("/profile");
-    }
-  }, [navigate]);
+        const token= localStorage.getItem("Token");
+        if (token) {
+          navigate("/profile");
+        }
+      }, []);
 
   return (
     <>

@@ -1,5 +1,11 @@
 
+using DocumentFormat.OpenXml.Office2016.Word.Symex;
+using FruitsWallahBackend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FruitsWallahBackend.Data
 
@@ -16,6 +22,23 @@ namespace FruitsWallahBackend.Data
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddAuthentication(Options =>
+            {
+                Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                Options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(Options =>
+            {
+                Options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+                };
+            });
             // Add database connection with MySql
             builder.Services.AddDbContext<FruitsWallahDbContext>(options =>
               options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 23))));
@@ -29,6 +52,7 @@ namespace FruitsWallahBackend.Data
                           .AllowAnyMethod();
                 });
             });
+            builder.Services.AddScoped<IJwtService, JwtService>();
 
             var app = builder.Build();
 
@@ -38,6 +62,7 @@ namespace FruitsWallahBackend.Data
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseAuthentication();
 
             app.UseCors();
             app.UseHttpsRedirection();

@@ -15,8 +15,8 @@ const AdminPage = () => {
     GetProducts(setProducts);
   }, []);
   useEffect(() => {
-      const isLogin = localStorage.getItem("isLogin");
-      if (isLogin === "false") {
+      const token= localStorage.getItem("Token");
+      if (token==null) {
         navigate("/login");
       }
     }, []);

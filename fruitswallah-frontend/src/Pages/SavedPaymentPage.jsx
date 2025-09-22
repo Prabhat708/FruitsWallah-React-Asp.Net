@@ -17,11 +17,11 @@ const SavedPaymentPage = () => {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(false)
   useEffect(() => {
-      const isLogin = localStorage.getItem("isLogin");
-      if (isLogin === "false") {
-        navigate("/login");
-      }
-    }, []);
+        const token= localStorage.getItem("Token");
+        if (token==null) {
+          navigate("/login");
+        }
+      }, []);
   useEffect(() => {
     GetPaymentId(setPaymentId);
   }, []);

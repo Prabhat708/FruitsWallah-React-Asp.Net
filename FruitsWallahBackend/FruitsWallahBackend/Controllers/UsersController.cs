@@ -10,6 +10,7 @@ using FruitsWallahBackend.Models;
 using FruitsWallahBackend.Models.DTOModels;
 using BCrypt.Net;
 using Mysqlx;
+using FruitsWallahBackend.Services;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -18,10 +19,12 @@ namespace FruitsWallahBackend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly FruitsWallahDbContext _context;
+        private readonly IJwtService _jwtService;
 
-        public UsersController(FruitsWallahDbContext context)
+        public UsersController(FruitsWallahDbContext context,IJwtService jwtService)
         {
             _context = context;
+            _jwtService = jwtService;
         }
 
         // GET: api/Users
@@ -82,7 +85,6 @@ namespace FruitsWallahBackend.Controllers
         public async Task<ActionResult<User>> PostUser(UserDTO user)
 
         {
-            Console.WriteLine("user backend working"+user.Email);
             var HashedPassword= BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password, 13);
             if (user.Email == null)
             {
@@ -123,12 +125,13 @@ namespace FruitsWallahBackend.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return Ok(new
+                    var token = _jwtService.GenerateToken(user1.UserId, user1.Name, user1.IsAdmin);
+                    if (token == null)
                     {
-                        user1.UserId,
-                        message= "User Created Successfully",
-                        status="success"
-                    });
+                        return BadRequest();
+                    }
+                    return Ok(token);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {

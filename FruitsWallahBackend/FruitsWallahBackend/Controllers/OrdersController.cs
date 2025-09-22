@@ -71,7 +71,7 @@ namespace FruitsWallahBackend.Controllers
                                         oa.LandMark,
                                         oa.PhoneNumber
                                     }).ToListAsync();
-                //Use.Skip(8).Take(4) for pagination -> Skip(pageNumber * numberOfReacords) Take(numberOfRecords)
+                //Use.Skip(8).Take(4) for pagination -> Skip(pageNumber * numberOfReacords).Take(numberOfRecords)
                 return Ok(orders);
             }
             catch

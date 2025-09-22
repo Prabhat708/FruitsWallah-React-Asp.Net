@@ -2,6 +2,7 @@ import axios from "axios";
 
 const UserId = localStorage.getItem('UserId') || 0;
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+
 export const getCartItems = async (setCartItems) => {
   const res = await axios.get(`${BASE_URL}/api/Carts/${UserId}`);
   if (res.data) {

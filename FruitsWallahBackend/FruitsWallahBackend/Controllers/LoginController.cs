@@ -1,12 +1,21 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using FruitsWallahBackend.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Pqc.Crypto.Crystals.Dilithium;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace FruitsWallahBackend.Controllers
@@ -16,17 +25,18 @@ namespace FruitsWallahBackend.Controllers
     public class LoginController : ControllerBase
     {
         private readonly FruitsWallahDbContext _context;
+        private readonly IJwtService _jwtService;
 
-        public LoginController(FruitsWallahDbContext context)
+        public LoginController(FruitsWallahDbContext context,IJwtService jwtService)
         {
             _context = context;
+            _jwtService = jwtService;
         }
 
         // GET: api/Login/
         [HttpGet("{Email}/{Password}")]
         public async Task<ActionResult<UserAuth>> GetUserAuth(string Email,string Password)
         {
-            Console.WriteLine("Backend Working"+Email+" "+ Password);
             var user = await (from u in _context.Users where u.Email == Email select u).FirstOrDefaultAsync();
             if (user == null)
             {
@@ -35,14 +45,9 @@ namespace FruitsWallahBackend.Controllers
             var UserAuth = await (from UA in _context.UsersAuth where UA.UserID== user.UserId select new {UA.HashPassword}).FirstOrDefaultAsync();
             if (MatchPassword(Password, HashedPassword: UserAuth.HashPassword))
             {
-                return Ok(new
-                {
-                    user.UserId,
-                    user.Name,
-                    user.Email,
-                    user.PhoneNumber,
-                    user.IsAdmin,
-                });
+                var token = _jwtService.GenerateToken(user.UserId, user.Name, user.IsAdmin);
+                return Ok(token);
+               
             }
             else
             {
@@ -50,6 +55,7 @@ namespace FruitsWallahBackend.Controllers
             }
         }
 
+        //Controller for password change 
         [HttpPut("{UserId},{Password},{newPassword}")]
         public async Task<IActionResult> PutUserAuth(int UserId,string Password,string newPassword)
         {

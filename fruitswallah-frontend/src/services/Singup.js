@@ -15,7 +15,7 @@ export const handleSignUp = async (data, navigate, setData) => {
     return;
   } else {
     const res = await axios.post(`${BASE_URL}/api/Users`, data);
-    if (res.data.userId) {
+    if (res.data) {
       setData({
         Username: "",
         Email: "",
@@ -23,9 +23,8 @@ export const handleSignUp = async (data, navigate, setData) => {
         Password: "",
         cpassword: "",
       });
-      localStorage.setItem('isLogin', true);
-      localStorage.setItem('UserId', res.data.userId);
-      localStorage.setItem('isAdmin', res.data.isAdmin);
+      localStorage.setItem("Token",res.data)
+     
       navigate("/home", {
         state: {
           message: "Your Account Created Successfully...",

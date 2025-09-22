@@ -33,11 +33,11 @@ const ManageAddressPage = () => {
     IsPrimary: true,
   });
 useEffect(() => {
-    const isLogin = localStorage.getItem("isLogin");
-    if (isLogin === "false") {
-      navigate("/login");
-    }
-  }, []);
+      const token= localStorage.getItem("Token");
+      if (token==null) {
+        navigate("/login");
+      }
+    }, []);
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };

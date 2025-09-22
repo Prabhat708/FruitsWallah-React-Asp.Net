@@ -13,11 +13,11 @@ const ProfilePage = () => {
   const [address,setAddresses]=useState([])
   const navigate = useNavigate();
   useEffect(() => {
-      const isLogin = localStorage.getItem("isLogin");
-      if (isLogin === "false") {
-        navigate("/login");
-      }
-    }, []);
+        const token= localStorage.getItem("Token");
+        if (token==null) {
+          navigate("/login");
+        }
+      }, []);
   useEffect(() => {
     getUser()
     getAddress(setAddresses)

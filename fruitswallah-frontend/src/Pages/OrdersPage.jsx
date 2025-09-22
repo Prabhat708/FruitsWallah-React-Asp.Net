@@ -23,11 +23,11 @@ const OrdersPage = () => {
  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   useEffect(() => {
-      const isLogin = localStorage.getItem("isLogin");
-      if (isLogin === "false") {
-        navigate("/login");
-      }
-    }, []);
+        const token= localStorage.getItem("Token");
+        if (token==null) {
+          navigate("/login");
+        }
+      }, []);
   useEffect(() => {
     GetOrders(setOrders)
   }, []);

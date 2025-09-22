@@ -12,12 +12,11 @@ const SingleOrderPage = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    const isLogin = localStorage.getItem("isLogin");
-    if (isLogin === "false") {
-      navigate("/login");
-    }
-    return;
-  }, []);
+        const token= localStorage.getItem("Token");
+        if (token==null) {
+          navigate("/login");
+        }
+      }, []);
   useEffect(() => {
     GetOrders(setOrders); 
   }, []);

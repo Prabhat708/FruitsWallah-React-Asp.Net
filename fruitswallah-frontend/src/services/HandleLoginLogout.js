@@ -1,5 +1,7 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+
 const UserId = localStorage.getItem("UserId");
 export const HandleLogin = async (data, navigate, setShowPopup) => {
   const { email, password } = data;
@@ -13,19 +15,22 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
   const res = await axios.get(
     `${BASE_URL}/api/Login/${email}/${password}`
   );
-
-  if (res.data.name) {
+  console.log(res.data);
+  const decode = jwt_decode(res.data);
+  const userid = decode.UserId;
+  const Name = decode.UserName;
+  if (res.data) {
     navigate("/home", {
       state: {
         message: "Keep shoping from FruitsWallah",
         comingFrom: "login",
-        Username: res.data.name,
+        Username: Name,
       },
     });
-    localStorage.setItem("isLogin", true);
-    localStorage.setItem("UserId", res.data.userId);
-    localStorage.setItem("isAdmin", res.data.isAdmin);
-    localStorage.setItem("user", res.data.name);
+
+    localStorage.setItem("Token", res.data);
+    localStorage.setItem("UserId", userid);
+
   } else {
     setShowPopup(true);
         setTimeout(() => {
@@ -36,9 +41,7 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
 };
 
 export const HandleLogout = (navigate) => {
-  localStorage.setItem("isLogin", false);
-  localStorage.removeItem("UserId");
-  localStorage.removeItem("isAdmin");
+  localStorage.clear();
   navigate("/home", {
     state: {
       message: "You have been logged out successfully...",

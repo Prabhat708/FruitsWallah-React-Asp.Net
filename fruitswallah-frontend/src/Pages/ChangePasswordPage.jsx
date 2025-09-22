@@ -10,11 +10,11 @@ import { useNavigate } from "react-router-dom";
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
-      const isLogin = localStorage.getItem("isLogin");
-      if (isLogin === "false") {
-        navigate("/login");
-      }
-    }, []);
+        const token= localStorage.getItem("Token");
+        if (token==null) {
+          navigate("/login");
+        }
+      }, []);
   const [data, setData] = useState({
     Password: "",
     newPassword: "",
