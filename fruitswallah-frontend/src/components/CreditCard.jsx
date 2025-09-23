@@ -10,7 +10,7 @@ const CreditCard = ({ setShowPopup, Amount }) => {
     <>
       <div id="credit-card" className="tab-pane fade show active pt-3">
         <form role="form">
-          <div className="form-group">
+          {/* <div className="form-group">
               {" "}
             <label htmlFor="username">
                 <h6>Card Owner</h6>
@@ -90,19 +90,32 @@ const CreditCard = ({ setShowPopup, Amount }) => {
                   <input type="text" required className="form-control" />{" "}
                 </div>
               </div>
-            </div>
+            </div> */}
           <div className="card-footer">
             {" "}
             <button
               type="button"
               className="subscribe btn btn-primary btn-block shadow-sm"
               onClick={() => {
-                PostOrders("Credit Card",setShowPopup, navigate, setCartItems, Amount>=300?Amount:Amount+50);
+                PostOrders(
+                  "Credit Card",
+                  setShowPopup,
+                  navigate,
+                  setCartItems,
+                  Amount >= 300 ? Amount : Amount + 50
+                );
               }}
             >
               {" "}
               Confirm Payment{" "}
             </button>
+            <p className="text-muted">
+              {" "}
+              Note: After clicking on the button, you will be directed to a
+              secure gateway for payment. After completing the payment process,
+              you will be redirected back to the website to view details of your
+              order.{" "}
+            </p>
           </div>
         </form>
       </div>

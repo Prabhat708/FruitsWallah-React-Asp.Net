@@ -3,13 +3,17 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-
+const token = localStorage.getItem("Token");
 export const generateCustomInvoicePDF = async (transactionId) => {
-    console.log(transactionId)
-    const res = await axios.get(`${BASE_URL}/api/Orders/Inovice${transactionId}`);
+    const res = await axios.get(
+      `${BASE_URL}/api/Orders/Inovice${transactionId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     const invoiceData = res.data;
-    console.log("data", res.data);
-    console.log("invoicedata", invoiceData);
   const doc = new jsPDF();
 
   // Company Header
@@ -53,8 +57,8 @@ export const generateCustomInvoicePDF = async (transactionId) => {
     index + 1,
     item.productName,
     item.productQty,
-    `₹ ${item.productPrice}`,
-    `₹ ${item.productQty * item.productPrice}`,
+    ` ${item.productPrice}`,
+    `${item.productQty * item.productPrice}`,
   ]);
 
   doc.autoTable({
@@ -75,10 +79,10 @@ export const generateCustomInvoicePDF = async (transactionId) => {
   
   const totalTop = doc.lastAutoTable.finalY + 10;
   doc.setFontSize(11);
-  doc.text(`Subtotal: ₹ ${invoiceData.subTotal}`, 150, totalTop);
-  doc.text(`Shipping: ₹ ${invoiceData.shippingCharge}`, 150, totalTop + 6);
+  doc.text(`Subtotal: Rs. ${invoiceData.subTotal}`, 150, totalTop);
+  doc.text(`Shipping: Rs. ${invoiceData.shippingCharge}`, 150, totalTop + 6);
   doc.setFontSize(12);
-  doc.text(`Total: ₹ ${invoiceData.totalPrice}`, 150, totalTop + 14);
+  doc.text(`Total: Rs. ${invoiceData.totalPrice}`, 150, totalTop + 14);
 
   // Footer
   doc.setFontSize(10);

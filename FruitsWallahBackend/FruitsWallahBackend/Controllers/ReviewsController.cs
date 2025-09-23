@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class ReviewsController : ControllerBase
@@ -29,7 +31,7 @@ namespace FruitsWallahBackend.Controllers
             Console.WriteLine(reviews);
             return Ok(reviews);
         }
-
+        [Authorize]
         // GET: api/Reviews/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reviews>> GetReviews(int id)
@@ -46,6 +48,7 @@ namespace FruitsWallahBackend.Controllers
 
         // PUT: api/Reviews/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReviews(int id, Reviews reviews)
         {
@@ -77,6 +80,7 @@ namespace FruitsWallahBackend.Controllers
 
         // POST: api/Reviews
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Reviews>> PostReviews(Reviews reviews)
         {

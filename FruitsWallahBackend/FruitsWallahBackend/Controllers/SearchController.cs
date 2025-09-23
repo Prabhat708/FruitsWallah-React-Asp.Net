@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SearchController : ControllerBase

@@ -9,6 +9,7 @@ using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
 using FruitsWallahBackend.Models.DTOModels;
 using static System.IO.Path;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace FruitsWallahBackend.Controllers
@@ -20,6 +21,7 @@ namespace FruitsWallahBackend.Controllers
         private readonly FruitsWallahDbContext _context = context;
 
         // GET: api/Products
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
         {
@@ -42,6 +44,7 @@ namespace FruitsWallahBackend.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducts(int id, Products products)
         {
@@ -73,6 +76,7 @@ namespace FruitsWallahBackend.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<Products>> PostProducts([FromForm] ProductDTO products)
@@ -108,6 +112,7 @@ namespace FruitsWallahBackend.Controllers
         }
 
         // DELETE: api/Products/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducts(int id)
         {

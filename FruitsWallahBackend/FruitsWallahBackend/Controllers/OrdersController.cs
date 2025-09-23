@@ -2,6 +2,7 @@
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
 using FruitsWallahBackend.Models.DTOModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 namespace FruitsWallahBackend.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController(FruitsWallahDbContext context) : ControllerBase
@@ -22,7 +24,7 @@ namespace FruitsWallahBackend.Controllers
 
         private readonly string _key = "rzp_test_RHpcBqvwhimDgq";
         private readonly string _secret_key = "bIHBCdbU24bVMn5q5W9RlYkL";
-
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
         {
@@ -30,6 +32,7 @@ namespace FruitsWallahBackend.Controllers
             return Ok(orders);
         }
         // GET: api/Orders/5
+        [Authorize]
         [HttpGet("{UserId}")]
         public async Task<ActionResult<Orders>> GetOrders(int UserId)
         {
@@ -82,6 +85,7 @@ namespace FruitsWallahBackend.Controllers
 
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Orders>> PostOrders(OrderDTO orders)
         {
@@ -196,7 +200,7 @@ namespace FruitsWallahBackend.Controllers
             }
             return Ok("Ordered Successfully");
         }
-
+        [Authorize]
         [HttpPost("create-order")]
         public async Task<ActionResult<PaymentDTO>> PostPayment(PaymentDTO request)
 
@@ -220,7 +224,7 @@ namespace FruitsWallahBackend.Controllers
                 currency
             });
         }
-
+        [Authorize]
         [HttpGet("Inovice{transactionId}")]
         public async Task<ActionResult> GetInvoice(string transactionId)
         {

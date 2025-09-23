@@ -2,6 +2,7 @@
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
 using FruitsWallahBackend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
@@ -51,11 +52,12 @@ namespace FruitsWallahBackend.Controllers
             }
             else
             {
-                return Ok("Wrong Password");
+                return BadRequest("Wrong Password");
             }
         }
 
         //Controller for password change 
+        [Authorize]
         [HttpPut("{UserId},{Password},{newPassword}")]
         public async Task<IActionResult> PutUserAuth(int UserId,string Password,string newPassword)
         {

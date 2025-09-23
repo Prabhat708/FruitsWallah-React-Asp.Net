@@ -15,7 +15,10 @@ const OrderTracking = ({order}) => {
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   if (!order) return <div>Loading...</div>;
 
-  const currentStep = order.orderStatus.length;
+  const currentStep =
+    order.orderStatus.length == 5
+      ? order.orderStatus.length
+      : order.orderStatus.length + 0.6;
   const orderNumber = order.orderId;
   const expectedArrival = new Date(order.deliveredOn).toLocaleDateString();
 

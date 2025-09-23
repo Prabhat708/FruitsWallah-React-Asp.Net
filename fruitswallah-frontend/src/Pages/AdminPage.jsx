@@ -6,6 +6,7 @@ import { AddProducts, DeleteProduct } from "../services/AdminOperations";
 import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 const AdminPage = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -15,9 +16,10 @@ const AdminPage = () => {
     GetProducts(setProducts);
   }, []);
   useEffect(() => {
-      const token= localStorage.getItem("Token");
-      if (token==null) {
-        navigate("/login");
+    const token = localStorage.getItem("Token");
+    const decode = jwtDecode(token)
+      if (decode.isAdmin ==="False") {
+        navigate("/");
       }
     }, []);
   const handleAddProduct = async (e) => {
@@ -33,8 +35,7 @@ const AdminPage = () => {
     };
       await AddProducts(newProduct,setProducts)
     form.reset();
-    
-    alert("Product Added Successfully");
+ 
   };
 
   return (

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentMethodsController : ControllerBase
@@ -33,7 +35,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("{UserId}")]
         public async Task<ActionResult<PaymentMethod>> GetPaymentMethod(int UserId)
         {
-             Console.WriteLine(UserId);
+       
             var paymentMethod = await _context.PaymentMethods.FirstOrDefaultAsync(p=>p.UserId==UserId);
 
             if (paymentMethod == null)

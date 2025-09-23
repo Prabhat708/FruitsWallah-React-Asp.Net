@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -17,9 +18,10 @@ namespace FruitsWallahBackend.Controllers
     {
         private readonly FruitsWallahDbContext _context = context;
 
-       
+
 
         // GET: api/Carts/5
+        [Authorize]
         [HttpGet("{UserId}")]
         public async Task<ActionResult<Carts>> GetCarts(int UserId)
         {
@@ -95,6 +97,7 @@ namespace FruitsWallahBackend.Controllers
         }
 
         // DELETE: api/Carts/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarts(int id)
         {

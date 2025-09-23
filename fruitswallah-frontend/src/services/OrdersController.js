@@ -4,14 +4,18 @@ import { PostPayment } from "./payments";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const Gateway_Key = import.meta.env.VITE_KEY;
 const UserId = localStorage.getItem("UserId");
+const token = localStorage.getItem("Token");
 export const GetOrders = async (setOrders) => {
   if (!UserId) {
     return;
   }
   try {
-    const res = await axios.get(`${BASE_URL}/api/Orders/${UserId}`);
+    const res = await axios.get(`${BASE_URL}/api/Orders/${UserId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     setOrders(res.data);
-
     return;
   } catch {
     return;
@@ -39,8 +43,7 @@ export const PostOrders = async (
     };
   } else {
     try {
-      const paymentDeatils = await PostPayment(Amount);
-      console.log(paymentDeatils);
+      const paymentDeatils = await PostPayment(Amount,token);
       OrderData = await getPayment(paymentDeatils, PaymentMethod);
     } catch (e) {
       console.log(e);
@@ -48,7 +51,11 @@ export const PostOrders = async (
     }
   }
   try {
-    const res = await axios.post(`${BASE_URL}/api/Orders`, OrderData);
+    const res = await axios.post(`${BASE_URL}/api/Orders`, OrderData, {   
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+    });
     setShowPopup(true);
     getCartItems(setCartItems);
     setTimeout(() => {
@@ -65,13 +72,22 @@ export const PostOrders = async (
 };
 
 export const GetAllOrders = async (setOrders) => {
-  const res = await axios.get(`${BASE_URL}/api/Orders/`);
+  const res = await axios.get(`${BASE_URL}/api/Orders/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   setOrders(res.data);
 };
 
 export const UpdatesStatus = async (orderId, status, setShowPopup) => {
   const res = await axios.put(
-    `${BASE_URL}/api/OrderTrackers/${orderId},${status}`
+`${BASE_URL}/api/OrderTrackers/${orderId},${status}`,{},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
   );
   setShowPopup(true);
   setTimeout(() => {

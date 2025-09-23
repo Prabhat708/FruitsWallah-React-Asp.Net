@@ -1,10 +1,18 @@
 import axios from "axios";
 
-const UserId = localStorage.getItem('UserId') || 0;
+const UserId = localStorage.getItem('UserId') ||0;
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+const token = localStorage.getItem("Token");
 
 export const getCartItems = async (setCartItems) => {
-  const res = await axios.get(`${BASE_URL}/api/Carts/${UserId}`);
+  if (UserId==0) {
+    return;
+  }
+  const res = await axios.get(`${BASE_URL}/api/Carts/${UserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (res.data) {
     setCartItems(res.data);
   }
@@ -31,7 +39,11 @@ export const RemoveFromCart = async (
   setCartItems
 ) => {
   try{
-  const res = await axios.delete(`${BASE_URL}/api/Carts/${cartId}`);
+  const res = await axios.delete(`${BASE_URL}/api/Carts/${cartId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
     await getCartItems(setCartItems);
     setShowPopup(true);
     setTimeout(() => {

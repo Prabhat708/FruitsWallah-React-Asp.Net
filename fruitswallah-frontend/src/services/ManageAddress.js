@@ -1,9 +1,14 @@
 import axios from "axios";
 const UserId = localStorage.getItem("UserId");
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+const token = localStorage.getItem("Token");
 
 export const getAddress = async (setAddresses) => {
-  const res = await axios.get(`${BASE_URL}/api/Addresses/${UserId}`);
+  const res = await axios.get(`${BASE_URL}/api/Addresses/${UserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   if (res.data) {
     setAddresses(res.data);
   }
@@ -21,7 +26,11 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
     return;
   }
   try {
-    const res = await axios.post(`${BASE_URL}/api/Addresses`, data);
+    const res = await axios.post(`${BASE_URL}/api/Addresses`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     await getAddress(setAddresses);
     setShowPopup(true);
     setTimeout(() => {
@@ -39,9 +48,11 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
 
 export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => {
   try {
-    const res = await axios.delete(
-      `${BASE_URL}/api/Addresses/${AddId}`
-    );
+    const res = await axios.delete(`${BASE_URL}/api/Addresses/${AddId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
@@ -63,7 +74,12 @@ export const makePrimary = async (address, setAddresses, setShowPopup) => {
     address.isPrimary = true;
     const res = await axios.put(
       `${BASE_URL}/api/Addresses/${address.addId}`,
-      address
+      address,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     await getAddress(setAddresses);
     setShowPopup(true);

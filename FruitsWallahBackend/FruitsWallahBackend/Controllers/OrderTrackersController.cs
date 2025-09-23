@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class OrderTrackersController : ControllerBase
@@ -21,10 +23,11 @@ namespace FruitsWallahBackend.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{OrderId},{NewStatus}")]
         public async Task<IActionResult> PutOrderTracker(int OrderId, String NewStatus)
         {
-            
+            Console.WriteLine(NewStatus);
             var OrderTracker = await _context.OrderTrackers.FirstOrDefaultAsync(t => t.OrderId==OrderId);
             if (OrderTracker == null)
             {

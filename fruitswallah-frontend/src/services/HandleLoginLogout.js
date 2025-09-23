@@ -12,31 +12,30 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
     alert("Password must be at least 6 characters long");
     return;
   }
-  const res = await axios.get(
-    `${BASE_URL}/api/Login/${email}/${password}`
-  );
-  console.log(res.data);
-  const decode = jwt_decode(res.data);
-  const userid = decode.UserId;
-  const Name = decode.UserName;
-  if (res.data) {
-    navigate("/home", {
-      state: {
-        message: "Keep shoping from FruitsWallah",
-        comingFrom: "login",
-        Username: Name,
-      },
-    });
+  try {
+    const res = await axios.get(`${BASE_URL}/api/Login/${email}/${password}`);
+    console.log(res.data);
+    const decode = jwt_decode(res.data);
+    const userid = decode.UserId;
+    const Name = decode.UserName;
+    if (res.data) {
+      navigate("/home", {
+        state: {
+          message: "Keep shoping from FruitsWallah",
+          comingFrom: "login",
+          Username: Name,
+        },
+      });
 
-    localStorage.setItem("Token", res.data);
-    localStorage.setItem("UserId", userid);
-
-  } else {
+      localStorage.setItem("Token", res.data);
+      localStorage.setItem("UserId", userid);
+    }
+  } catch(e) {
     setShowPopup(true);
-        setTimeout(() => {
-          setShowPopup(false);
-        }, 2000);
-    return { success: false, message: "Invalid Creditial" };
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: e.response.data };
   }
 };
 
@@ -50,8 +49,8 @@ export const HandleLogout = (navigate) => {
   });
 };
 
-
 export const HandlePasswordChange = async (data) => {
+  const token = localStorage.getItem("Token");
   const { Password, newPassword, confirmPassword } = data;
   if (newPassword != confirmPassword) {
     alert("Password not matched");
@@ -60,7 +59,14 @@ export const HandlePasswordChange = async (data) => {
     alert("Password must be 6 digit");
     return;
   } else {
-    const res = await axios.put(`${BASE_URL}/api/Login/${UserId},${Password},${newPassword}`);
-    alert(res.data)
+    const res = await axios.put(
+      `${BASE_URL}/api/Login/${UserId},${Password},${newPassword}`, {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    alert(res.data);
   }
 };
