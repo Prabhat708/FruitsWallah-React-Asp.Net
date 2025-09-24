@@ -32,8 +32,8 @@ namespace FruitsWallahBackend.Services
                 expires: DateTime.UtcNow.AddMinutes(14400),
                 signingCredentials: signIn
                 );
-            string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
-            return tokenValue;
+             return new JwtSecurityTokenHandler().WriteToken(token);
+            
         }
     }
 }
