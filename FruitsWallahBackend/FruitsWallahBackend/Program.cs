@@ -53,7 +53,7 @@ namespace FruitsWallahBackend.Data
                 });
             });
             builder.Services.AddScoped<IJwtService, JwtService>();
-
+            builder.Services.AddScoped<ISendEmail, SendEmail>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

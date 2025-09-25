@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import jwt_decode from "jwt-decode";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export const handleSignUp = async (data, navigate, setData) => {
@@ -14,29 +14,32 @@ export const handleSignUp = async (data, navigate, setData) => {
     alert("Passwords do not match");
     return;
   } else {
+    try{
     const res = await axios.post(`${BASE_URL}/api/Users`, data);
-    if (res.data) {
-      setData({
-        Username: "",
-        Email: "",
-        PhoneNumber: "",
-        Password: "",
-        cpassword: "",
-      });
-      localStorage.setItem("Token",res.data)
-     
-      navigate("/home", {
-        state: {
-          message: "Your Account Created Successfully...",
-          Username: Username,
-          comingFrom: "signup",
-        },
-      });
-    }
-    else {
-      alert(res.data)
-      return;
-    }
+    setData({
+      Username: "",
+      Email: "",
+      PhoneNumber: "",
+      Password: "",
+      cpassword: "",
+    })
+      localStorage.setItem("Token", res.data)
+      const decode = jwt_decode(res.data);
+      const userid = decode.UserId;
+      localStorage.setItem("UserId", userid);
+    navigate("/home", {
+      state: {
+        message: "Your Account Created Successfully...",
+        Username: Username,
+        comingFrom: "signup",
+      },
+    });
+  }
+    catch (e) {
+      console.log(e.response.data)
+    return;
+  }
+    
   }
 };
 

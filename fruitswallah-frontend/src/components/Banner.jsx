@@ -27,7 +27,7 @@ const Banner = () => {
                             <span className="h4 text-muted mb-0">kg</span>
                         </div>
                     </div>
-                </div>
+                </div> 
             </div>
         </div>
     </div>

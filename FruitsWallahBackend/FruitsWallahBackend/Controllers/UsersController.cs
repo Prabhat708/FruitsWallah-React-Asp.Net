@@ -20,11 +20,13 @@ namespace FruitsWallahBackend.Controllers
     {
         private readonly FruitsWallahDbContext _context;
         private readonly IJwtService _jwtService;
+        private readonly ISendEmail sendEmail;
 
-        public UsersController(FruitsWallahDbContext context,IJwtService jwtService)
+        public UsersController(FruitsWallahDbContext context,IJwtService jwtService, ISendEmail sendEmail)
         {
             _context = context;
             _jwtService = jwtService;
+            this.sendEmail = sendEmail;
         }
 
         // GET: api/Users
@@ -85,7 +87,10 @@ namespace FruitsWallahBackend.Controllers
         public async Task<ActionResult<User>> PostUser(UserDTO user)
 
         {
-            var HashedPassword= BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password, 13);
+            Console.WriteLine(user.Email);
+            await sendEmail.SendEmails(user.Email);
+
+            var HashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password, 13);
             if (user.Email == null)
             {
                 return BadRequest("Email required");
@@ -93,7 +98,7 @@ namespace FruitsWallahBackend.Controllers
             var userEmail= await _context.Users.FirstOrDefaultAsync(u=>u.Email==user.Email);
             if (userEmail != null)
             {
-                return Ok("User Alredy Exists");
+                return BadRequest("User Alredy Exists");
             }
             if (user.Password != null)
             {
