@@ -32,8 +32,8 @@ const LoginPage = () => {
       <Navbar />
       <div className="container mt-5">
         {showPopup && (
-          <div className="alert alert-danger" style={{marginTop:"100px"}}>
-            Invalid Credintials 
+          <div className="alert alert-danger" style={{ marginTop: "100px" }}>
+            Invalid Credintials
           </div>
         )}
         <div className="row justify-content-center">
@@ -49,8 +49,7 @@ const LoginPage = () => {
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                await HandleLogin(data, navigate,setShowPopup);
-              
+                await HandleLogin(data, navigate, setShowPopup);
               }}
             >
               <div className="mb-3">
@@ -87,7 +86,7 @@ const LoginPage = () => {
                   className="btn btn-sm btn-link text-success position-absolute top-50 end-0 translate-middle-y me-2 mt-3 text-decoration-none "
                   onClick={handleShowPassword}
                 >
-                  Show
+                  {!showButton ? "Show" : "Hide"}
                 </button>
               </div>
 
@@ -96,6 +95,9 @@ const LoginPage = () => {
               </button>
             </form>
             <div className="text-center mt-3">
+              <p>Password Not Remember?
+                <Link> Forget password</Link>
+              </p>
               <p>
                 Don't have an account? <Link to="/signup">Register here</Link>
               </p>

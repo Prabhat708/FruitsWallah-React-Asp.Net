@@ -3,7 +3,7 @@ import { PostOrders } from '../services/OrdersController';
 import { useCart } from './CartContext';
 import { useNavigate } from 'react-router-dom';
 
-const CreditCard = ({ setShowPopup, Amount }) => {
+const CreditCard = ({ setShowPopup,setRes,setAddress, Amount }) => {
     const { setCartItems } = useCart();
     const navigate = useNavigate();
   return (
@@ -96,14 +96,15 @@ const CreditCard = ({ setShowPopup, Amount }) => {
             <button
               type="button"
               className="subscribe btn btn-primary btn-block shadow-sm"
-              onClick={() => {
-                PostOrders(
+              onClick={async() => {
+                setRes(await PostOrders(
                   "Credit Card",
                   setShowPopup,
                   navigate,
                   setCartItems,
+                  setAddress,
                   Amount >= 300 ? Amount : Amount + 50
-                );
+                ));
               }}
             >
               {" "}

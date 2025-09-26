@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCartItems } from "./CartFeatures";
 import { PostPayment } from "./payments";
+import { getAddress } from "./ManageAddress";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const Gateway_Key = import.meta.env.VITE_KEY;
 const UserId = localStorage.getItem("UserId");
@@ -27,8 +28,22 @@ export const PostOrders = async (
   setShowPopup,
   navigate,
   setCartItems,
+  setAddress,
   Amount
 ) => {
+
+ const res=await getAddress(setAddress)
+  if (res.length == 0)
+  {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return {
+      status: false,
+      message: "Address Not Found. Please Add Address before Order.",
+    };
+  }
   var OrderData;
   if (PaymentMethod == "COD") {
     OrderData = {
@@ -64,10 +79,13 @@ export const PostOrders = async (
     setTimeout(() => {
       navigate("/home");
     }, 2600);
-
-    return;
-  } catch {
-    return;
+    return {status:true,message:"Thank You! You Ordered Successfully. Now you can Track Your Order From Orders Page."};
+  } catch (e) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return {status:false,message:e.response.data};
   }
 };
 

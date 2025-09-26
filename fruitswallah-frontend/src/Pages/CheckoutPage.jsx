@@ -12,10 +12,13 @@ import { useEffect, useState } from "react";
 import CashOnDelivery from "../components/CashOnDelivery";
 import { useCart } from "../components/CartContext";
 import { useNavigate } from "react-router-dom";
+import AlertMessage from "../components/AlertMessage";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
-   const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [address, setAddress] = useState(null);
+  const [res, setRes] = useState({});
   const { cartItems } = useCart();
     let sum = 0;
     const [selectedPayment, setSelectedPayment] = useState('UPI');
@@ -51,10 +54,7 @@ useEffect(() => {
       <Navbar />
       <div className="container py-5 mt-5">
         {showPopup && (
-          <div className="alert alert-success " style={{ marginTop: "100px" }}>
-            Thank You! You Ordered Successfully. Now you can Track Your Order
-            From Orders Page.
-          </div>
+          <AlertMessage status={res.status} message={res.message} />
         )}
         <div className="row mb-4">
           <div className="col-lg-8 mx-auto text-center">
@@ -181,17 +181,33 @@ useEffect(() => {
                 </div>
                 <div className="tab-content">
                   {selectedPayment === "UPI" && (
-                    <UPI setShowPopup={setShowPopup} Amount={sum} />
+                    <UPI
+                      setShowPopup={setShowPopup}
+                      setRes={setRes}
+                      setAddress={setAddress}
+                      Amount={sum}
+                    />
                   )}
                   {selectedPayment === "CreditCard" && (
-                    <CreditCard setShowPopup={setShowPopup} Amount={sum} />
+                    <CreditCard
+                      setShowPopup={setShowPopup}
+                      setRes={setRes}
+                      setAddress={setAddress}
+                      Amount={sum}
+                    />
                   )}
                   {selectedPayment === "NetBanking" && <NetBanking />}
                   {selectedPayment === "CashOnDelivery" && (
-                    <CashOnDelivery setShowPopup={setShowPopup} Amount={sum} />
+                    <CashOnDelivery
+                      setShowPopup={setShowPopup}
+                      setRes={setRes}
+                      setAddress={setAddress}
+                      Amount={sum}
+                    />
                   )}
                 </div>{" "}
               </div>
+              
             </div>
           </div>
         </div>

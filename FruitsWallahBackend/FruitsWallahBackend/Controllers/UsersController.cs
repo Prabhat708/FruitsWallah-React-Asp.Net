@@ -20,13 +20,11 @@ namespace FruitsWallahBackend.Controllers
     {
         private readonly FruitsWallahDbContext _context;
         private readonly IJwtService _jwtService;
-        private readonly ISendEmail sendEmail;
 
-        public UsersController(FruitsWallahDbContext context,IJwtService jwtService, ISendEmail sendEmail)
+        public UsersController(FruitsWallahDbContext context,IJwtService jwtService)
         {
             _context = context;
             _jwtService = jwtService;
-            this.sendEmail = sendEmail;
         }
 
         // GET: api/Users
@@ -85,10 +83,7 @@ namespace FruitsWallahBackend.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(UserDTO user)
-
         {
-            Console.WriteLine(user.Email);
-            await sendEmail.SendEmails(user.Email);
 
             var HashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(user.Password, 13);
             if (user.Email == null)

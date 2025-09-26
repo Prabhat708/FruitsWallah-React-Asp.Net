@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "./CartContext";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 
-const CashOnDelivery = ({ setShowPopup, Amount }) => {
+const CashOnDelivery = ({ setShowPopup,setRes,setAddress, Amount }) => {
   const { setCartItems } = useCart();
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const handleConfirm = () => {
-    PostOrders("COD", setShowPopup, navigate, setCartItems, Amount);
+  const handleConfirm = async() => {
+    setRes(await PostOrders("COD", setShowPopup, navigate, setCartItems,setAddress, Amount));
     setShowConfirmModal(false);
   };
 

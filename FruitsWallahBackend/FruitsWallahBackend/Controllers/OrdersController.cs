@@ -93,7 +93,6 @@ namespace FruitsWallahBackend.Controllers
 
             if (orders == null)
             {
-                
                 return BadRequest();
             }
             var carts = await (from c in _context.Carts where c.UserId == orders.UserID select c).ToListAsync();
@@ -101,7 +100,7 @@ namespace FruitsWallahBackend.Controllers
 
             if (addresss == null)
             {
-                return BadRequest("Address Not Found");
+                return BadRequest("Address Not Found. Please Add Address before Order.");
             }
             else if (carts.Count == 0)
             {

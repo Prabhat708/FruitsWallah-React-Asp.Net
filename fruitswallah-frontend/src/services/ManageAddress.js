@@ -11,6 +11,7 @@ export const getAddress = async (setAddresses) => {
   });
   if (res.data) {
     setAddresses(res.data);
+    return res.data
   }
 };
 

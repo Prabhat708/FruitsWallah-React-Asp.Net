@@ -3,15 +3,16 @@ import { PostOrders } from '../services/OrdersController';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from './CartContext';
 
-const UPI = ({ setShowPopup, Amount } ) => {
+const UPI = ({ setShowPopup,setRes,setAddress, Amount } ) => {
   const { setCartItems } = useCart();
   const navigate = useNavigate();
+
   return (
     <>
       <div id="paypal" className="tab-pane fade show active pt-3">
         
-        <button type="button" className="btn btn-primary mt-2 ms-3 " onClick={() => {
-          PostOrders("UPI", setShowPopup, navigate, setCartItems, Amount>=300?Amount:Amount+50);
+        <button type="button" className="btn btn-primary mt-2 ms-3 " onClick={async() => {
+          setRes(await PostOrders("UPI", setShowPopup, navigate, setCartItems,setAddress, Amount>=300?Amount:Amount+50));
           }}> Proceed
           </button>{" "}
         
