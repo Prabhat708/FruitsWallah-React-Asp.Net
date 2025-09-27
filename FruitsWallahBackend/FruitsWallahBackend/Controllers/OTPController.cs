@@ -34,12 +34,40 @@ namespace FruitsWallahBackend.Controllers
             }
             try
             {
-                return Ok(await sendEmail.SendEmails(Email.Email));
+                return Ok(await sendEmail.SendEmails(Email.Email, "Registraion"));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpPost("forgetPassword")]
+        public async Task<IActionResult> ValidateUser(OtpGen Email)
+        {
+            if (Email.Email == null)
+            {
+                return BadRequest("Email Required");
+            }
+            var user= await _context.Users.FirstOrDefaultAsync(u => u.Email == Email.Email);
+            if (user == null)
+            {
+                return BadRequest("No User Found With this mail");
+            }
+            try
+            {
+                var encryptotp = await sendEmail.SendEmails(Email.Email,"Reset Password");
+                if (encryptotp == null)
+                {
+                    return BadRequest("encrypted otp is null");
+                }
+              
+                return Ok(encryptotp);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
     }
     public class OtpGen

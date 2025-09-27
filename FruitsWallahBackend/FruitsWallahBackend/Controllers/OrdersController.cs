@@ -18,12 +18,11 @@ namespace FruitsWallahBackend.Controllers
     
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController(FruitsWallahDbContext context) : ControllerBase
+    public class OrdersController(FruitsWallahDbContext context,IConfiguration configuration) : ControllerBase
     {
         private readonly FruitsWallahDbContext _context = context;
+        private readonly IConfiguration _configuration= configuration;
 
-        private readonly string _key = "rzp_test_RHpcBqvwhimDgq";
-        private readonly string _secret_key = "bIHBCdbU24bVMn5q5W9RlYkL";
         [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
@@ -204,7 +203,8 @@ namespace FruitsWallahBackend.Controllers
         public async Task<ActionResult<PaymentDTO>> PostPayment(PaymentDTO request)
 
         {
-            RazorpayClient client = new RazorpayClient(_key, _secret_key);
+            var paymentSettings = _configuration.GetSection("Razorpay");
+            RazorpayClient client = new RazorpayClient(paymentSettings["Key"], paymentSettings["Secret"]);
             Dictionary<string, object> options = new()
             {
                 { "amount", request.Amount*100 },  // in paise

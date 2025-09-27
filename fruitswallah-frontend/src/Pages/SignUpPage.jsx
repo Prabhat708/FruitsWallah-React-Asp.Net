@@ -77,9 +77,7 @@ const SignUpPage = () => {
 
     try {
       if (VerifyOtp(bOtp, otp)) {
-        
         const res1 = (await handleSignUp(data, navigate, setData));
-  
         if (res1.status) {
           navigate("/home", {
             state: {
@@ -246,7 +244,6 @@ const SignUpPage = () => {
             )}
 
             <div className="text-center mt-3">
-              
               <p>
                 Already have an account? <Link to="/login">Login here</Link>
               </p>

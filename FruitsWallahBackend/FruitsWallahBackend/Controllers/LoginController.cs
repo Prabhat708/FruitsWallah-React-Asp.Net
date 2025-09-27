@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Org.BouncyCastle.Pqc.Crypto.Crystals.Dilithium;
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,6 @@ namespace FruitsWallahBackend.Controllers
         public async Task<IActionResult> PutUserAuth(int UserId,string Password,string newPassword)
         {
             var UserAuth = await _context.UsersAuth.FirstOrDefaultAsync(u=>u.UserID==UserId);
-            Console.WriteLine(UserAuth.HashPassword);
             if(UserAuth == null)
             {
                 return NotFound();
@@ -88,6 +88,38 @@ namespace FruitsWallahBackend.Controllers
             
         }
 
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ResetPassword(ResetData resetData)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == resetData.Email);
+            if (user == null)
+            {
+                return BadRequest("No user Found");
+            }
+            var UserAuth = await _context.UsersAuth.FirstOrDefaultAsync(u => u.UserID == user.UserId);
+            if (UserAuth == null)
+            {
+                return NotFound();
+            }
+            UserAuth.HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(resetData.Password, 13);
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                return Ok("Password Reset successfully now you can login");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
+        }
+
+        public class ResetData
+        {
+            public string? Email { get; set; }
+            public string? Password { get; set; }
+        }
         private static bool MatchPassword(string Password, string HashedPassword)
         {
             return BCrypt.Net.BCrypt.EnhancedVerify(Password, HashedPassword);

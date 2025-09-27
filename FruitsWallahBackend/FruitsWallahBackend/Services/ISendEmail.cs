@@ -2,6 +2,6 @@
 {
     public interface ISendEmail
     {
-        public Task<string> SendEmails(string email);
+        public Task<string> SendEmails(string email, string otpfor);
     }
 }
