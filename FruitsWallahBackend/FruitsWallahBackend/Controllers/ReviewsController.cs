@@ -27,8 +27,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reviews>>> GetReviews()
         {
-            var reviews= await (from r in _context.Reviews join u in _context.Users on r.UserId equals u.UserId select new {r.ReviewId,u.Name,r.Review}).ToListAsync();
-            Console.WriteLine(reviews);
+            var reviews= await (from r in _context.Reviews join u in _context.Users on r.UserId equals u.UserId select new {r.ReviewId,u.Name,r.Review,r.UserId}).ToListAsync();
             return Ok(reviews);
         }
         [Authorize]
@@ -75,7 +74,7 @@ namespace FruitsWallahBackend.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Thanks for sharing your thoughts");
         }
 
         // POST: api/Reviews
@@ -87,7 +86,7 @@ namespace FruitsWallahBackend.Controllers
             _context.Reviews.Add(reviews);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetReviews", new { id = reviews.ReviewId }, reviews);
+            return Ok("Thanks for sharing your thoughts");
         }
 
         // DELETE: api/Reviews/5
@@ -103,7 +102,7 @@ namespace FruitsWallahBackend.Controllers
             _context.Reviews.Remove(reviews);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Thanks for sharing your thoughts");
         }
 
         private bool ReviewsExists(int id)

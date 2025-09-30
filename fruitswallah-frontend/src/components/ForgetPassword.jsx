@@ -4,10 +4,8 @@ import {
   validateForForgetPassword,
   VerifyOtp,
 } from "../services/Verification";
-import { useNavigate } from "react-router-dom";
 
 const ForgetPassword = ({ setShowPopup, setRes, setForgetPassword }) => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isOtpVerified, setIsOtpVerified] = useState(false);

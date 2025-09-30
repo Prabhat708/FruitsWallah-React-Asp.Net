@@ -4,24 +4,16 @@ import Footer from "../components/Footer";
 import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
 import { GetPaymentId, PostPaymentId } from "../services/PaymentController";
-import { useNavigate } from "react-router-dom";
-const UserId = localStorage.getItem("UserId");
 
 const SavedPaymentPage = () => {
   const [paymentId, setPaymentId] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [data, setData] = useState({
-    UserId: UserId,
+    UserId: "",
     UPI:""
   });
-  const navigate = useNavigate();
   const [isActive, setIsActive] = useState(false)
-  useEffect(() => {
-        const token= localStorage.getItem("Token");
-        if (token==null) {
-          navigate("/login");
-        }
-      }, []);
+  ;
   useEffect(() => {
     GetPaymentId(setPaymentId);
   }, []);

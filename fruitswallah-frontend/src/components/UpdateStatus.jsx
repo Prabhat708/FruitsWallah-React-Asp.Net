@@ -3,13 +3,15 @@ import { GetAllOrders, UpdatesStatus } from "../services/OrdersController";
 import SuccessMessage from "./SuccessMessage";
 
 const UpdateStatus = () => {
-  const [statuslen,setStatuslen]=useState(1)
-  const statusFlow = ["Placed",
+  const [statuslen, setStatuslen] = useState(1);
+  const statusFlow = [
+    "Placed",
     "Dispatched",
     "En Route",
     "Out For delivery",
     "Delivered",
   ];
+  const [orders, setOrders] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [form, setForm] = useState({
     orderId: "",
@@ -20,21 +22,22 @@ const UpdateStatus = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    UpdatesStatus(form.orderId, form.status, setShowPopup);
+    await UpdatesStatus(form.orderId, form.status, setShowPopup);
+    GetAllOrders(setOrders);
     e.target.reset();
+    setForm({ orderId: "", status: "" });
   };
 
-    const [orders, setOrders] = useState([]);
-    useEffect(() => {
-        GetAllOrders(setOrders);
-    }, []);
-  
+  useEffect(() => {
+    GetAllOrders(setOrders);
+  }, []);
+
   const handleOrderIdChange = (orderId) => {
-    var orderstatus = orders.find(o => o.orderId == orderId)
+    var orderstatus = orders.find((o) => o.orderId == orderId);
     setStatuslen(orderstatus.orderStatus.length);
-  }
+  };
   return (
     <>
       {showPopup && (
@@ -62,8 +65,8 @@ const UpdateStatus = () => {
                 value={form.orderId}
                 onChange={(e) => {
                   const selectedOrderId = e.target.value;
-                  handleChange(e); // If you're managing form state
-                  handleOrderIdChange(selectedOrderId); // Your custom function
+                  handleChange(e); 
+                  handleOrderIdChange(selectedOrderId); 
                 }}
                 required
               >
@@ -93,13 +96,9 @@ const UpdateStatus = () => {
                 {statuslen == 5 ? (
                   <option value="">-- No More Options --</option>
                 ) : (
-                  statusFlow.slice(statuslen).map((statusValue, index) => {
-                    return (
-                      <option key={index} value={statusValue}>
-                        {statusValue}
+                      <option value={statusFlow[statuslen]}>
+                        {statusFlow[statuslen]}
                       </option>
-                    );
-                  })
                 )}
               </select>
             </div>

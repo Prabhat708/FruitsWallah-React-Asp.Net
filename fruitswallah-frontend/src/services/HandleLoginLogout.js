@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-const UserId = localStorage.getItem("UserId");
+
 export const HandleLogin = async (data, navigate, setShowPopup) => {
   const { email, password } = data;
   if (!email || !password) {
@@ -14,21 +14,17 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
   }
   try {
     const res = await axios.get(`${BASE_URL}/api/Login/${email}/${password}`);
-    console.log(res.data);
     const decode = jwt_decode(res.data);
-    const userid = decode.UserId;
-    const Name = decode.UserName;
     if (res.data) {
       navigate("/home", {
         state: {
           message: "Keep shoping from FruitsWallah",
           comingFrom: "login",
-          Username: Name,
+          Username: decode.UserName,
         },
       });
 
       localStorage.setItem("Token", res.data);
-      localStorage.setItem("UserId", userid);
     }
   } catch(e) {
     setShowPopup(true);
@@ -49,8 +45,15 @@ export const HandleLogout = (navigate) => {
   });
 };
 
+ const token = localStorage.getItem("Token") || null;
+ var UserId;
+ if (token != null) {
+   UserId = jwt_decode(token)?.UserId || null;
+}
+ 
+
 export const HandlePasswordChange = async (data) => {
-  const token = localStorage.getItem("Token");
+ 
   const { Password, newPassword, confirmPassword } = data;
   if (newPassword != confirmPassword) {
     alert("Password not matched");
@@ -69,4 +72,14 @@ export const HandlePasswordChange = async (data) => {
     );
     alert(res.data);
   }
+};
+
+export const getUserDeatails = async (setUsers) => {
+  const res = await axios.get(`${BASE_URL}/api/Users/${UserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  setUsers(res.data);
+  return res.data;
 };

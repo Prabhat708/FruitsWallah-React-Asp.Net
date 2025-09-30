@@ -2,10 +2,17 @@ import axios from "axios";
 import { getCartItems } from "./CartFeatures";
 import { PostPayment } from "./payments";
 import { getAddress } from "./ManageAddress";
+import jwt_Decode from "jwt-decode";
+
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const Gateway_Key = import.meta.env.VITE_KEY;
-const UserId = localStorage.getItem("UserId");
-const token = localStorage.getItem("Token");
+const token = localStorage.getItem("Token")||null;
+var UserId;
+if(token!=null){
+
+  UserId = jwt_Decode(token)?.UserId || null;
+}
+
 export const GetOrders = async (setOrders) => {
   if (!UserId) {
     return;

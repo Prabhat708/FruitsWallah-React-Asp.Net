@@ -11,10 +11,8 @@ import {
 } from "../services/ManageAddress";
 import { sidebarItems } from "../data/Sidebar";
 import AlertMessage from "../components/AlertMessage";
-import { useNavigate } from "react-router-dom";
 
 const ManageAddressPage = () => {
-  const navigate = useNavigate();
   const [res,setRes]=useState({})
   const [showPopup, setShowPopup] = useState(false);
   const UserId = localStorage.getItem("UserId");
@@ -32,12 +30,7 @@ const ManageAddressPage = () => {
     State: "",
     IsPrimary: true,
   });
-useEffect(() => {
-      const token= localStorage.getItem("Token");
-      if (token==null) {
-        navigate("/login");
-      }
-    }, []);
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };

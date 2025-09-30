@@ -110,6 +110,7 @@ const TermAndConditionPage = () => {
               © {new Date().getFullYear()} FruitsWallah Private
               Limited. All rights reserved.
             </p>
+            
           </div>
         </div>
       </div>

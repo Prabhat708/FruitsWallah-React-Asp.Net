@@ -2,7 +2,7 @@ import { CircleUserRound } from "lucide-react";
 import React from 'react'
 import {Link} from 'react-router-dom';
 
-const SidePannel = ({sidebarItems,activeItem,setActiveItem}) => {
+const SidePannel = ({sidebarItems,activeItem,setActiveItem,count=null}) => {
   return (
     <>
       <div
@@ -39,11 +39,13 @@ const SidePannel = ({sidebarItems,activeItem,setActiveItem}) => {
                 >
                   <div className="d-flex align-items-center gap-3">
                     <Icon size={20} />
-                    <Link to={item.href} className="fw-medium text-dark">{item.label}</Link>
+                    <Link to={item.href} className="fw-medium text-dark">
+                      {item.label}
+                    </Link>
                   </div>
-                  {item.count && (
+                  {count != null && item.label == "View orders"  && (
                     <span className="badge bg-primary rounded-pill">
-                      {item.count}
+                      {count}
                     </span>
                   )}
                 </button>

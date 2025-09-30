@@ -10,15 +10,8 @@ import AlertMessage from "../components/AlertMessage";
 
 const CartPage = () => {
   const [res, setRes] = useState({});
-  const navigate = useNavigate();
     const { cartItems, setCartItems } = useCart();
   const [showPopup, setShowPopup] = useState(false);
- useEffect(() => {
-       const token= localStorage.getItem("Token");
-       if (token==null) {
-         navigate("/login");
-       }
-     }, []);
   let sum = 0;
   return (
     <>

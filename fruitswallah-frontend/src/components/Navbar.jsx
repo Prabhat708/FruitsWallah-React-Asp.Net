@@ -6,7 +6,6 @@ import { useCart } from "./CartContext";
 import { GetSearchedProducts } from "../services/SearchController";
 function Navbar({ setProducts, setActiveSearch }) {
   var [total, setTotal] = useState(0);
-
   const [search, setSearch] = useState("");
   const { cartItems } = useCart();
   useEffect(() => {
