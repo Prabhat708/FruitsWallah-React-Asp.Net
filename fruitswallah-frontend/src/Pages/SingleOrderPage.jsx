@@ -10,13 +10,7 @@ import { GetOrders } from "../services/OrdersController";
 const SingleOrderPage = () => {
   const { OrderId } = useParams();
   const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
-  useEffect(() => {
-        const token= localStorage.getItem("Token");
-        if (token==null) {
-          navigate("/login");
-        }
-      }, []);
+  
   useEffect(() => {
     GetOrders(setOrders); 
   }, []);

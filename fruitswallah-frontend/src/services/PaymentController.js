@@ -1,8 +1,12 @@
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const UserId = localStorage.getItem("UserId");
-const token = localStorage.getItem("Token");
+import jwt_Decode from "jwt-decode";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+const token = localStorage.getItem("Token") || null;
+var UserId;
+if(token!=null){
+  UserId = jwt_Decode(token)?.UserId || null;
+}
 export const GetPaymentId = async (setPaymentId) => {
     const res = await axios.get(`${BASE_URL}/api/PaymentMethods/${UserId}`, {
       headers: {
@@ -12,7 +16,11 @@ export const GetPaymentId = async (setPaymentId) => {
     setPaymentId(res.data.upi||'');
 }
 export const PostPaymentId = async (Paymentdata, setPaymentId, setShowPopup) => {
-  const res = await axios.post(`${BASE_URL}/api/PaymentMethods`, Paymentdata, {
+  const payload={
+    UserId: UserId,
+    UPI:Paymentdata.UPI
+  }
+  const res = await axios.post(`${BASE_URL}/api/PaymentMethods`, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

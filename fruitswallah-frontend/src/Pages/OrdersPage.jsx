@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {
   Package,
   User,
@@ -18,16 +18,11 @@ import OrderCard from "../components/OrderCard";
 import { GetOrders } from "../services/OrdersController";
 import { RiEBike2Fill } from "react-icons/ri";
 import Pagination from "../components/Pagination";
+import { sidebarItems } from "../data/Sidebar";
 
 const OrdersPage = () => {
- const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
-  useEffect(() => {
-        const token= localStorage.getItem("Token");
-        if (token==null) {
-          navigate("/login");
-        }
-      }, []);
+
   useEffect(() => {
     GetOrders(setOrders)
   }, []);
@@ -43,15 +38,7 @@ for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
   pages.push(i);
 }
 
-  const sidebarItems = [
-    { icon: Package, label: "View orders", href: "/orders", active: true ,count:orders.length},
-    { icon: User, label: "Personal details", href: "/profile" },
-    { icon: Lock, label: "Change password", href: "/changePassword" },
-    { icon: CreditCard, label: "Payment methods", href: "/payment" },
-    { icon: MapPin, label: "Manage addresses", href: "/address" },
-    { icon: LogOut, label: "Log out", href: "/logOut" },
-  ];
-  const getStatusIcon = (orderStatus ) => {
+  const getStatusIcon = (orderStatus) => {
     if (orderStatus.at(-1).toLowerCase() === "dispatched")
       return <Truck className="text-primary" size={20} />;
     if (orderStatus.at(-1).toLowerCase() === "expected")
@@ -75,6 +62,7 @@ for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
           sidebarItems={sidebarItems}
           activeItem={activeItem}
           setActiveItem={setActiveItem}
+          count={orders.length}
         />
 
         <div className="flex-grow-1 p-4">

@@ -5,8 +5,10 @@ import CustomerReview from "./CustomerReview";
 import Carousel from "react-multi-carousel";
 import { GetReviews, PostReview } from "../services/ReviewController";
 import SuccessMessage from "./SuccessMessage";
+import AlertMessage from "./AlertMessage";
 const Testimonial = () => {
-   const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [res, setRes] = useState({});
   const [data, setData] = useState({
     comment: "",
   });
@@ -72,10 +74,8 @@ const Testimonial = () => {
 
         <div className="container py-5">
           {showPopup && (
-            <SuccessMessage
-              style={{ marginTop: "100px" }}
-              message={"Thank You for Sharing Your Thoughts about me."}
-            />
+         <AlertMessage status={res.status} message={res.message} />
+           
           )}
           <div className="row g-4 align-items-center">
             <div className="col-lg-6 col-md-6">
@@ -101,9 +101,9 @@ const Testimonial = () => {
                 </div>
                 <button
                   type="submit"
-                  onClick={(e) => {
+                  onClick={async(e) => {
                     e.preventDefault();
-                    PostReview(data, setReviews, setShowPopup);
+                    setRes(await PostReview(data, setReviews, setShowPopup));
                   
                   }}
                   className="btn btn-primary btn-block my-2 align-items-center"

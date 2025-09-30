@@ -1,9 +1,14 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
-const UserId = localStorage.getItem("UserId") || 0;
+ 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const token = localStorage.getItem("Token") ||null;
+const token = localStorage.getItem("Token") || null;
+var UserId;
+if(token!=null){
 
+  UserId = jwt_decode(token)?.UserId || null;
+}
 export const getCartItems = async (setCartItems) => {
   if (token==null) {
     return;

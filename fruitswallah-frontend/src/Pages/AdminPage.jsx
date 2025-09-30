@@ -1,47 +1,124 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import banana from "../assets/best-product-3.jpg";
 import { GetProducts } from "../services/ProductController";
-import { AddProducts, DeleteProduct } from "../services/AdminOperations";
+import {
+  AddProducts,
+  DeleteProduct,
+  UpdateProduct,
+} from "../services/AdminOperations";
 import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 const AdminPage = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [products, setProducts] = useState([]);
-    const navigate = useNavigate();
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+
+  const [formData, setFormData] = useState({
+    productCategory: "",
+    productName: "",
+    productDescription: "",
+    productPrice: "",
+    productStock: "",
+    productImage: null,
+  });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("Token");
+    const decode = jwtDecode(token);
+    if (decode.isAdmin === "False") {
+      navigate("/");
+    }
+  }, []);
+
   useEffect(() => {
     GetProducts(setProducts);
   }, []);
-  useEffect(() => {
-    const token = localStorage.getItem("Token");
-    const decode = jwtDecode(token)
-      if (decode.isAdmin ==="False") {
-        navigate("/");
-      }
-    }, []);
-  const handleAddProduct = async (e) => {
+
+  const handleChange = (e) => {
+    const { id, value, files } = e.target;
+    if (id === "productImage") {
+      setFormData({ ...formData, productImage: files[0] });
+    } else {
+      setFormData({ ...formData, [id]: value });
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.target;
-    const newProduct = {
-      ProductCatagory: form.productCategory.value,
-      ProductName: form.productName.value,
-      ProductDescription: form.productDescription.value,
-      ProductPrice: form.productPrice.value,
-      ProductImg: form.productImage.files[0],
-      ProductStock: form.productQuantity.value,
+
+    const productPayload = {
+      ProductCatagory: formData.productCategory,
+      ProductName: formData.productName,
+      ProductDescription: formData.productDescription,
+      ProductPrice: formData.productPrice,
+      ProductStock: formData.productStock,
     };
-      await AddProducts(newProduct,setProducts)
-    form.reset();
- 
+
+    if (formData.productImage) {
+      productPayload.ProductImg = formData.productImage;
+    }
+
+    if (isEditMode && currentProduct) {
+      await UpdateProduct (
+        productPayload,
+        currentProduct.productId,
+        setProducts
+      );
+    } else {
+      await AddProducts(productPayload, setProducts);
+    }
+
+    // Reset form
+    setFormData({
+      productCategory: "",
+      productName: "",
+      productDescription: "",
+      productPrice: "",
+      productStock: "",
+      productImage: null,
+    });
+    setIsEditMode(false);
+    setCurrentProduct(null);
+  };
+
+  const handleEditClick = (product) => {
+    setIsEditMode(true);
+    setCurrentProduct(product);
+    setFormData({
+      productCategory: product.productCatagory,
+      productName: product.productName,
+      productDescription: product.productDescription,
+      productPrice: product.productPrice,
+      productStock: product.productStock,
+      productImage: null, // Only update if new image is selected
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setCurrentProduct(null);
+    setFormData({
+      productCategory: "",
+      productName: "",
+      productDescription: "",
+      productPrice: "",
+      productStock: "",
+      productImage: null,
+    });
   };
 
   return (
     <>
       <Navbar />
-      <div className="row mt-5 pt-5 ">
+      <div className="row mt-5 pt-5">
         <h1 className="text-center text-success">Welcome to Admin Page</h1>
         <div className="col-6" style={{ width: "40%" }}>
           <h3 className="text-center alert alert-info container ms-5">
@@ -60,41 +137,51 @@ const AdminPage = () => {
               </tr>
             </thead>
             <tbody>
-              {products.filter((product) => product.isActive).map((product,index) => (
-                <tr key={product.productId}>
-                  <th scope="row">{index+1}</th>
-                  <td>
-                    <img
-                      src={
-                        BASE_URL +
-                        product.productImg
-                      }
-                      alt={product.productName}
-                      width="50"
-                      height="50"
-                    />
-                  </td>
-                  <td>{product.productName}</td>
-                  <td>{product.productCatagory}</td>
-                  <td>{product.productPrice}</td>
-                  <td>{product.productStock}</td>
-
-                  <td>
-                    <button className="btn btn-sm btn-danger" onClick={() => {
-                      DeleteProduct(product.productId,setProducts)
-                    }}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-              
+              {products
+                .filter((product) => product.isActive)
+                .map((product, index) => (
+                  <tr key={product.productId}>
+                    <th scope="row">{index + 1}</th>
+                    <td>
+                      <img
+                        src={BASE_URL + product.productImg}
+                        alt={product.productName}
+                        width="50"
+                        height="50"
+                      />
+                    </td>
+                    <td>{product.productName}</td>
+                    <td>{product.productCatagory}</td>
+                    <td>{product.productPrice}</td>
+                    <td>{product.productStock}</td>
+                    <td className="position-relative">
+                      <button
+                        className="text-primary border-0 bg-transparent position-absolute start-0"
+                        onClick={() => handleEditClick(product)}
+                      >
+                        <FaEdit size={25} />
+                      </button>
+                      <button
+                        className="text-danger border-0 bg-transparent position-absolute end-0"
+                        onClick={() =>
+                          DeleteProduct(product.productId, setProducts)
+                        }
+                      >
+                        <MdDelete size={25} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+
+        {/* Form Section */}
         <div className="col-6 container" style={{ width: "40%" }}>
           <h3 className="text-center alert alert-info container ms-5">
-            Add New Product
+            {isEditMode ? "Edit Product" : "Add New Product"}
           </h3>
-          <form className="w-75 mx-auto" onSubmit={handleAddProduct}>
+          <form className="w-75 mx-auto" onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="productCategory" className="form-label">
                 Product Category
@@ -103,13 +190,21 @@ const AdminPage = () => {
                 type="text"
                 className="form-control"
                 id="productCategory"
+                value={formData.productCategory}
+                onChange={handleChange}
               />
             </div>
             <div className="mb-3">
               <label htmlFor="productName" className="form-label">
                 Product Name
               </label>
-              <input type="text" className="form-control" id="productName" />
+              <input
+                type="text"
+                className="form-control"
+                id="productName"
+                value={formData.productName}
+                onChange={handleChange}
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="productDescription" className="form-label">
@@ -119,40 +214,72 @@ const AdminPage = () => {
                 type="text"
                 className="form-control"
                 id="productDescription"
+                value={formData.productDescription}
+                onChange={handleChange}
               />
             </div>
-
             <div className="mb-3">
               <label htmlFor="productPrice" className="form-label">
                 Product Price
               </label>
-              <input type="number" className="form-control" id="productPrice" />
+              <input
+                type="number"
+                className="form-control"
+                id="productPrice"
+                value={formData.productPrice}
+                onChange={handleChange}
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="productImage" className="form-label">
                 Select Product Image
               </label>
-              <input type="File" className="form-control" id="productImage" />
+              <input
+                type="file"
+                className="form-control"
+                id="productImage"
+                onChange={handleChange}
+              />
+              {formData.productImage && (
+                <img
+                  src={URL.createObjectURL(formData.productImage)}
+                  alt="Preview"
+                  width={80}
+                  height={80}
+                  className="mt-2"
+                />
+              )}
             </div>
             <div className="mb-3">
-              <label htmlFor="productQuantity" className="form-label">
+              <label htmlFor="productStock" className="form-label">
                 Product Stock
               </label>
               <input
                 type="number"
                 className="form-control"
-                id="productQuantity"
+                id="productStock"
+                value={formData.productStock}
+                onChange={handleChange}
               />
             </div>
-            <button type="submit" className="btn btn-primary">
-              Add Product
+            <button type="submit" className="btn btn-primary me-2">
+              {isEditMode ? "Save Product" : "Add Product"}
             </button>
+            {isEditMode && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            )}
           </form>
-        <UpdateStatus/>
+          <UpdateStatus />
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </>
   );
 };

@@ -31,3 +31,19 @@ export const DeleteProduct = async (productId, setProducts) => {
     GetProducts(setProducts)
 }
 
+export const UpdateProduct = async (UpdatedProduct, productId, setProducts) => {
+  const formData = new FormData();
+  formData.append("ProductCatagory", UpdatedProduct.ProductCatagory);
+  formData.append("ProductName", UpdatedProduct.ProductName);
+  formData.append("ProductDescription", UpdatedProduct.ProductDescription);
+  formData.append("ProductPrice", UpdatedProduct.ProductPrice);
+  formData.append("ProductImg", UpdatedProduct.ProductImg);
+  formData.append("ProductStock", UpdatedProduct.ProductStock);
+  const res = await axios.put(`${BASE_URL}/api/Products/${productId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+    GetProducts(setProducts)
+}

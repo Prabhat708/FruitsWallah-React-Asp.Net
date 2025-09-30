@@ -4,8 +4,8 @@ import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { getAddress } from "../services/ManageAddress";
+import { getUserDeatails } from "../services/HandleLoginLogout";
 
 
 const ProfilePage = () => {
@@ -13,19 +13,11 @@ const ProfilePage = () => {
   const [address,setAddresses]=useState([])
   const navigate = useNavigate();
   useEffect(() => {
-        const token= localStorage.getItem("Token");
-        if (token==null) {
-          navigate("/login");
-        }
-      }, []);
-  useEffect(() => {
     getUser()
     getAddress(setAddresses)
   }, []);
   const getUser = async () => {
-    const UserId = localStorage.getItem("UserId")
-    const res = await axios.get(`https://localhost:7293/api/Users/${UserId}`);
-    setUser(res.data)
+    getUserDeatails(setUser);
   }
   const [activeItem, setActiveItem] = useState("Personal details");
  const add = address.filter((a) => a.isPrimary == true);

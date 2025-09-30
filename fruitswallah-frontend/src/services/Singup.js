@@ -1,5 +1,4 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export const handleSignUp = async (data, setData) => {
@@ -14,9 +13,6 @@ export const handleSignUp = async (data, setData) => {
       cpassword: "",
     })
       localStorage.setItem("Token", res.data)
-      const decode = jwt_decode(res.data);
-      const userid = decode.UserId;
-      localStorage.setItem("UserId", userid);
      return {status:true,Username:Username}
   }
     catch (e) {
@@ -24,8 +20,6 @@ export const handleSignUp = async (data, setData) => {
       
     return;
   }
-    
-  
 };
 
 

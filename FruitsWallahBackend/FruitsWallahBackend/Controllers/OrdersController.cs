@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 namespace FruitsWallahBackend.Controllers
@@ -27,8 +28,9 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
         {
-            var orders = await (from o in _context.Orders join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId select new { o.OrderId, ot.OrderStatus }).ToListAsync();
-            return Ok(orders);
+            var orders = await (from ot  in _context.OrderTrackers  select new {ot.OrderId,ot.OrderStatus}).ToListAsync();
+            var filterOrders = orders.Where( ot => ot.OrderStatus.Count<5).OrderByDescending(ot=>ot.OrderStatus.Count).ToList();
+                return Ok(filterOrders);
         }
         // GET: api/Orders/5
         [Authorize]

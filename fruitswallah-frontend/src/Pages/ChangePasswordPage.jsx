@@ -5,16 +5,9 @@ import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { HandlePasswordChange } from "../services/HandleLoginLogout";
 import { sidebarItems } from "../data/Sidebar";
-import { useNavigate } from "react-router-dom";
 
 const ChangePasswordPage = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-        const token= localStorage.getItem("Token");
-        if (token==null) {
-          navigate("/login");
-        }
-      }, []);
+
   const [data, setData] = useState({
     Password: "",
     newPassword: "",

@@ -1,7 +1,14 @@
 import axios from "axios";
-const UserId = localStorage.getItem("UserId");
-const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+import jwt_Decode from "jwt-decode";
+
+ 
 const token = localStorage.getItem("Token");
+var UserId;
+if(token!=null){
+
+  UserId = jwt_Decode(token)?.UserId || null;
+}
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export const getAddress = async (setAddresses) => {
   const res = await axios.get(`${BASE_URL}/api/Addresses/${UserId}`, {
@@ -87,7 +94,6 @@ export const makePrimary = async (address, setAddresses, setShowPopup) => {
     setTimeout(() => {
       setShowPopup(false);
     }, 2000);
-    console.log(res.data);
     return { status: true, message: res.data };
   } catch (e) {
     setShowPopup(true);
