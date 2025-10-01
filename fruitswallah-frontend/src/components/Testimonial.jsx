@@ -4,7 +4,6 @@ import review from "../assets/review.png";
 import CustomerReview from "./CustomerReview";
 import Carousel from "react-multi-carousel";
 import { GetReviews, PostReview } from "../services/ReviewController";
-import SuccessMessage from "./SuccessMessage";
 import AlertMessage from "./AlertMessage";
 const Testimonial = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -12,6 +11,8 @@ const Testimonial = () => {
   const [data, setData] = useState({
     comment: "",
   });
+  const [deleteRes, setDeleteRes] = useState({});
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   }
@@ -53,6 +54,9 @@ const Testimonial = () => {
               <h1 className="text-success mb-2 display-7">Our Testimonial</h1>
               <h2 className="display-7 mb-5 text-dark">Our Client Saying!</h2>
             </div>
+            {showDeletePopup && (
+              <AlertMessage status={deleteRes.status} message={deleteRes.message} />
+            )}
             <Carousel
               responsive={responsive}
               infinite={true}
@@ -66,7 +70,15 @@ const Testimonial = () => {
               itemClass="px-2"
             >
               {Reviews.map((review, index) => {
-                return <CustomerReview key={index} review={review} />;
+                return (
+                  <CustomerReview
+                    key={index}
+                    review={review}
+                    setReviews={setReviews}
+                    setDeleteRes={setDeleteRes}
+                    setShowDeletePopup={setShowDeletePopup}
+                  />
+                );
               })}
             </Carousel>
           </div>

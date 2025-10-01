@@ -8,6 +8,7 @@ import AlertMessage from "../components/AlertMessage";
 const ContactPage = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [res, setRes] = useState({});
+  const [sending, setSending] = useState(false);
   const [contactData, setContactData] = useState({
     Name: "",
     Email: "",
@@ -20,13 +21,15 @@ const ContactPage = () => {
     setContactData({ ...contactData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
+    setSending(true);
     e.preventDefault();
     if (!contactData.Name || !contactData.Email || !contactData.PhoneNumber || !contactData.OrderNumber || !contactData.Subject || !contactData.Desc) {
       alert("Please fill all fields");
       return;
     }
    
-    setRes(await SendMsg(contactData,setShowPopup))
+    setRes(await SendMsg(contactData, setShowPopup))
+    setSending(false);
     setContactData({
       Name: "",
       Email: "",
@@ -171,7 +174,7 @@ const ContactPage = () => {
                 className="btn btn-success"
                 onClick={handleSubmit}
               >
-                Send
+                {sending ? "Sending..." : "Send Message"}
               </button>
             </div>
           </div>

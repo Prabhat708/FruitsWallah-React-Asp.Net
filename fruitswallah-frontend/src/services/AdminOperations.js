@@ -33,17 +33,24 @@ export const DeleteProduct = async (productId, setProducts) => {
 
 export const UpdateProduct = async (UpdatedProduct, productId, setProducts) => {
   const formData = new FormData();
+
   formData.append("ProductCatagory", UpdatedProduct.ProductCatagory);
   formData.append("ProductName", UpdatedProduct.ProductName);
   formData.append("ProductDescription", UpdatedProduct.ProductDescription);
   formData.append("ProductPrice", UpdatedProduct.ProductPrice);
-  formData.append("ProductImg", UpdatedProduct.ProductImg);
   formData.append("ProductStock", UpdatedProduct.ProductStock);
-  const res = await axios.put(`${BASE_URL}/api/Products/${productId}`, formData, {
+
+  // Only append ProductImg if a new image is selected
+  if (UpdatedProduct.ProductImg) {
+    formData.append("ProductImg", UpdatedProduct.ProductImg);
+  }
+
+  await axios.put(`${BASE_URL}/api/Products/${productId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${token}`,
     },
   });
-    GetProducts(setProducts)
-}
+
+  GetProducts(setProducts);
+};

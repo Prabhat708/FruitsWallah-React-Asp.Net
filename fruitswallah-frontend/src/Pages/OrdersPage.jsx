@@ -24,8 +24,13 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    GetOrders(setOrders)
+    console.log("Fetching orders...");
+    getdata();
   }, []);
+  const getdata = () => {
+    console.log("Inside getdata");
+       GetOrders(setOrders);
+  }
 
 const [currentPage, setCurrentPage] = useState(1);
 const [postPerPage, setPostPerPage] = useState(4);

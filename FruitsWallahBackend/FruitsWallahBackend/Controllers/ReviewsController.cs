@@ -23,15 +23,14 @@ namespace FruitsWallahBackend.Controllers
             _context = context;
         }
 
-        // GET: api/Reviews
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reviews>>> GetReviews()
         {
             var reviews= await (from r in _context.Reviews join u in _context.Users on r.UserId equals u.UserId select new {r.ReviewId,u.Name,r.Review,r.UserId}).ToListAsync();
             return Ok(reviews);
         }
+
         [Authorize]
-        // GET: api/Reviews/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reviews>> GetReviews(int id)
         {
@@ -45,8 +44,7 @@ namespace FruitsWallahBackend.Controllers
             return reviews;
         }
 
-        // PUT: api/Reviews/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReviews(int id, Reviews reviews)
@@ -77,8 +75,6 @@ namespace FruitsWallahBackend.Controllers
             return Ok("Thanks for sharing your thoughts");
         }
 
-        // POST: api/Reviews
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Reviews>> PostReviews(Reviews reviews)
@@ -89,7 +85,6 @@ namespace FruitsWallahBackend.Controllers
             return Ok("Thanks for sharing your thoughts");
         }
 
-        // DELETE: api/Reviews/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReviews(int id)
         {
@@ -102,7 +97,7 @@ namespace FruitsWallahBackend.Controllers
             _context.Reviews.Remove(reviews);
             await _context.SaveChangesAsync();
 
-            return Ok("Thanks for sharing your thoughts");
+            return Ok("Your Review is deleted successfully! Please share your thoughts again");
         }
 
         private bool ReviewsExists(int id)

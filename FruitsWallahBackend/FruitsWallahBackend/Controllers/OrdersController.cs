@@ -31,7 +31,7 @@ namespace FruitsWallahBackend.Controllers
             var orders = await (from ot  in _context.OrderTrackers  select new {ot.OrderId,ot.OrderStatus}).ToListAsync();
             var filterOrders = orders.Where( ot => ot.OrderStatus.Count<5).OrderByDescending(ot=>ot.OrderStatus.Count).ToList();
                 return Ok(filterOrders);
-        }
+        } 
         // GET: api/Orders/5
         [Authorize]
         [HttpGet("{UserId}")]
@@ -131,11 +131,13 @@ namespace FruitsWallahBackend.Controllers
                         OrderId = order.OrderId,
                         ProductId = cart.ProductId,
                         ProductName = product?.ProductName,
-                        ProductPrice = product.ProductPrice,
+                        ProductPrice = product?.ProductPrice ?? 0,
                         ProductQty = cart.ProductQuantity,
-                        ProductImg = product.ProductImg,
-                        ShipingCharge = product.ProductPrice * cart.ProductQuantity >= 300 ? 0 : 50,
-                        TotalPrice = product.ProductPrice * cart.ProductQuantity >= 300 ? product.ProductPrice * cart.ProductQuantity : product.ProductPrice * cart.ProductQuantity + 50,
+                        ProductImg = product?.ProductImg,
+                        ShipingCharge = product?.ProductPrice * cart.ProductQuantity >= 300 ? 0 : 50,
+                        TotalPrice = product != null && product.ProductPrice * cart.ProductQuantity >= 300
+                            ? product.ProductPrice * cart.ProductQuantity
+                            : product != null ? product.ProductPrice * cart.ProductQuantity + 50 : 0,
                         TransactionType = orders.TransactionType,
                     };
                     _context.Add(OrderItem);
@@ -194,7 +196,10 @@ namespace FruitsWallahBackend.Controllers
                         OrderStatus = ["Placed"]
                     };
                     _context.Add(OrderTracker);
-                    product.ProductStock -= cart.ProductQuantity;
+                    if (product != null)
+                    {
+                        product.ProductStock -= cart.ProductQuantity;
+                    }
                     await _context.SaveChangesAsync();
                 }
             }
@@ -206,24 +211,28 @@ namespace FruitsWallahBackend.Controllers
 
         {
             var paymentSettings = _configuration.GetSection("Razorpay");
-            RazorpayClient client = new RazorpayClient(paymentSettings["Key"], paymentSettings["Secret"]);
-            Dictionary<string, object> options = new()
+            var result = await Task.Run(() =>
             {
-                { "amount", request.Amount*100 },  // in paise
-                { "currency", "INR" },
-                { "receipt", Guid.NewGuid().ToString() },
-                { "payment_capture", 1 } // auto capture
-            };
-            Order order = client.Order.Create(options);
-            var orderId = order.Attributes["id"].ToString();
-            var amount = Convert.ToInt32(order.Attributes["amount"]);
-            var currency = order.Attributes["currency"].ToString();
-            return Ok(new
-            {
-                orderId,
-                amount,
-                currency
+                RazorpayClient client = new RazorpayClient(paymentSettings["Key"], paymentSettings["Secret"]);
+                Dictionary<string, object> options = new()
+                {
+                    { "amount", request.Amount*100 },  // in paise
+                    { "currency", "INR" },
+                    { "receipt", Guid.NewGuid().ToString() },
+                    { "payment_capture", 1 } // auto capture
+                };
+                Order order = client.Order.Create(options);
+                var orderId = order.Attributes["id"].ToString();
+                var amount = Convert.ToInt32(order.Attributes["amount"]);
+                var currency = order.Attributes["currency"].ToString();
+                return new
+                {
+                    orderId,
+                    amount,
+                    currency
+                };
             });
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("Inovice{transactionId}")]

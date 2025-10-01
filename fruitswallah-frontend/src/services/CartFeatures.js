@@ -10,6 +10,7 @@ if(token!=null){
   UserId = jwt_decode(token)?.UserId || null;
 }
 export const getCartItems = async (setCartItems) => {
+  console.log("getting cart items"+ token);
   if (token==null) {
     return;
   }

@@ -8,16 +8,12 @@ namespace FruitsWallahBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OTPController : ControllerBase
+    public class OTPController(ISendEmail sendEmail, FruitsWallahDbContext context, IEncryption encryption) : ControllerBase
 
     {
-        public readonly ISendEmail sendEmail;
-        private readonly FruitsWallahDbContext _context;
-        public OTPController(ISendEmail sendEmail, FruitsWallahDbContext context)
-        {
-            this.sendEmail = sendEmail;
-            _context = context;
-        }
+        public readonly ISendEmail sendEmail = sendEmail;
+        private readonly FruitsWallahDbContext _context = context;
+        private readonly IEncryption encryption = encryption;
 
         [HttpPost]
         public async Task<IActionResult> SendOTP(OtpGen Email)
@@ -31,9 +27,14 @@ namespace FruitsWallahBackend.Controllers
             {
                 return BadRequest("User Alredy Exists. Please! Login");
             }
+            var otp = OTP();
+            var subject = "OTP for Registration at fruitsWallah";
+            var body = $"<h2> This email is for Registration at FruitsWallah. Please don't share the otp with anyone.<br/> Your OTP is :{otp}<h2/>";
             try
             {
-                return Ok(await sendEmail.SendEmails(Email.Email, "Registraion"));
+                await sendEmail.SendEmails(Email.Email, subject,body);
+                var encryptedOtp= encryption.EncryptOTP(otp);
+                return Ok(encryptedOtp);
             }
             catch (Exception ex)
             {
@@ -52,15 +53,14 @@ namespace FruitsWallahBackend.Controllers
             {
                 return BadRequest("No User Found With this mail");
             }
+            var otp = OTP();
+            var subject = "OTP for Reset Password at fruitsWallah";
+            var body = $"<h2> This email is for Reset Password at FruitsWallah. Please don't share the otp with anyone.<br/> Your OTP is :{otp}<h2/>";
             try
             {
-                var encryptotp = await sendEmail.SendEmails(Email.Email,"Reset Password");
-                if (encryptotp == null)
-                {
-                    return BadRequest("encrypted otp is null");
-                }
-              
-                return Ok(encryptotp);
+                await sendEmail.SendEmails(Email.Email, subject, body);
+                var encryptedOtp = encryption.EncryptOTP(otp);
+                return Ok(encryptedOtp);
             }
             catch (Exception ex)
             {
@@ -68,9 +68,17 @@ namespace FruitsWallahBackend.Controllers
             }
 
         }
+        private string OTP()
+        {
+            Random random = new Random();
+            string otp = random.Next(0, 1000000).ToString("D6");
+            return otp;
+        }
     }
     public class OtpGen
     {
         public string? Email { get; set; }
     }
+
+
 }

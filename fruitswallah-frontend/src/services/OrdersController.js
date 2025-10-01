@@ -6,15 +6,16 @@ import jwt_Decode from "jwt-decode";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const Gateway_Key = import.meta.env.VITE_KEY;
-const token = localStorage.getItem("Token")||null;
-var UserId;
-if(token!=null){
-
-  UserId = jwt_Decode(token)?.UserId || null;
-}
 
 export const GetOrders = async (setOrders) => {
+  const token = localStorage.getItem("Token")||null;
+  var UserId;
+  if(token!=null){
+    
+    UserId = jwt_Decode(token)?.UserId || null;
+  }
   if (!UserId) {
+    console.log("UserId not found");
     return;
   }
   try {

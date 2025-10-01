@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
+using FruitsWallahBackend.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,39 +15,22 @@ namespace FruitsWallahBackend.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class ContactController(IConfiguration config) : ControllerBase
+    public class ContactController(ISendEmail sendEmail) : ControllerBase
     {
-        
-        private readonly IConfiguration _config = config;
+       
+        private readonly ISendEmail _sendEmail = sendEmail;
         
         [HttpPost]
         public async Task<ActionResult> ContactFrom(ContactDTO contact)
         {
             try
             {
-                var emailSettings = _config.GetSection("EmailSettings");
-                var from = emailSettings["From"];
-                var smtpServer = emailSettings["SmtpServer"];
-                var port = int.Parse(emailSettings["Port"]);
-                var username = emailSettings["Username"];
-                var password = emailSettings["Password"];
+               
 
                 var subject = $"📩 New Contact Form Submission: {contact.Subject}";
-                var body = $@"
-                👤 Name: {contact.Name}
-                📧 Email: {contact.Email}
-                📞 Phone: {contact.PhoneNumber}
-                🧾 Order No.: {contact.OrderNumber}
-                📝 Subject: {contact.Subject}
-                💬 Message: {contact.Desc}";
+                var body = $"<h2><br/>👤 Name: {contact.Name}<br/>📧 Email: {contact.Email}<br/>📞 Phone: {contact.PhoneNumber}<br/>🧾 Order No.: {contact.OrderNumber}<br/>📝 Subject: {contact.Subject}<br/>💬 Message: {contact.Desc}<h2/>";
 
-                var smtp = new SmtpClient(smtpServer, port)
-                {
-                    Credentials = new NetworkCredential(username, password),
-                    EnableSsl = true
-                };
-
-                smtp.Send(from, from, subject, body);
+                await _sendEmail.SendEmails("kapil902677@gmail.com", subject, body);
 
                 return Ok("Message sent successfully");
             }
