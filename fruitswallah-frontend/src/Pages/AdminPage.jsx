@@ -26,12 +26,18 @@ const AdminPage = () => {
     productPrice: "",
     productStock: "",
     productImage: null,
+    existingImage: "", // Track existing image during edit
   });
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("Token");
+    if (!token) {
+      navigate("/");
+      return;
+    }
+
     const decode = jwtDecode(token);
     if (decode.isAdmin === "False") {
       navigate("/");
@@ -67,7 +73,7 @@ const AdminPage = () => {
     }
 
     if (isEditMode && currentProduct) {
-      await UpdateProduct (
+      await UpdateProduct(
         productPayload,
         currentProduct.productId,
         setProducts
@@ -84,6 +90,7 @@ const AdminPage = () => {
       productPrice: "",
       productStock: "",
       productImage: null,
+      existingImage: "",
     });
     setIsEditMode(false);
     setCurrentProduct(null);
@@ -98,7 +105,8 @@ const AdminPage = () => {
       productDescription: product.productDescription,
       productPrice: product.productPrice,
       productStock: product.productStock,
-      productImage: null, // Only update if new image is selected
+      productImage: null,
+      existingImage: product.productImg,
     });
   };
 
@@ -112,6 +120,7 @@ const AdminPage = () => {
       productPrice: "",
       productStock: "",
       productImage: null,
+      existingImage: "",
     });
   };
 
@@ -127,13 +136,13 @@ const AdminPage = () => {
           <table className="table table-bordered ms-5">
             <thead>
               <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Image</th>
-                <th scope="col">Name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Action</th>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -243,7 +252,16 @@ const AdminPage = () => {
               {formData.productImage && (
                 <img
                   src={URL.createObjectURL(formData.productImage)}
-                  alt="Preview"
+                  alt="New Preview"
+                  width={80}
+                  height={80}
+                  className="mt-2"
+                />
+              )}
+              {!formData.productImage && formData.existingImage && (
+                <img
+                  src={BASE_URL + formData.existingImage}
+                  alt="Existing"
                   width={80}
                   height={80}
                   className="mt-2"

@@ -46,14 +46,51 @@ namespace FruitsWallahBackend.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducts(int id, Products products)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> PutProducts(int id, [FromForm] ProductDTO products)
         {
-            if (id != products.ProductId)
-            {
-                return BadRequest();
-            }
+            
 
-            _context.Entry(products).State = EntityState.Modified;
+            var existingProduct = await _context.Products.FindAsync(id);
+            if (existingProduct == null)
+                return NotFound("Product not found.");
+
+            // Update basic fields
+            existingProduct.ProductName = products.ProductName;
+            existingProduct.ProductCatagory = products.ProductCatagory;
+            existingProduct.ProductDescription = products.ProductDescription;
+            existingProduct.ProductPrice = products.ProductPrice;
+            existingProduct.ProductStock = products.ProductStock;
+
+            // Handle new image upload if provided
+            if (products.ProductImg != null && products.ProductImg.Length > 0)
+            {
+                var uploadsFolder = Path.Combine("wwwroot", "ProductImages");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var uniqueFileName = Path.GetFileNameWithoutExtension(products.ProductImg.FileName)
+                                     + DateTime.Now.ToString("yyyyMMdd_HHmmss")
+                                     + Path.GetExtension(products.ProductImg.FileName);
+                var imagePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await products.ProductImg.CopyToAsync(fileStream);
+                }
+
+                // Optional: Delete the old image
+                if (!string.IsNullOrEmpty(existingProduct.ProductImg))
+                {
+                    var oldImagePath = Path.Combine("wwwroot", existingProduct.ProductImg.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                // Save relative path
+                existingProduct.ProductImg = Path.Combine("ProductImages", uniqueFileName).Replace("\\", "/");
+            }
 
             try
             {
@@ -61,18 +98,15 @@ namespace FruitsWallahBackend.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductsExists(id))
-                {
+                if (!_context.Products.Any(p => p.ProductId == id))
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return NoContent();
         }
+
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

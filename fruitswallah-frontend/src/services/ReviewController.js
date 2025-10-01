@@ -61,11 +61,17 @@ export const PostReview = async (data, setReviews, setShowPopup) => {
   return { status: true, message: res.data  };
 };
 
-export const DeleteReview = async (reviewId,setReviews) => {
-    const res = await axios.delete(`${BASE_URL}/api/Reviews/${reviewId}}`, {
+export const DeleteReview = async (reviewId, setReviews) => {
+  try {
+    const res = await axios.delete(`${BASE_URL}/api/Reviews/${reviewId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    GetReviews(setReviews);
+    GetReviews(setReviews);;
+    console.log("Delete response inside try:", res.data);
+    return { status: true, message: res.data  };
+  } catch (error) {
+    return { status: false, message: "Failed to delete review."  };
+  }
 }
