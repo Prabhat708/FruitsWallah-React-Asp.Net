@@ -1,8 +1,9 @@
 import axios from "axios";
+import useAuthStore from "../Stores/AuthStore";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const token = localStorage.getItem("Token");
 
 export const GetSearchedProducts = async (search, setProducts) => {
+  const { token } = useAuthStore.getState();
     if (search === "") {
         return;
     }

@@ -1,6 +1,7 @@
 
 using DocumentFormat.OpenXml.Office2016.Word.Symex;
 using FruitsWallahBackend.Services;
+using FruitsWallahBackend.Services.Iservices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

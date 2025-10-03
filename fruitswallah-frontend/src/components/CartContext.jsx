@@ -1,21 +1,36 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { getCartItems } from '../services/CartFeatures';
+import React, { createContext, use, useContext, useEffect, useState } from "react";
+import { getCartItems } from "../services/CartFeatures";
+import useAuthStore from "../Stores/AuthStore";
+
 
 const CartContext = createContext();
+
 export const useCart = () => useContext(CartContext);
+
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems ] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+
+  const { token, UserId } = useAuthStore();
 
   useEffect(() => {
-    getCartItems(setCartItems);
-  }, []);
-    return (
+    if (!token || !UserId) {
+      setCartItems([]);
+      return;
+    }
 
-        <CartContext.Provider value={{ cartItems, setCartItems }}>
-          {children}
-        </CartContext.Provider>
+    const fetchCart = async () => {
+      const data = await getCartItems(setCartItems);
+      if (data) {
+        setCartItems(data);
+      }
+    };
 
-    );
+    fetchCart();
+  }, [token, UserId]); 
+
+  return (
+    <CartContext.Provider value={{ cartItems, setCartItems }}>
+      {children}
+    </CartContext.Provider>
+  );
 };
-
-

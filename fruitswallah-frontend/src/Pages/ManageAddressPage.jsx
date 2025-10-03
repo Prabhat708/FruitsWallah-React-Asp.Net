@@ -11,13 +11,13 @@ import {
 } from "../services/ManageAddress";
 import { sidebarItems } from "../data/Sidebar";
 import AlertMessage from "../components/AlertMessage";
+import useAuthStore from "../Stores/AuthStore";
 
 const ManageAddressPage = () => {
   const [res,setRes]=useState({})
   const [showPopup, setShowPopup] = useState(false);
-  const UserId = localStorage.getItem("UserId");
   const [data, setData] = useState({
-    UserId: UserId,
+    UserId:"",
     UserName: "",
     HouseNo: "",
     Locality: "",
@@ -49,6 +49,7 @@ const ManageAddressPage = () => {
   const [Addresses, setAddresses] = useState(null);
 
   useEffect(() => {
+    useAuthStore.getState().initializeAuth();
     getAddress(setAddresses);
   }, []);
 

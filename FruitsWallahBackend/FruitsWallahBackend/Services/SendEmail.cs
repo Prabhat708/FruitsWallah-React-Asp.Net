@@ -8,6 +8,7 @@ using MySqlX.XDevAPI;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using FruitsWallahBackend.Services.Iservices;
 
 
 namespace FruitsWallahBackend.Services

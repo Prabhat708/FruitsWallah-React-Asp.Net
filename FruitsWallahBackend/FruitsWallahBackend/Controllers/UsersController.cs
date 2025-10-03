@@ -10,7 +10,7 @@ using FruitsWallahBackend.Models;
 using FruitsWallahBackend.Models.DTOModels;
 using BCrypt.Net;
 using Mysqlx;
-using FruitsWallahBackend.Services;
+using FruitsWallahBackend.Services.Iservices;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -20,11 +20,13 @@ namespace FruitsWallahBackend.Controllers
     {
         private readonly FruitsWallahDbContext _context;
         private readonly IJwtService _jwtService;
+        private readonly ISendEmail _sendEmail;
 
-        public UsersController(FruitsWallahDbContext context,IJwtService jwtService)
+        public UsersController(FruitsWallahDbContext context, IJwtService jwtService, ISendEmail sendEmail)
         {
             _context = context;
             _jwtService = jwtService;
+            _sendEmail = sendEmail;
         }
 
         // GET: api/Users
@@ -90,7 +92,7 @@ namespace FruitsWallahBackend.Controllers
             {
                 return BadRequest("Email required");
             }
-            var userEmail= await _context.Users.FirstOrDefaultAsync(u=>u.Email==user.Email);
+            var userEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
             if (userEmail != null)
             {
                 return BadRequest("User Alredy Exists");
@@ -103,7 +105,7 @@ namespace FruitsWallahBackend.Controllers
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
                 };
-                
+
                 _context.Add(user1);
                 try
                 {
@@ -113,8 +115,8 @@ namespace FruitsWallahBackend.Controllers
                 {
                     return NotFound("User Alredy Exists");
                 }
-            
-          
+
+
                 var userAuth = new UserAuth()
                 {
                     UserID = user1.UserId,
@@ -130,8 +132,23 @@ namespace FruitsWallahBackend.Controllers
                     {
                         return BadRequest();
                     }
+                    var subject = $"Welcome to Fruitswallah!";
+
+                    var body = $@"
+                        <html>
+                            <body style='font-family: Arial, sans-serif; color: #333;'>
+                                <h1>Welcome, {user1.Name}!</h1>
+                                <h2>Thank you for registering with Fruitswallah.</h2>
+                                <p>We're excited to have you with us. Enjoy a fresh and delightful shopping experience with a wide range of fruits delivered right to your doorstep.</p>
+                                <p>Happy shopping!</p>
+                                <br/>
+                                <p>– The Fruitswallah Team</p>
+                            </body>
+                        </html>";
+                    await _sendEmail.SendEmails(user1.Email,subject,body);
+
                     return Ok(token);
-                    
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,7 +160,7 @@ namespace FruitsWallahBackend.Controllers
                 return BadRequest();
             }
 
-               
+
         }
 
         // DELETE: api/Users/5

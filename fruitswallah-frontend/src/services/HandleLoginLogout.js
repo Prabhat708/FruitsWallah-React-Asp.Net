@@ -1,7 +1,6 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+import useAuthStore from "../Stores/AuthStore";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-
 
 export const HandleLogin = async (data, navigate, setShowPopup) => {
   const { email, password } = data;
@@ -14,17 +13,19 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
   }
   try {
     const res = await axios.get(`${BASE_URL}/api/Login/${email}/${password}`);
-    const decode = jwt_decode(res.data);
-    if (res.data) {
+
+   useAuthStore.getState().setAuthData(res.data);
+
+   const UserName = useAuthStore.getState().UserName;
+
+    if (UserName) {
       navigate("/home", {
         state: {
           message: "Keep shoping from FruitsWallah",
           comingFrom: "login",
-          Username: decode.UserName,
+          Username: UserName,
         },
       });
-
-      localStorage.setItem("Token", res.data);
     }
   } catch(e) {
     setShowPopup(true);
@@ -36,7 +37,7 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
 };
 
 export const HandleLogout = (navigate) => {
-  localStorage.clear();
+  useAuthStore.getState().logout();
   navigate("/home", {
     state: {
       message: "You have been logged out successfully...",
@@ -45,14 +46,14 @@ export const HandleLogout = (navigate) => {
   });
 };
 
- const token = localStorage.getItem("Token") || null;
- var UserId;
- if (token != null) {
-   UserId = jwt_decode(token)?.UserId || null;
-}
- 
+
 
 export const HandlePasswordChange = async (data) => {
+  const { token, UserId } = useAuthStore.getState();
+  if (token == null) {
+    alert("User not found. Please login again.");
+    return;
+  }
  
   const { Password, newPassword, confirmPassword } = data;
   if (newPassword != confirmPassword) {
@@ -75,6 +76,8 @@ export const HandlePasswordChange = async (data) => {
 };
 
 export const getUserDeatails = async (setUsers) => {
+ 
+  const { token,UserId } = useAuthStore.getState();
   const res = await axios.get(`${BASE_URL}/api/Users/${UserId}`, {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -2,20 +2,14 @@ import axios from "axios";
 import { getCartItems } from "./CartFeatures";
 import { PostPayment } from "./payments";
 import { getAddress } from "./ManageAddress";
-import jwt_Decode from "jwt-decode";
+import useAuthStore from "../Stores/AuthStore";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const Gateway_Key = import.meta.env.VITE_KEY;
 
 export const GetOrders = async (setOrders) => {
-  const token = localStorage.getItem("Token")||null;
-  var UserId;
-  if(token!=null){
-    
-    UserId = jwt_Decode(token)?.UserId || null;
-  }
+  const { token, UserId } = useAuthStore.getState();
   if (!UserId) {
-    console.log("UserId not found");
     return;
   }
   try {
@@ -27,6 +21,7 @@ export const GetOrders = async (setOrders) => {
     setOrders(res.data);
     return;
   } catch {
+    console.log("Error while fetching orders");
     return;
   }
 };
@@ -40,6 +35,7 @@ export const PostOrders = async (
   Amount
 ) => {
 
+  const { token, UserId } = useAuthStore.getState();
  const res=await getAddress(setAddress)
   if (res.length == 0)
   {
@@ -98,6 +94,7 @@ export const PostOrders = async (
 };
 
 export const GetAllOrders = async (setOrders) => {
+  const { token } = useAuthStore.getState();
   const res = await axios.get(`${BASE_URL}/api/Orders/`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -107,6 +104,7 @@ export const GetAllOrders = async (setOrders) => {
 };
 
 export const UpdatesStatus = async (orderId, status, setShowPopup) => {
+  const { token } = useAuthStore.getState();
   const res = await axios.put(
 `${BASE_URL}/api/OrderTrackers/${orderId},${status}`,{},
     {
@@ -122,6 +120,7 @@ export const UpdatesStatus = async (orderId, status, setShowPopup) => {
 };
 
 const getPayment = async (paymentDeatils, PaymentMethod) => {
+  const { token, UserId } = useAuthStore.getState();
   const { orderId, amount, currency } = paymentDeatils;
   var OrderData;
   return new Promise((resolve, reject) => {

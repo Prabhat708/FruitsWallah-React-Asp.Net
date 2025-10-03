@@ -6,12 +6,14 @@ import OrderTracking from "../components/orderTracking";
 import Footer from "../components/Footer";
 import { useNavigate, useParams } from "react-router-dom";
 import { GetOrders } from "../services/OrdersController";
+import useAuthStore from "../Stores/AuthStore";
 
 const SingleOrderPage = () => {
   const { OrderId } = useParams();
   const [orders, setOrders] = useState([]);
   
   useEffect(() => {
+    useAuthStore.getState().initializeAuth();
     GetOrders(setOrders); 
   }, []);
   const order = orders.find((or) => (or.orderId) == OrderId);

@@ -1,13 +1,10 @@
 import axios from "axios";
-import jwt_Decode from "jwt-decode";
+import useAuthStore from "../Stores/AuthStore";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const token = localStorage.getItem("Token") || null;
-var UserId;
-if(token!=null){
-  UserId = jwt_Decode(token)?.UserId || null;
-}
+
 export const GetPaymentId = async (setPaymentId) => {
+  const { token, UserId } = useAuthStore.getState();
     const res = await axios.get(`${BASE_URL}/api/PaymentMethods/${UserId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -16,6 +13,7 @@ export const GetPaymentId = async (setPaymentId) => {
     setPaymentId(res.data.upi||'');
 }
 export const PostPaymentId = async (Paymentdata, setPaymentId, setShowPopup) => {
+  const { token, UserId } = useAuthStore.getState();
   const payload={
     UserId: UserId,
     UPI:Paymentdata.UPI

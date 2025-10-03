@@ -1,4 +1,4 @@
-﻿namespace FruitsWallahBackend.Services
+﻿namespace FruitsWallahBackend.Services.Iservices
 {
     public interface IEncryption
     {
