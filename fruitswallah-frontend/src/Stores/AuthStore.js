@@ -9,7 +9,6 @@ const useAuthStore = create((set) => ({
 
   // ✅ Set token and decode it
     setAuthData: (token) => {
-       
     try {
       const decoded = jwt_decode(token);
         localStorage.setItem("Token", token);

@@ -35,7 +35,9 @@ const CartPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {cartItems?.map((item, index) => {
+                    {cartItems?.map((item, index) => {
+                     
+                
                     sum = sum + item.productPrice * item.productQuantity;
                     return (
                       <CartRow

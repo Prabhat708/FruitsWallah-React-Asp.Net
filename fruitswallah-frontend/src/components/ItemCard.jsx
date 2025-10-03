@@ -46,7 +46,7 @@ const ItemCard = ({ item }) => {
               ₹ {item.productPrice}/kg
             </p>
 
-            {quantity > 0 ? (
+            {quantity > 0 && item.productStock > 0 ? (
               <div className="d-flex align-items-center">
                 <button
                   className="rounded text-success border-0 fw-bold"
@@ -65,7 +65,7 @@ const ItemCard = ({ item }) => {
                 <span className="mx-2 fw-bold text-success">{quantity}</span>
                 <button
                   className="rounded text-success border-0 fw-bold"
-                  disabled={quantity == item.productStock}
+                  disabled={quantity >= item.productStock}
                   onClick={() =>
                     PlusMinusButton(
                       cartItem?.cartId,
