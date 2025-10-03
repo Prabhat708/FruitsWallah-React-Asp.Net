@@ -201,6 +201,7 @@ const AdminPage = () => {
                 id="productCategory"
                 value={formData.productCategory}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -213,6 +214,7 @@ const AdminPage = () => {
                 id="productName"
                 value={formData.productName}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -225,6 +227,7 @@ const AdminPage = () => {
                 id="productDescription"
                 value={formData.productDescription}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -237,6 +240,7 @@ const AdminPage = () => {
                 id="productPrice"
                 value={formData.productPrice}
                 onChange={handleChange}
+                required
               />
             </div>
             <div className="mb-3">
@@ -278,6 +282,8 @@ const AdminPage = () => {
                 id="productStock"
                 value={formData.productStock}
                 onChange={handleChange}
+                required
+                
               />
             </div>
             <button type="submit" className="btn btn-primary me-2">
