@@ -13,13 +13,16 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Messeage from "../components/Messeage";
 import { GetProducts } from "../services/ProductController";
+import useAuthStore from "../Stores/AuthStore";
 
 const HomePage = () => {
   const [activeSearch, setActiveSearch] = useState(false);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(8);
+  
   useEffect(() => {
+    useAuthStore.getState().initializeAuth();
     GetProducts(setProducts);
     setActiveSearch(false);
   }, []);

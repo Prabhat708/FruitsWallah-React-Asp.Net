@@ -1,22 +1,18 @@
 import axios from "axios"
-import jwt_Decode from "jwt-decode";
-
+import useAuthStore from "../Stores/AuthStore";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const token = localStorage.getItem("Token");
-var UserId = null;
-if(token!=null){
-  UserId = jwt_Decode(token)?.UserId || null;
-}
+
 export const GetReviews = async (setReviews) => {
   
-    const res = await axios.get(`${BASE_URL}/api/Reviews`
-    );
-    setReviews(res.data)
-    
+  const res = await axios.get(`${BASE_URL}/api/Reviews`
+  );
+  setReviews(res.data)
+  
 }
 
 export const PostReview = async (data, setReviews, setShowPopup) => {
+  const { token, UserId } = useAuthStore.getState();
   const { comment } = data;
   if (comment == null || comment.trim() === "") {
     setShowPopup(true);
@@ -62,14 +58,14 @@ export const PostReview = async (data, setReviews, setShowPopup) => {
 };
 
 export const DeleteReview = async (reviewId, setReviews) => {
+  const { token } = useAuthStore.getState();
   try {
     const res = await axios.delete(`${BASE_URL}/api/Reviews/${reviewId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    GetReviews(setReviews);;
-    console.log("Delete response inside try:", res.data);
+    GetReviews(setReviews);
     return { status: true, message: res.data  };
   } catch (error) {
     return { status: false, message: "Failed to delete review."  };

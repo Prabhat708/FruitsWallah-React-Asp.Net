@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Spreadsheet;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
-using FruitsWallahBackend.Services;
+using FruitsWallahBackend.Services.Iservices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Connections;
@@ -42,7 +42,7 @@ namespace FruitsWallahBackend.Controllers
             var user = await (from u in _context.Users where u.Email == Email select u).FirstOrDefaultAsync();
             if (user == null)
             {
-                return Ok("No User Found");
+                return BadRequest("No User Found");
             }
             var UserAuth = await (from UA in _context.UsersAuth where UA.UserID== user.UserId select new {UA.HashPassword}).FirstOrDefaultAsync();
             if (MatchPassword(Password, HashedPassword: UserAuth.HashPassword))

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { getAddress } from "../services/ManageAddress";
 import { getUserDeatails } from "../services/HandleLoginLogout";
+import useAuthStore from "../Stores/AuthStore";
 
 
 const ProfilePage = () => {
@@ -13,12 +14,11 @@ const ProfilePage = () => {
   const [address,setAddresses]=useState([])
   const navigate = useNavigate();
   useEffect(() => {
-    getUser()
+    useAuthStore.getState().initializeAuth();
+    getUserDeatails(setUser);
     getAddress(setAddresses)
   }, []);
-  const getUser = async () => {
-    getUserDeatails(setUser);
-  }
+ 
   const [activeItem, setActiveItem] = useState("Personal details");
  const add = address.filter((a) => a.isPrimary == true);
 

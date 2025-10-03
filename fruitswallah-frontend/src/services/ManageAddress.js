@@ -1,16 +1,9 @@
 import axios from "axios";
-import jwt_Decode from "jwt-decode";
-
- 
-const token = localStorage.getItem("Token");
-var UserId;
-if(token!=null){
-
-  UserId = jwt_Decode(token)?.UserId || null;
-}
+import useAuthStore from "../Stores/AuthStore";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 export const getAddress = async (setAddresses) => {
+  const { token, UserId } = useAuthStore.getState();
   const res = await axios.get(`${BASE_URL}/api/Addresses/${UserId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -23,8 +16,11 @@ export const getAddress = async (setAddresses) => {
 };
 
 export const addAddress = async (data, setAddresses, setShowPopup) => {
-  const { UserId, PhoneNumber, PostalCode } = data;
+  const { token,UserId } = useAuthStore.getState();
+  const { PhoneNumber, PostalCode } = data; 
+  
   if (UserId == null) {
+    alert("Please login to add address");
     return;
   } else if (PostalCode.toString().length != 6) {
     alert("Pincode must be 6 Digit");
@@ -33,6 +29,7 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
     alert("Phone Number must be 10 Digit");
     return;
   }
+  data.UserId = UserId;
   try {
     const res = await axios.post(`${BASE_URL}/api/Addresses`, data, {
       headers: {
@@ -55,6 +52,8 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
 };
 
 export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => {
+  const { token } = useAuthStore.getState();
+
   try {
     const res = await axios.delete(`${BASE_URL}/api/Addresses/${AddId}`, {
       headers: {
@@ -78,6 +77,7 @@ export const handleDeleteAddress = async (AddId, setAddresses, setShowPopup) => 
 };
 
 export const makePrimary = async (address, setAddresses, setShowPopup) => {
+  const { token } = useAuthStore.getState();
   try {
     address.isPrimary = true;
     const res = await axios.put(

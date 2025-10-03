@@ -19,16 +19,16 @@ import { GetOrders } from "../services/OrdersController";
 import { RiEBike2Fill } from "react-icons/ri";
 import Pagination from "../components/Pagination";
 import { sidebarItems } from "../data/Sidebar";
+import useAuthStore from "../Stores/AuthStore";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    console.log("Fetching orders...");
     getdata();
   }, []);
   const getdata = () => {
-    console.log("Inside getdata");
+    useAuthStore.getState().initializeAuth();
        GetOrders(setOrders);
   }
 

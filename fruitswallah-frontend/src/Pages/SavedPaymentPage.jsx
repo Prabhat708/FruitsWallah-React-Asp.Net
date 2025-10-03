@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { sidebarItems } from "../data/Sidebar";
 import SidePannel from "../components/SidePannel";
 import { GetPaymentId, PostPaymentId } from "../services/PaymentController";
+import useAuthStore from "../Stores/AuthStore";
 
 const SavedPaymentPage = () => {
   const [paymentId, setPaymentId] = useState('');
@@ -15,6 +16,7 @@ const SavedPaymentPage = () => {
   const [isActive, setIsActive] = useState(false)
   ;
   useEffect(() => {
+    useAuthStore.getState().initializeAuth();
     GetPaymentId(setPaymentId);
   }, []);
 

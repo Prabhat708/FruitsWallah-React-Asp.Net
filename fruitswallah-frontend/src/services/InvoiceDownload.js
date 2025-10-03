@@ -2,9 +2,13 @@
 import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import useAuthStore from "../Stores/AuthStore";
+
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const token = localStorage.getItem("Token");
+
 export const generateCustomInvoicePDF = async (transactionId) => {
+  const token = useAuthStore.getState().token;
+
     const res = await axios.get(
       `${BASE_URL}/api/Orders/Inovice${transactionId}`,
       {

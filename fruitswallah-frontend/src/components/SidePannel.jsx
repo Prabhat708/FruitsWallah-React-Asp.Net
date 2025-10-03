@@ -1,8 +1,10 @@
 import { CircleUserRound } from "lucide-react";
 import React from 'react'
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import useAuthStore from "../Stores/AuthStore";
 
 const SidePannel = ({sidebarItems,activeItem,setActiveItem,count=null}) => {
+  const { UserName } = useAuthStore.getState();
   return (
     <>
       <div
@@ -13,7 +15,7 @@ const SidePannel = ({sidebarItems,activeItem,setActiveItem,count=null}) => {
           <div className=" row">
             <CircleUserRound height="50px" width="50px"></CircleUserRound>
             <div className="d-flex justify-content-center fw-medium pt-2">
-             {localStorage.getItem('user')}
+              {UserName}
             </div>
           </div>
           <div className="d-flex flex-column gap-1">

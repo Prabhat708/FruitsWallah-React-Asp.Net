@@ -1,16 +1,10 @@
 import axios from "axios";
-import jwt_decode from "jwt-decode";
+import useAuthStore from "../Stores/AuthStore";
 
- 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const token = localStorage.getItem("Token") || null;
-var UserId;
-if(token!=null){
 
-  UserId = jwt_decode(token)?.UserId || null;
-}
 export const getCartItems = async (setCartItems) => {
-  console.log("getting cart items"+ token);
+  const { token, UserId } = useAuthStore.getState(); 
   if (token==null) {
     return;
   }
@@ -25,6 +19,10 @@ export const getCartItems = async (setCartItems) => {
 };
 
 export const AddToCart = async (itemId, setCartItems, setShowPopup) => {
+  const { UserId } = useAuthStore.getState();
+  if (UserId == null) {
+    return;
+  }
   const AddCart = {
     UserId: UserId,
     productId: itemId,
@@ -39,6 +37,7 @@ export const AddToCart = async (itemId, setCartItems, setShowPopup) => {
 };
 
 export const RemoveFromCart = async (cartId, setShowPopup, setCartItems) => {
+  const { token } = useAuthStore.getState();
   try {
     const res = await axios.delete(`${BASE_URL}/api/Carts/${cartId}`, {
       headers: {
