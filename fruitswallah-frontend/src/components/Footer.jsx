@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaFacebook, FaRegArrowAltCircleUp, FaRegCopyright, FaTwitter, FaYoutube } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa6";
-import jwt_decode from "jwt-decode";
 import {Link} from 'react-router-dom';
 import payment from "../assets/payment.png";
+import useAuthStore from "../Stores/AuthStore";
 const Footer = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    const token = localStorage.getItem("Token");
-    if (token) {
-      const decode = jwt_decode(token)
-      const isAdmin = decode.isAdmin;
-      setIsAdmin(isAdmin)
-    }
-  },[])
+  const isAdmin = useAuthStore((state) => state.isAdmin);
   return (
     <>
       <div className="container-fluid bg-dark text-white-50 footer pt-5 mt-5">

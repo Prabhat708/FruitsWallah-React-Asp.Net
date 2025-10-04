@@ -1,5 +1,8 @@
 
 using DocumentFormat.OpenXml.Office2016.Word.Symex;
+using DocumentFormat.OpenXml.Spreadsheet;
+using FruitsWallahBackend.Migrations;
+using FruitsWallahBackend.Models;
 using FruitsWallahBackend.Services;
 using FruitsWallahBackend.Services.Iservices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -57,6 +60,50 @@ namespace FruitsWallahBackend.Data
             builder.Services.AddScoped<ISendEmail, SendEmail>();
             builder.Services.AddScoped<IEncryption, Encryption>();
             var app = builder.Build();
+
+            //Adding a new superAdmin is there are no users(means running frist time) or sueradmins mail is not Registered as indexer any case anyone deleted from database
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<FruitsWallahDbContext>();
+                    context.Database.EnsureCreated();
+                    var admin = context.Users.FirstOrDefault(u => u.Email == "fruitswallah.in@gmail.com");
+                    if (admin != null)
+                    {
+                        if (!admin.IsAdmin)
+                        {
+                            admin.IsAdmin = true;
+                        }
+                        context.SaveChanges();
+                    }
+                    if (!context.Users.Any() || admin == null)
+                    {
+                        var SuperAdmin = new User
+                        {
+                            Email = "fruitswallah.in@gmail.com",
+                            Name = "Fruitswallah Admin",
+                            IsAdmin = true,
+                            PhoneNumber = "6389285501"
+                        };
+                        context.Users.Add(SuperAdmin);
+                        context.SaveChanges();
+                        var SuperAuth = new UserAuth
+                        {
+                            UserID = SuperAdmin.UserId,
+                            HashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword("Prabhat@123", 13)
+                        };
+                        context.Add(SuperAuth);
+                        context.SaveChanges();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

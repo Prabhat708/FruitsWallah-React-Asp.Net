@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import {  useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import CartRow from "../components/CartRow";
 import { RemoveFromCart } from "../services/CartFeatures";
 import { useCart } from "../components/CartContext";

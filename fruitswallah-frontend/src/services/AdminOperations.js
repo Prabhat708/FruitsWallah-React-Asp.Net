@@ -4,26 +4,25 @@ import useAuthStore from "../Stores/AuthStore";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-export const AddProducts = async (NewProduct,setProducts) => {
-    const formData = new FormData();
-    formData.append("ProductCatagory", NewProduct.ProductCatagory);
-    formData.append("ProductName", NewProduct.ProductName);
-    formData.append("ProductDescription", NewProduct.ProductDescription);
-    formData.append("ProductPrice", NewProduct.ProductPrice);
-    formData.append("ProductImg", NewProduct.ProductImg);
-    formData.append("ProductStock", NewProduct.ProductStock);
+export const AddProducts = async (NewProduct, setProducts) => {
+  const formData = new FormData();
+  formData.append("ProductCatagory", NewProduct.ProductCatagory);
+  formData.append("ProductName", NewProduct.ProductName);
+  formData.append("ProductDescription", NewProduct.ProductDescription);
+  formData.append("ProductPrice", NewProduct.ProductPrice);
+  formData.append("ProductImg", NewProduct.ProductImg);
+  formData.append("ProductStock", NewProduct.ProductStock);
 
   const { token } = useAuthStore.getState();
   axios.post(`${BASE_URL}/api/Products`, formData, {
-      headers: {
+    headers: {
       "Content-Type": "multipart/form-data",
-        Authorization:`Bearer ${token}`
-      },
-    });
-    
-    GetProducts(setProducts)
-}
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
+  GetProducts(setProducts);
+};
 
 export const DeleteProduct = async (productId, setProducts) => {
   const { token } = useAuthStore.getState();
@@ -32,8 +31,8 @@ export const DeleteProduct = async (productId, setProducts) => {
       Authorization: `Bearer ${token}`,
     },
   });
-    GetProducts(setProducts)
-}
+  GetProducts(setProducts);
+};
 
 export const UpdateProduct = async (UpdatedProduct, productId, setProducts) => {
   const formData = new FormData();
@@ -58,4 +57,31 @@ export const UpdateProduct = async (UpdatedProduct, productId, setProducts) => {
   });
 
   GetProducts(setProducts);
+};
+
+export const GetAllUsers = async (setUsers) => {
+  const { token } = useAuthStore.getState();
+  const res = await axios.get(`${BASE_URL}/api/Users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  setUsers(res.data);
+};
+
+export const UpdateUserRole = async (email, role,setUsers) => {
+  const { token } = useAuthStore.getState();
+
+  const res = await axios.put(
+    `${BASE_URL}/api/Users/Role/${email}/${role}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+
+  );
+  GetAllUsers(setUsers);
+  return { success: true, message: res.data }
 };

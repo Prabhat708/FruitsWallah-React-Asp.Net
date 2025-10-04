@@ -9,9 +9,10 @@ import {
 import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import useAuthStore from "../Stores/AuthStore";
+import SetAdmin from "../components/SetAdmin";
 
 const AdminPage = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -31,20 +32,13 @@ const AdminPage = () => {
 
   const navigate = useNavigate();
 
+  const isAdmin = useAuthStore((state) => state.isAdmin);
+  
+  
   useEffect(() => {
-    const token = localStorage.getItem("Token");
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
-    const decode = jwtDecode(token);
-    if (decode.isAdmin === "False") {
+    if (!isAdmin) {
       navigate("/");
     }
-  }, []);
-
-  useEffect(() => {
     GetProducts(setProducts);
   }, []);
 
@@ -302,7 +296,7 @@ const AdminPage = () => {
           <UpdateStatus />
         </div>
       </div>
-
+            <SetAdmin/>
       <Footer />
     </>
   );

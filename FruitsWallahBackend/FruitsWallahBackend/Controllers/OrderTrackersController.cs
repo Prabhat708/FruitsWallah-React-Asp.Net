@@ -27,7 +27,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpPut("{OrderId},{NewStatus}")]
         public async Task<IActionResult> PutOrderTracker(int OrderId, String NewStatus)
         {
-            Console.WriteLine(NewStatus);
+            var orderstransaction= await _context.OrderTransactions.FirstOrDefaultAsync(ot=>ot.OrderID==OrderId);
             var OrderTracker = await _context.OrderTrackers.FirstOrDefaultAsync(t => t.OrderId==OrderId);
             if (OrderTracker == null)
             {
@@ -36,7 +36,10 @@ namespace FruitsWallahBackend.Controllers
             OrderTracker?.OrderStatus?.Add(NewStatus);
             if (NewStatus =="Delivered")
             {
-               
+               if (orderstransaction?.TransactionType == "COD")
+                {
+                    orderstransaction.TransactionStatus = "PAID";
+                }
                OrderTracker.DeliveredOn=DateTime.Now;
             }
             try

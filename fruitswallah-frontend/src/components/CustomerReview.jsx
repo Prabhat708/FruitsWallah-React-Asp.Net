@@ -1,8 +1,8 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import user from "../assets/user.png";
-import jwt_Decode from "jwt-decode";
 import { MdDeleteForever } from "react-icons/md";
 import { DeleteReview } from "../services/ReviewController";
+import useAuthStore from "../Stores/AuthStore";
 
 const CustomerReview = ({
   review,
@@ -10,11 +10,7 @@ const CustomerReview = ({
   setDeleteRes,
   setShowDeletePopup,
 }) => {
-  const token = localStorage.getItem("Token");
-  var UserId = null;
-  if (token != null) {
-    UserId = jwt_Decode(token)?.UserId || null;
-  }
+ const UserId = useAuthStore((state) => state.UserId);
   const DeletedReview = async (reviewId) => {
     const result = await DeleteReview(reviewId, setReviews);
     setDeleteRes(result);

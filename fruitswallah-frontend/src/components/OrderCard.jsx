@@ -32,7 +32,12 @@ const OrderCard = ({ order, borderColor, getStatusIcon }) => {
 
           {order?.orderDate && (
             <p className="text-muted small mb-3">
-              Ordered On : {order?.orderDate.split("T")[0]}
+              Ordered On :{" "}
+              {new Date(order?.orderDate).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
             </p>
           )}
 
