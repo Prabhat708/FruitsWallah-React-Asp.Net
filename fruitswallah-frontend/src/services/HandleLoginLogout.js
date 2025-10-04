@@ -11,11 +11,14 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
     alert("Password must be at least 6 characters long");
     return;
   }
+  const payload = {
+    Email: email,
+    Password: password,
+  };
+
   try {
-    const res = await axios.get(`${BASE_URL}/api/Login/${email}/${password}`);
-
+   const res = await axios.post(`${BASE_URL}/api/Login`, payload);
    useAuthStore.getState().setAuthData(res.data);
-
    const UserName = useAuthStore.getState().UserName;
 
     if (UserName) {
@@ -86,3 +89,4 @@ export const getUserDeatails = async (setUsers) => {
   setUsers(res.data);
   return res.data;
 };
+

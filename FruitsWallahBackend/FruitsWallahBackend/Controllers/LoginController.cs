@@ -8,17 +8,7 @@ using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using Org.BouncyCastle.Pqc.Crypto.Crystals.Dilithium;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -35,17 +25,17 @@ namespace FruitsWallahBackend.Controllers
             _jwtService = jwtService;
         }
 
-        // GET: api/Login/
-        [HttpGet("{Email}/{Password}")]
-        public async Task<ActionResult<UserAuth>> GetUserAuth(string Email,string Password)
+        
+        [HttpPost]
+        public async Task<ActionResult<UserAuth>> GetUserAuth(LoginDTO loginDTO)
         {
-            var user = await (from u in _context.Users where u.Email == Email select u).FirstOrDefaultAsync();
+            var user = await (from u in _context.Users where u.Email == loginDTO.Email select u).FirstOrDefaultAsync();
             if (user == null)
             {
                 return BadRequest("No User Found");
             }
             var UserAuth = await (from UA in _context.UsersAuth where UA.UserID== user.UserId select new {UA.HashPassword}).FirstOrDefaultAsync();
-            if (MatchPassword(Password, HashedPassword: UserAuth.HashPassword))
+            if (MatchPassword(loginDTO.Password, HashedPassword: UserAuth?.HashPassword))
             {
                 var token = _jwtService.GenerateToken(user.UserId, user.Name, user.IsAdmin);
                 return Ok(token);
@@ -123,6 +113,12 @@ namespace FruitsWallahBackend.Controllers
         private static bool MatchPassword(string Password, string HashedPassword)
         {
             return BCrypt.Net.BCrypt.EnhancedVerify(Password, HashedPassword);
+        }
+
+        public class LoginDTO
+        {
+            public string? Email { get; set; }
+            public string? Password { get; set; }
         }
     }
 }

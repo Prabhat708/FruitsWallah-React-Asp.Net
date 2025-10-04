@@ -20,7 +20,14 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
       ? order.orderStatus.length
       : order.orderStatus.length + 0.6;
   const orderNumber = order.orderId;
-  const expectedArrival = new Date(order.deliveredOn).toLocaleDateString();
+  const expectedArrival = new Date(order.deliveredOn).toLocaleDateString(
+    "en-GB",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }
+  );
   const today = new Date();
   const expectedDate = new Date(order.deliveredOn);
   expectedDate.setHours(0, 0, 0, 0);
@@ -77,9 +84,9 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
           </div>
           <div className="col-md-6 text-md-end">
                       <div className="small text-muted">
-                          {currentStep==5? <>Delivered On :{expectedArrival}</>:
+                          {currentStep==5? <>Delivered On : {expectedArrival}</>:
                 <>Expected Arrival: {expectedArrival}</>}
-              {expectedDate < today && <p className="mb-0">Sorry for delay in delivery.</p>}
+              {expectedDate < today && currentStep <5 && <p className="mb-0">Sorry for delay in delivery.</p>}
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ using FruitsWallahBackend.Models.DTOModels;
 using BCrypt.Net;
 using Mysqlx;
 using FruitsWallahBackend.Services.Iservices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -33,6 +34,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
+
             return await _context.Users.ToListAsync();
         }
 
@@ -145,7 +147,7 @@ namespace FruitsWallahBackend.Controllers
                                 <p>– The Fruitswallah Team</p>
                             </body>
                         </html>";
-                    await _sendEmail.SendEmails(user1.Email,subject,body);
+                    await _sendEmail.SendEmails(user1.Email, subject, body);
 
                     return Ok(token);
 
@@ -177,6 +179,18 @@ namespace FruitsWallahBackend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpPut("Role/{email}/{role}")]
+        public async Task<IActionResult> ChangeRole(string email,string role)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                return NotFound("No User Found");
+            user.IsAdmin = (role == "Admin");
+            await _context.SaveChangesAsync();
+            return Ok("Role Updated");
         }
 
         private bool UserExists(int id)

@@ -54,6 +54,7 @@ namespace FruitsWallahBackend.Controllers
                 return BadRequest("No User Found With this mail");
             }
             var otp = OTP();
+            Console.WriteLine(otp);
             var subject = "OTP for Reset Password at fruitsWallah";
             var body = $"<h2> This email is for Reset Password at FruitsWallah. Please don't share the otp with anyone.<br/> Your OTP is :{otp}<h2/>";
             try

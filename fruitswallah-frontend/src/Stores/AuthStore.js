@@ -6,8 +6,8 @@ const useAuthStore = create((set) => ({
   token:  localStorage.getItem("Token") || null,
   UserId: null,
   UserName: null,
+  isAdmin: null,
 
-  // ✅ Set token and decode it
     setAuthData: (token) => {
     try {
       const decoded = jwt_decode(token);
@@ -16,6 +16,7 @@ const useAuthStore = create((set) => ({
         token,
         UserId: decoded?.UserId || null,
         UserName: decoded?.UserName || null,
+        isAdmin: decoded?.isAdmin || null,
       });
     } catch (error) {
       set({ token: null, UserId: null, UserName: null });
@@ -23,16 +24,17 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ✅ Initialize from localStorage
   initializeAuth: () => {
     const token = localStorage.getItem("Token");
+
     if (!token) return;
     try {
-        const decoded = jwt_decode(token);
+      const decoded = jwt_decode(token);
       set({
         token,
         UserId: decoded?.UserId || null,
         UserName: decoded?.UserName || null,
+        isAdmin: decoded?.isAdmin || null,
       });
     } catch (err) {
       localStorage.removeItem("Token");
