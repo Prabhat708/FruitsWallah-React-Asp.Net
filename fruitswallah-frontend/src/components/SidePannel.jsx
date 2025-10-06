@@ -13,7 +13,7 @@ const SidePannel = ({sidebarItems,activeItem,setActiveItem,count=null}) => {
       >
         <div className="p-4">
           <div className=" row">
-            <CircleUserRound height="50px" width="50px"></CircleUserRound>
+            <CircleUserRound height="50px" width="50px"/>
             <div className="d-flex justify-content-center fw-medium pt-2">
               {UserName}
             </div>

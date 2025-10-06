@@ -16,22 +16,119 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 namespace FruitsWallahBackend.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController(FruitsWallahDbContext context,IConfiguration configuration) : ControllerBase
+    public class OrdersController(FruitsWallahDbContext context, IConfiguration configuration) : ControllerBase
     {
         private readonly FruitsWallahDbContext _context = context;
-        private readonly IConfiguration _configuration= configuration;
+        private readonly IConfiguration _configuration = configuration;
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
         {
-            var orders = await (from ot  in _context.OrderTrackers  select new {ot.OrderId,ot.OrderStatus}).ToListAsync();
-            var filterOrders = orders.Where( ot => ot.OrderStatus.Count<5).OrderByDescending(ot=>ot.OrderStatus.Count).ToList();
-                return Ok(filterOrders);
-        } 
+            var orders = await (from ot in _context.OrderTrackers select new { ot.OrderId, ot.OrderStatus }).ToListAsync();
+            var filterOrders = orders.Where(ot => ot.OrderStatus.Count < 5).OrderByDescending(ot => ot.OrderStatus.Count).ToList();
+            return Ok(filterOrders);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("RecentOrders")]
+        public async Task<ActionResult<IEnumerable<Orders>>> GetRecentOrdersOrders()
+        {
+            var orders = await (from o in _context.Orders join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId join u in _context.Users on o.UserId equals u.UserId join otrans in _context.OrderTransactions on o.OrderId equals otrans.OrderID orderby o.OrderDate descending select new { o.OrderId, u.Name, ot.OrderStatus, otrans.TransactionType, otrans.Amount }).Take(5).ToListAsync();
+
+            return Ok(orders);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("filteredOrders")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetfilteredOrders()
+        {
+            var orders = await (from o in _context.Orders
+                                join u in _context.Users on o.UserId equals u.UserId
+                                join OI in _context.OrderItems on o.OrderId equals OI.OrderId
+                                join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId
+                                join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId
+                                join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
+                                orderby o.OrderDate descending
+                                select new
+                                {
+                                    o.OrderId,
+                                    o.OrderDate,
+                                    u.Name,
+                                    o.IsPaid,
+                                    o.TransactionOrderID,
+                                    OI.ProductName,
+                                    OI.ProductPrice,
+                                    OI.ProductQty,
+                                    OI.ShipingCharge,
+                                    OI.TotalPrice,
+                                    OI.TransactionType,
+                                    OI.ProductImg,
+                                    OTrans.TransactionId,
+                                    OTrans.TransactionStatus,
+                                    OTrans.TransactionTime,
+                                    ot.OrderStatus,
+                                    ot.DeliveredOn,
+                                    oa.UserName,
+                                    oa.AddressType,
+                                    oa.HouseNo,
+                                    oa.Locality,
+                                    oa.Address,
+                                    oa.City,
+                                    oa.State,
+                                    oa.PostalCode,
+                                    oa.LandMark,
+                                    oa.PhoneNumber
+                                }).ToListAsync();
+            return Ok(orders);
+        }
+        [Authorize]
+        [HttpGet("ByOrderId/{orderId}")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetByOrderId(int orderId)
+        {
+           var orders = await (from o in _context.Orders
+                               join u in _context.Users on o.UserId equals u.UserId
+                                             join OI in _context.OrderItems on o.OrderId equals OI.OrderId
+                                             join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId
+                                             join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId
+                                             join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
+                               where o.OrderId == orderId
+                                             orderby o.OrderDate descending
+                                             select new
+                                             {
+                                                 o.OrderId,
+                                                 o.OrderDate,
+                                                 u.Name,
+                                                 o.IsPaid,
+                                                 o.TransactionOrderID,
+                                                 OI.ProductName,
+                                                 OI.ProductPrice,
+                                                 OI.ProductQty,
+                                                 OI.ShipingCharge,
+                                                 OI.TotalPrice,
+                                                 OI.TransactionType,
+                                                 OI.ProductImg,
+                                                 OTrans.TransactionId,
+                                                 OTrans.TransactionStatus,
+                                                 OTrans.TransactionTime,
+                                                 ot.OrderStatus,
+                                                 ot.DeliveredOn,
+                                                 oa.UserName,
+                                                 oa.AddressType,
+                                                 oa.HouseNo,
+                                                 oa.Locality,
+                                                 oa.Address,
+                                                 oa.City,
+                                                 oa.State,
+                                                 oa.PostalCode,
+                                                 oa.LandMark,
+                                                 oa.PhoneNumber
+                                             }).ToListAsync();
+            return Ok(orders);
+        }
+
         // GET: api/Orders/5
         [Authorize]
         [HttpGet("{UserId}")]
@@ -164,7 +261,7 @@ namespace FruitsWallahBackend.Controllers
                             OrderID = order.OrderId,
                             TransactionOrderID = OrderIdForCOD,
                             RazorpaySignature = "null",
-                            Amount = orders.Amount,
+                            Amount = orders.Amount>=300?orders.Amount: orders.Amount+50,
                             Currency = orders.Currency,
                             TransactionId = "Generated Automatic on Delivery",
                             TransactionStatus = "PENDING",

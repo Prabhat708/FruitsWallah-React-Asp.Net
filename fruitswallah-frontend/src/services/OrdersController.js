@@ -103,6 +103,42 @@ export const GetAllOrders = async (setOrders) => {
   setOrders(res.data);
 };
 
+export const GetRecentOrders = async (setOrders) => {
+  const { token } = useAuthStore.getState();
+  const res = await axios.get(`${BASE_URL}/api/Orders/RecentOrders`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  setOrders(res.data);
+};
+
+export const GetfilteredOrders = async ( setOrders) => {
+  const { token } = useAuthStore.getState();
+  const res = await axios.get(
+    `${BASE_URL}/api/Orders/filteredOrders`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  
+  setOrders(res.data);
+};
+
+
+export const GetOrderByOrderId = async (orderId, setOrder) => {
+
+  const { token } = useAuthStore.getState();
+  const res = await axios.get(`${BASE_URL}/api/Orders/ByOrderId/${orderId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data
+ }
 export const UpdatesStatus = async (orderId, status, setShowPopup) => {
   const { token } = useAuthStore.getState();
   const res = await axios.put(
