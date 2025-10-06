@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GetAllOrders, UpdatesStatus } from "../services/OrdersController";
 import SuccessMessage from "./SuccessMessage";
 
-const UpdateStatus = () => {
+const UpdateStatus = ({ setShowStatusUpdate }) => {
   const [statuslen, setStatuslen] = useState(1);
   const statusFlow = [
     "Placed",
@@ -65,8 +65,8 @@ const UpdateStatus = () => {
                 value={form.orderId}
                 onChange={(e) => {
                   const selectedOrderId = e.target.value;
-                  handleChange(e); 
-                  handleOrderIdChange(selectedOrderId); 
+                  handleChange(e);
+                  handleOrderIdChange(selectedOrderId);
                 }}
                 required
               >
@@ -96,15 +96,20 @@ const UpdateStatus = () => {
                 {statuslen == 5 ? (
                   <option value="">-- No More Options --</option>
                 ) : (
-                      <option value={statusFlow[statuslen]}>
-                        {statusFlow[statuslen]}
-                      </option>
+                  <option value={statusFlow[statuslen]}>
+                    {statusFlow[statuslen]}
+                  </option>
                 )}
               </select>
             </div>
-            <div className="d-grid">
-              <button type="submit" className="btn btn-success">
+            <div className="row gap-5 ms-5">
+              <button type="submit" className="btn btn-success col-4">
                 Update Status
+              </button>
+              <button className="btn btn-danger col-4" onClick={() => {
+                setShowStatusUpdate(false);
+              }}>
+                Cancel
               </button>
             </div>
           </form>

@@ -3,7 +3,7 @@ import SuccessMessage from "./SuccessMessage";
 import { GetAllUsers, UpdateUserRole } from "../services/AdminOperations";
 import useAuthStore from "../Stores/AuthStore";
 
-const SetAdmin = () => {
+const SetAdmin = ({ setShowUpdateAdmins }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
@@ -51,7 +51,7 @@ const SetAdmin = () => {
             className="card shadow p-4"
             style={{ maxWidth: "500px", width: "100%" }}
           >
-            <h4 className="text-center text-success mb-4">Add Admins</h4>
+            <h4 className="text-center text-success mb-4">Update User Role</h4>
 
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
@@ -95,9 +95,14 @@ const SetAdmin = () => {
                   )}
                 </select>
               </div>
-              <div className="d-grid">
-                <button type="submit" className="btn btn-success">
+              <div className="row gap-5 ms-5">
+                <button type="submit" className="btn btn-success col-4">
                   Update Role
+                </button>
+                <button type="submit" className="btn btn-danger col-4" onClick={() => {
+                  setShowUpdateAdmins(false);
+                }}>
+                  Cancel
                 </button>
               </div>
             </form>

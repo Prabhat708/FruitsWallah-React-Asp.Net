@@ -110,7 +110,7 @@ namespace FruitsWallahBackend.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles="Admin")]
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<Products>> PostProducts([FromForm] ProductDTO products)
@@ -159,7 +159,7 @@ namespace FruitsWallahBackend.Controllers
             products.IsActive = false;
             await _context.SaveChangesAsync();
 
-            return Ok("Product deleted successfully but for my reference i store the product details");
+            return Ok("Product deleted successfully but for my reference We store the product details");
         }
 
         private bool ProductsExists(int id)

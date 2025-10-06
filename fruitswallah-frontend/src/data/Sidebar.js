@@ -6,6 +6,8 @@ import {
   MapPin,
   LogOut,
 } from "lucide-react";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 export const sidebarItems = [
   { icon: Package, label: "View orders", href: "/orders" },
@@ -22,4 +24,25 @@ export const sidebarItems = [
   { icon: CreditCard, label: "Payment methods", href: "/payment" },
   { icon: MapPin, label: "Manage addresses", href: "/address" },
   { icon: LogOut, label: "Log out", href: "/logOut" },
+];
+
+export const adminSidebarItems = [
+  {
+    label: "Dashboard",
+    href: "/FruitsWallahAdmin",
+    icon: FaEdit,
+ 
+  },
+  { label: "View orders", href: "/FruitsWallahAdmin/orders", icon: MdDelete },
+  {
+    label: "Manage Products",
+    href: "/FruitsWallahAdmin/products",
+    icon: FaEdit,
+  },
+  {
+    label: "Manage Admins",
+    href: "/FruitsWallahAdmin/users",
+    icon: MdDelete,
+  },
+  // Add more items as needed
 ];

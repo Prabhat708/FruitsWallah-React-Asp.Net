@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { GetProducts } from "../services/ProductController";
 import {
@@ -9,16 +9,61 @@ import {
 import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
-import { FaEdit } from "react-icons/fa";
+import {
+  FaBox,
+  FaClock,
+  FaDollarSign,
+  FaEdit,
+  FaMoneyBillWave,
+  FaShoppingCart,
+  FaUsers,
+} from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import useAuthStore from "../Stores/AuthStore";
 import SetAdmin from "../components/SetAdmin";
+import SidePannel from "../components/SidePannel";
+import StatsCard from "../components/StatsCard";
+import { Line, Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { GetAllOrders, GetRecentOrders } from "../services/OrdersController";
+import {adminSidebarItems} from "../data/Sidebar";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const AdminPage = () => {
   const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [products, setProducts] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [stats, setStats] = useState({
+    orders: 200,
+    activeOrders: 10,
+    TotalProducts: 100,
+    TotalAdmins: 5,
+    totalRevenue: 3520,
+    pendingAmount: 7560,
+  });
+ 
+  const [activeItem, setActiveItem] = useState("Dashboard");
 
   const [formData, setFormData] = useState({
     productCategory: "",
@@ -30,11 +75,11 @@ const AdminPage = () => {
     existingImage: "", // Track existing image during edit
   });
 
+  const [orders, setOrders] = useState(null);
   const navigate = useNavigate();
 
   const isAdmin = useAuthStore((state) => state.isAdmin);
-  
-  
+
   useEffect(() => {
     if (!isAdmin) {
       navigate("/");
@@ -118,185 +163,278 @@ const AdminPage = () => {
     });
   };
 
+  const [filter, setFilter] = useState({
+    range: "7d",
+    type: "All",
+    status: "All",
+  });
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilter({ ...filter, [name]: value });
+  };
+  const [revenueChart, setRevenueChart] = useState({
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
+    datasets: [
+      {
+        label: "Revenue",
+        data: [
+          1200, 1900, 3000, 4000, 2300, 3400, 2900, 4100, 4200, 4100, 2100,
+          1100,
+        ],
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        tension: 0.4,
+      },
+    ],
+  });
+  const [overviewChart, setOverviewChart] = useState({
+    labels: ["Total Orders", "Products", "Admins", "Active Orders"],
+    datasets: [
+      {
+        label: "Count",
+        data: [
+          stats.orders,
+          stats.TotalProducts,
+          stats.TotalAdmins,
+          stats.activeOrders,
+        ],
+        backgroundColor: [
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+        ],
+        borderColor: [
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
+
+  useEffect(() => {
+    GetRecentOrders(setOrders);
+  }, []);
+
+  if (!orders) {
+    return <div>Loading...</div>;
+  }
+ 
+   
+
   return (
     <>
       <Navbar />
-      <div className="row mt-5 pt-5">
-        <h1 className="text-center text-success">Welcome to Admin Page</h1>
-        <div className="col-6" style={{ width: "40%" }}>
-          <h3 className="text-center alert alert-info container ms-5">
-            Your All Products
-          </h3>
-          <table className="table table-bordered ms-5">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products
-                .filter((product) => product.isActive)
-                .map((product, index) => (
-                  <tr key={product.productId}>
-                    <th scope="row">{index + 1}</th>
-                    <td>
-                      <img
-                        src={BASE_URL + product.productImg}
-                        alt={product.productName}
-                        width="50"
-                        height="50"
-                      />
-                    </td>
-                    <td>{product.productName}</td>
-                    <td>{product.productCatagory}</td>
-                    <td>{product.productPrice}</td>
-                    <td>{product.productStock}</td>
-                    <td className="position-relative">
-                      <button
-                        className="text-primary border-0 bg-transparent position-absolute start-0"
-                        onClick={() => handleEditClick(product)}
-                      >
-                        <FaEdit size={25} />
-                      </button>
-                      <button
-                        className="text-danger border-0 bg-transparent position-absolute end-0"
-                        onClick={() =>
-                          DeleteProduct(product.productId, setProducts)
-                        }
-                      >
-                        <MdDelete size={25} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+      <div
+        className="d-flex min-vh-100 mt-5 pt-5"
+        style={{ backgroundColor: "#f8f9fa" }}
+      >
+        <SidePannel
+          sidebarItems={adminSidebarItems}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
+        />
+        <div className="flex-grow-1 p-4">
+          <div className="container-fluid" style={{ maxWidth: "1024px" }}>
+            <div className="mb-4">
+              <h1 className="h2 fw-bold text-dark mb-2">Admin Dashboard</h1>
 
-        {/* Form Section */}
-        <div className="col-6 container" style={{ width: "40%" }}>
-          <h3 className="text-center alert alert-info container ms-5">
-            {isEditMode ? "Edit Product" : "Add New Product"}
-          </h3>
-          <form className="w-75 mx-auto" onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label htmlFor="productCategory" className="form-label">
-                Product Category
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="productCategory"
-                value={formData.productCategory}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="productName" className="form-label">
-                Product Name
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="productName"
-                value={formData.productName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="productDescription" className="form-label">
-                Product Description
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="productDescription"
-                value={formData.productDescription}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="productPrice" className="form-label">
-                Product Price
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="productPrice"
-                value={formData.productPrice}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="productImage" className="form-label">
-                Select Product Image
-              </label>
-              <input
-                type="file"
-                className="form-control"
-                id="productImage"
-                onChange={handleChange}
-              />
-              {formData.productImage && (
-                <img
-                  src={URL.createObjectURL(formData.productImage)}
-                  alt="New Preview"
-                  width={80}
-                  height={80}
-                  className="mt-2"
+              <p className="text-muted">
+                {new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+
+              <div className="card shadow-sm border-0 mb-4 p-3">
+                <div className="row g-3 align-items-center">
+                  <div className="col-md-3">
+                    <label className="form-label fw-semibold">Date Range</label>
+                    <select
+                      name="range"
+                      className="form-select"
+                      value={filter.range}
+                      onChange={handleFilterChange}
+                    >
+                      <option value="1d">Today</option>
+                      <option value="7d">Last 7 Days</option>
+                      <option value="30d">Last 30 Days</option>
+                    </select>
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label fw-semibold">Order Type</label>
+                    <select
+                      name="type"
+                      className="form-select"
+                      value={filter.type}
+                      onChange={handleFilterChange}
+                    >
+                      <option value="All">All</option>
+                      <option value="COD">COD</option>
+                      <option value="Online">Online</option>
+                    </select>
+                  </div>
+                  <div className="col-md-3">
+                    <label className="form-label fw-semibold">Status</label>
+                    <select
+                      name="status"
+                      className="form-select"
+                      value={filter.status}
+                      onChange={handleFilterChange}
+                    >
+                      <option value="All">All</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row g-3">
+                <StatsCard
+                  title="Total Orders"
+                  value={stats.orders}
+                  color="primary"
+                  icon={<FaShoppingCart />}
                 />
-              )}
-              {!formData.productImage && formData.existingImage && (
-                <img
-                  src={BASE_URL + formData.existingImage}
-                  alt="Existing"
-                  width={80}
-                  height={80}
-                  className="mt-2"
+                <StatsCard
+                  title="Active Orders"
+                  value={stats.activeOrders}
+                  color="secondary"
+                  icon={<FaClock />}
                 />
-              )}
+                <StatsCard
+                  title="Total Products"
+                  value={stats.TotalProducts}
+                  color="success"
+                  icon={<FaBox />}
+                />
+                <StatsCard
+                  title="Total Admins"
+                  value={stats.TotalAdmins}
+                  color="warning"
+                  icon={<FaUsers />}
+                />
+                <StatsCard
+                  title="Total Revenue"
+                  value={`$${stats.totalRevenue.toLocaleString()}`}
+                  color="danger"
+                  icon={<FaDollarSign />}
+                />
+                <StatsCard
+                  title="Pending Payments"
+                  value={`$${stats.pendingAmount}`}
+                  color="info"
+                  icon={<FaMoneyBillWave />}
+                />
+              </div>
+              {/* Charts */}
+              <div className="row mt-4">
+                <div className="col-md-6 mb-4">
+                  <div className="card shadow-sm border-0 p-3 h-100">
+                    <h6 className="fw-semibold text-muted mb-3">
+                      Revenue Trend
+                    </h6>
+                    <Line
+                      data={revenueChart}
+                      options={{
+                        responsive: true,
+                        plugins: { legend: { position: "bottom" } },
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-6 mb-4">
+                  <div className="card shadow-sm border-0 p-3 h-100">
+                    <h6 className="fw-semibold text-muted mb-3">
+                      System Overview
+                    </h6>
+                    <Bar
+                      data={overviewChart}
+                      options={{
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="card shadow-sm border-0 mt-4 p-3">
+                <h6 className="fw-semibold text-muted mb-3">
+                  Recent Orders ({orders.length})
+                </h6>
+                <div className="table-responsive">
+                  <table className="table table-hover align-middle">
+                    <thead className="table-light">
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orders?.map((order) => (
+                        <tr key={order.orderId}>
+                          <td>{order.orderId}</td>
+                          <td>{order.name}</td>
+                          <td>{order.amount}</td>
+                          <td>
+                            <span className="badge bg-secondary">
+                              {order.transactionType}
+                            </span>
+                          </td>
+                          <td>
+                            <span
+                              className={`badge ${
+                                order.orderStatus.at(-1) === "Delivered"
+                                  ? "bg-success"
+                                  : "bg-warning text-dark"
+                              }`}
+                            >
+                              {order.orderStatus.at(-1)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                      {orders.length === 0 && (
+                        <tr>
+                          <td
+                            colSpan="5"
+                            className="text-center text-muted py-3"
+                          >
+                            No orders found for selected filters
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <div className="mb-3">
-              <label htmlFor="productStock" className="form-label">
-                Product Stock
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="productStock"
-                value={formData.productStock}
-                onChange={handleChange}
-                required
-                
-              />
-            </div>
-            <button type="submit" className="btn btn-primary me-2">
-              {isEditMode ? "Save Product" : "Add Product"}
-            </button>
-            {isEditMode && (
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handleCancelEdit}
-              >
-                Cancel
-              </button>
-            )}
-          </form>
-          <UpdateStatus />
+          </div>
         </div>
       </div>
-            <SetAdmin/>
       <Footer />
     </>
   );

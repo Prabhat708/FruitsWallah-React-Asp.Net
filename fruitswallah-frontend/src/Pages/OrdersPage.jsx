@@ -3,12 +3,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import {Link} from 'react-router-dom';
 import {
-  Package,
-  User,
-  Lock,
-  CreditCard,
-  MapPin,
-  LogOut,
   Clock,
   CheckCircle,
   Truck,
