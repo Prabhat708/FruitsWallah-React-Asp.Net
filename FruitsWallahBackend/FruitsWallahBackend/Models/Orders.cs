@@ -12,5 +12,6 @@ namespace FruitsWallahBackend.Models
         public string TransactionOrderID { get; set; }
         public DateTime OrderDate { get; set; }= DateTime.Now;
         public bool IsPaid { get; set; }
+        public bool IsReturned { get; set; }= false;
     }
 }

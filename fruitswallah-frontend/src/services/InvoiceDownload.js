@@ -3,6 +3,7 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import useAuthStore from "../Stores/AuthStore";
+import logo from "../../public/favicon.png";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
@@ -19,9 +20,15 @@ export const generateCustomInvoicePDF = async (transactionId) => {
     );
     const invoiceData = res.data;
   const doc = new jsPDF();
-
+  //add logo
+  
+  const img = new Image();
+  img.src = "/favicon.png";
+  img.alt = "logo";
+  doc.addImage(img, "PNG", 150, 20, 40, 40);
+  console.log(img);
   // Company Header
-  doc.setFontSize(18);
+  doc.setFontSize(25);
   doc.setTextColor(40);
   doc.text("Fruitswallah", 14, 20);
   doc.setFontSize(11);
@@ -32,7 +39,7 @@ export const generateCustomInvoicePDF = async (transactionId) => {
   // Invoice Title
   doc.setFontSize(16);
   doc.setTextColor(50);
-  doc.text("Invoice", 150, 20);
+  doc.text("Invoice", 160, 15);
 
   // Invoice Info
   const orderDate = new Date(invoiceData.orderDate).toLocaleDateString();

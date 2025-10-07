@@ -1,26 +1,16 @@
 import React, { use, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { GetProducts } from "../services/ProductController";
-import {
-  AddProducts,
-  DeleteProduct,
-  UpdateProduct,
-} from "../services/AdminOperations";
-import UpdateStatus from "../components/UpdateStatus";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import {
   FaBox,
   FaClock,
   FaDollarSign,
-  FaEdit,
   FaMoneyBillWave,
   FaShoppingCart,
   FaUsers,
 } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import useAuthStore from "../Stores/AuthStore";
-import SetAdmin from "../components/SetAdmin";
 import SidePannel from "../components/SidePannel";
 import StatsCard from "../components/StatsCard";
 import { Line, Bar } from "react-chartjs-2";
@@ -35,8 +25,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { GetAllOrders, GetRecentOrders } from "../services/OrdersController";
+import { GetRecentOrders } from "../services/OrdersController";
 import {adminSidebarItems} from "../data/Sidebar";
+import { getDashboardStats, getRevenueData } from "../services/DashBoardService";
+import { BsFillTruckFrontFill } from "react-icons/bs";
 
 ChartJS.register(
   CategoryScale,
@@ -50,128 +42,34 @@ ChartJS.register(
 );
 
 const AdminPage = () => {
-  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-  const [products, setProducts] = useState([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const [stats, setStats] = useState({
-    orders: 200,
-    activeOrders: 10,
-    TotalProducts: 100,
-    TotalAdmins: 5,
-    totalRevenue: 3520,
-    pendingAmount: 7560,
+  const [stats, setStats] = useState([]);
+  const [overviewChart, setOverviewChart] = useState({
+    labels: ["Total Orders", "Products", "Admins", "Active Orders"],
+    datasets: [
+      {
+        label: "Count",
+        data: [
+          0,
+          0,
+          0,
+          0,
+        ],
+        backgroundColor: [
+          "rgba(54, 162, 235, 0.6)",
+          "rgba(255, 206, 86, 0.6)",
+          "rgba(75, 192, 192, 0.6)",
+          "rgba(153, 102, 255, 0.6)",
+        ],
+        borderColor: [
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
   });
- 
-  const [activeItem, setActiveItem] = useState("Dashboard");
-
-  const [formData, setFormData] = useState({
-    productCategory: "",
-    productName: "",
-    productDescription: "",
-    productPrice: "",
-    productStock: "",
-    productImage: null,
-    existingImage: "", // Track existing image during edit
-  });
-
-  const [orders, setOrders] = useState(null);
-  const navigate = useNavigate();
-
-  const isAdmin = useAuthStore((state) => state.isAdmin);
-
-  useEffect(() => {
-    if (!isAdmin) {
-      navigate("/");
-    }
-    GetProducts(setProducts);
-  }, []);
-
-  const handleChange = (e) => {
-    const { id, value, files } = e.target;
-    if (id === "productImage") {
-      setFormData({ ...formData, productImage: files[0] });
-    } else {
-      setFormData({ ...formData, [id]: value });
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const productPayload = {
-      ProductCatagory: formData.productCategory,
-      ProductName: formData.productName,
-      ProductDescription: formData.productDescription,
-      ProductPrice: formData.productPrice,
-      ProductStock: formData.productStock,
-    };
-
-    if (formData.productImage) {
-      productPayload.ProductImg = formData.productImage;
-    }
-
-    if (isEditMode && currentProduct) {
-      await UpdateProduct(
-        productPayload,
-        currentProduct.productId,
-        setProducts
-      );
-    } else {
-      await AddProducts(productPayload, setProducts);
-    }
-
-    // Reset form
-    setFormData({
-      productCategory: "",
-      productName: "",
-      productDescription: "",
-      productPrice: "",
-      productStock: "",
-      productImage: null,
-      existingImage: "",
-    });
-    setIsEditMode(false);
-    setCurrentProduct(null);
-  };
-
-  const handleEditClick = (product) => {
-    setIsEditMode(true);
-    setCurrentProduct(product);
-    setFormData({
-      productCategory: product.productCatagory,
-      productName: product.productName,
-      productDescription: product.productDescription,
-      productPrice: product.productPrice,
-      productStock: product.productStock,
-      productImage: null,
-      existingImage: product.productImg,
-    });
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditMode(false);
-    setCurrentProduct(null);
-    setFormData({
-      productCategory: "",
-      productName: "",
-      productDescription: "",
-      productPrice: "",
-      productStock: "",
-      productImage: null,
-      existingImage: "",
-    });
-  };
-
-  const [filter, setFilter] = useState({
-    range: "7d",
-    type: "All",
-    status: "All",
-  });
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilter({ ...filter, [name]: value });
-  };
   const [revenueChart, setRevenueChart] = useState({
     labels: [
       "Jan",
@@ -190,44 +88,107 @@ const AdminPage = () => {
     datasets: [
       {
         label: "Revenue",
-        data: [
-          1200, 1900, 3000, 4000, 2300, 3400, 2900, 4100, 4200, 4100, 2100,
-          1100,
-        ],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         tension: 0.4,
       },
     ],
   });
-  const [overviewChart, setOverviewChart] = useState({
-    labels: ["Total Orders", "Products", "Admins", "Active Orders"],
-    datasets: [
-      {
-        label: "Count",
-        data: [
-          stats.orders,
-          stats.TotalProducts,
-          stats.TotalAdmins,
-          stats.activeOrders,
-        ],
-        backgroundColor: [
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(75, 192, 192, 0.6)",
-          "rgba(153, 102, 255, 0.6)",
-        ],
-        borderColor: [
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  });
+  const [activeItem, setActiveItem] = useState("Dashboard");
+  const [orders, setOrders] = useState(null);
+  const navigate = useNavigate();
 
+  const isAdmin = useAuthStore((state) => state.isAdmin);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate("/");
+    }
+    getstats();
+  }, []);
+
+  const getstats = async () => {
+    const res = await getDashboardStats();
+    setStats(res);
+    const revnue = await getRevenueData();
+    setOverviewChart({
+      labels: ["Total Orders", "Products", "Admins", "Active Orders"],
+      datasets: [
+        {
+          label: "Count",
+          data: [
+            res.ordercount,
+            res.activeProducts,
+            res.totalAdmins,
+            res.undeliveredCount,
+          ],
+          backgroundColor: [
+            "rgba(54, 162, 235, 0.6)",
+            "rgba(255, 206, 86, 0.6)",
+            "rgba(75, 192, 192, 0.6)",
+            "rgba(153, 102, 255, 0.6)",
+          ],
+          borderColor: [
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    });
+    setRevenueChart({
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      datasets: [
+        {
+          label: "Revenue",
+          data: [
+            revnue[0],
+            revnue[1],
+            revnue[2],
+            revnue[3],
+            revnue[4],
+            revnue[5],
+            revnue[6],
+            revnue[7],
+            revnue[8],
+            revnue[9],
+            revnue[10],
+            revnue[11],
+          ],
+          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          tension: 0.4,
+        },
+      ],
+    });
+  }
+  const [filter, setFilter] = useState({
+    range: "7d",
+    type: "All",
+    status: "All",
+  });
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilter({ ...filter, [name]: value });
+  };
+  
+  
   useEffect(() => {
     GetRecentOrders(setOrders);
   }, []);
@@ -236,8 +197,7 @@ const AdminPage = () => {
     return <div>Loading...</div>;
   }
  
-   
-
+  
   return (
     <>
       <Navbar />
@@ -311,38 +271,38 @@ const AdminPage = () => {
               <div className="row g-3">
                 <StatsCard
                   title="Total Orders"
-                  value={stats.orders}
+                  value={stats.ordercount}
                   color="primary"
                   icon={<FaShoppingCart />}
                 />
                 <StatsCard
                   title="Active Orders"
-                  value={stats.activeOrders}
+                  value={stats.undeliveredCount}
                   color="secondary"
-                  icon={<FaClock />}
+                  icon={<BsFillTruckFrontFill />}
                 />
                 <StatsCard
-                  title="Total Products"
-                  value={stats.TotalProducts}
+                  title="Active Products"
+                  value={stats.activeProducts}
                   color="success"
                   icon={<FaBox />}
                 />
                 <StatsCard
                   title="Total Admins"
-                  value={stats.TotalAdmins}
+                  value={stats.totalAdmins}
                   color="warning"
                   icon={<FaUsers />}
                 />
                 <StatsCard
                   title="Total Revenue"
-                  value={`$${stats.totalRevenue.toLocaleString()}`}
-                  color="danger"
+                  value={stats.totalRevenue}
+                  color="info"
                   icon={<FaDollarSign />}
                 />
                 <StatsCard
                   title="Pending Payments"
-                  value={`$${stats.pendingAmount}`}
-                  color="info"
+                  value={`${stats.pendingPayment}`}
+                  color="danger"
                   icon={<FaMoneyBillWave />}
                 />
               </div>
@@ -367,6 +327,7 @@ const AdminPage = () => {
                     <h6 className="fw-semibold text-muted mb-3">
                       System Overview
                     </h6>
+
                     <Bar
                       data={overviewChart}
                       options={{
@@ -384,7 +345,7 @@ const AdminPage = () => {
                 </h6>
                 <div className="table-responsive">
                   <table className="table table-hover align-middle">
-                    <thead className="table-light">
+                    <thead className="table-info">
                       <tr>
                         <th>Order ID</th>
                         <th>Customer</th>
@@ -394,8 +355,13 @@ const AdminPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {orders?.map((order) => (
-                        <tr key={order.orderId}>
+                      {orders?.map((order, index) => (
+                        <tr
+                          key={order.orderId}
+                          className={`${
+                            index % 2 == 0 ? "table-light" : "table-secondary"
+                          }`}
+                        >
                           <td>{order.orderId}</td>
                           <td>{order.name}</td>
                           <td>{order.amount}</td>

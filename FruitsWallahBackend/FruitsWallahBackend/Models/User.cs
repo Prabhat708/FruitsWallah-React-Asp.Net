@@ -23,5 +23,8 @@ namespace FruitsWallahBackend.Models
 
         public bool IsAdmin { get; set; } = false;
 
+        public bool IsActive { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

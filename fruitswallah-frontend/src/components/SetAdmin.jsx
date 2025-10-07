@@ -46,7 +46,7 @@ const SetAdmin = ({ setShowUpdateAdmins }) => {
             message={"Role Updated Successfuly!"}
           />
         )}
-        <div className="container mt-5 d-flex justify-content-center">
+        <div className="container mt-5 d-flex justify-content-center mb-4">
           <div
             className="card shadow p-4"
             style={{ maxWidth: "500px", width: "100%" }}
@@ -58,21 +58,17 @@ const SetAdmin = ({ setShowUpdateAdmins }) => {
                 <label htmlFor="Email" className="form-label fw-semibold">
                   User Email
                 </label>
-                <select
-                  className="form-select"
+                <input
+                  className="form-control"
                   name="Email"
                   id="Email"
                   value={form.Email}
                   onChange={handleChange}
+                  placeholder="Enter Email Address"
                   required
-                >
-                  <option value="">--Select User Email--</option>
-                  {user.map((user) => (
-                    <option key={user.email} value={user.email}>
-                      {user.email}
-                    </option>
-                  ))}
-                </select>
+                />
+
+                
               </div>
 
               <div className="mb-3">

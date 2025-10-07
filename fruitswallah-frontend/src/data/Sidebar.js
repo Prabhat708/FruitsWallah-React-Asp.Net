@@ -7,7 +7,9 @@ import {
   LogOut,
 } from "lucide-react";
 import { FaEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { IoStatsChartSharp } from "react-icons/io5";
+import { PiUsersFourFill } from "react-icons/pi";
+
 
 export const sidebarItems = [
   { icon: Package, label: "View orders", href: "/orders" },
@@ -30,10 +32,9 @@ export const adminSidebarItems = [
   {
     label: "Dashboard",
     href: "/FruitsWallahAdmin",
-    icon: FaEdit,
- 
+    icon: IoStatsChartSharp,
   },
-  { label: "View orders", href: "/FruitsWallahAdmin/orders", icon: MdDelete },
+  { label: "View orders", href: "/FruitsWallahAdmin/orders", icon: Package },
   {
     label: "Manage Products",
     href: "/FruitsWallahAdmin/products",
@@ -42,7 +43,9 @@ export const adminSidebarItems = [
   {
     label: "Manage Admins",
     href: "/FruitsWallahAdmin/users",
-    icon: MdDelete,
+    icon: PiUsersFourFill,
   },
+  { icon: LogOut, label: "Log out", href: "/logOut" },
+
   // Add more items as needed
 ];

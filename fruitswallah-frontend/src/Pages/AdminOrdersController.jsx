@@ -15,10 +15,13 @@ import {
   GetfilteredOrders,
   GetOrderByOrderId,
 } from "../services/OrdersController";
-
-import { BsCheck } from "react-icons/bs";
+import { TbTruckReturn } from "react-icons/tb";
+import { BsCheck, BsFillHouseAddFill } from "react-icons/bs";
 import OrderPopup from "../components/OrderPopup";
 import UpdateStatus from "../components/UpdateStatus";
+import Pagination from "../components/Pagination";
+import { getDashboardStats } from "../services/DashBoardService";
+import { MdRealEstateAgent } from "react-icons/md";
 
 const AdminOrdersController = () => {
   const [orders, setOrders] = useState([]);
@@ -38,19 +41,31 @@ const AdminOrdersController = () => {
       [name]: value,
     }));
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postPerPage, setPostPerPage] = useState(10);
 
-  const [stats, setStats] = useState({
-    orders: 120,
-    activeOrders: 15,
-    totalRevenue: 54000,
-    pendingAmount: 12000,
-  });
+  const lastPost = currentPage * postPerPage;
+  const firstPost = lastPost - postPerPage;
+  const currentPost = orders.slice(firstPost, lastPost);
+  var pages = [];
+  for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
+    pages.push(i);
+  }
+  const [stats, setStats] = useState([]);
 
   const openOrder = async (orderId) => {
     setOrder(await GetOrderByOrderId(orderId));
     setShowOrderDetails(true);
   };
+useEffect(() => {
+   
+    getstats();
+  }, []);
 
+  const getstats = async () => {
+    const res = await getDashboardStats();
+    setStats(res);
+  }
   useEffect(() => {
     GetfilteredOrders(setOrders);
   }, []);
@@ -146,27 +161,39 @@ const AdminOrdersController = () => {
               <div className="row g-3 align-items-center">
                 <StatsCard
                   title="Total Orders"
-                  value={stats.orders}
+                  value={stats.ordercount}
                   color="primary"
                   icon={<FaShoppingCart />}
                 />
                 <StatsCard
                   title="Active Orders"
-                  value={stats.activeOrders}
+                  value={stats.undeliveredCount}
                   color="secondary"
                   icon={<FaClock />}
                 />
                 <StatsCard
-                  title="Total Revenue"
-                  value={`$${stats.totalRevenue.toLocaleString()}`}
-                  color="danger"
-                  icon={<FaDollarSign />}
+                  title="Delivered orders"
+                  value={`${stats.deliveredorder}`}
+                  color="success"
+                  icon={<BsFillHouseAddFill />}
                 />
                 <StatsCard
-                  title="Pending Payments"
-                  value={`$${stats.pendingAmount}`}
+                  title="Prepaid Orders"
+                  value={`${stats.prepaidOrders}`}
                   color="info"
                   icon={<FaMoneyBillWave />}
+                />
+                <StatsCard
+                  title="COD Orders"
+                  value={`${stats.codOrders}`}
+                  color="warning"
+                  icon={<MdRealEstateAgent />}
+                />
+                <StatsCard
+                  title="Return Orders"
+                  value={`${stats.returnedOrder}`}
+                  color="danger"
+                  icon={<TbTruckReturn />}
                 />
               </div>
 
@@ -177,7 +204,7 @@ const AdminOrdersController = () => {
                 ) : (
                   <div className="table-responsive">
                     <table className="table table-hover align-middle">
-                      <thead>
+                      <thead className="table-info">
                         <tr>
                           <th>Order ID</th>
                           <th>Order Date</th>
@@ -193,8 +220,13 @@ const AdminOrdersController = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {orders.map((order) => (
-                          <tr key={order?.orderId}>
+                        {currentPost.map((order, index) => (
+                          <tr
+                            key={order?.orderId}
+                            className={`${
+                              index % 2 == 0 ? "table-light" : "table-secondary"
+                            }`}
+                          >
                             <td>{order?.orderId}</td>
                             <td>
                               {new Date(order?.orderDate).toLocaleDateString(
@@ -216,7 +248,8 @@ const AdminOrdersController = () => {
                                     order?.productPrice * order?.productQty
                                   ).toFixed(2)
                                 : (
-                                    order?.productPrice * order?.productQty+50
+                                    order?.productPrice * order?.productQty +
+                                    50
                                   ).toFixed(2)}
                             </td>
                             <td>{order?.postalCode}</td>
@@ -250,6 +283,30 @@ const AdminOrdersController = () => {
                         ))}
                       </tbody>
                     </table>
+                    <div className="d-flex justify-content-between align-items-center mt-3">
+                      <div className="flex-grow-1 d-flex justify-content-center">
+                        <Pagination
+                          pages={pages}
+                          currentPage={currentPage}
+                          setCurrentPage={setCurrentPage}
+                        />
+                      </div>
+                      <div>
+                        <select
+                          name="postperpage"
+                          id="postperpage"
+                          className="form-select form-select-sm w-auto ms-2"
+                          value={postPerPage}
+                          onChange={(e) =>
+                            setPostPerPage(Number(e.target.value))
+                          }
+                        >
+                          <option value="10">10 orders</option>
+                          <option value="20">20 orders</option>
+                          <option value="50">50 orders</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 )}
 
