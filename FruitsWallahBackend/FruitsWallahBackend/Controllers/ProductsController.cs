@@ -61,6 +61,7 @@ namespace FruitsWallahBackend.Controllers
             existingProduct.ProductDescription = products.ProductDescription;
             existingProduct.ProductPrice = products.ProductPrice;
             existingProduct.ProductStock = products.ProductStock;
+            existingProduct.IsActive=true;
 
             // Handle new image upload if provided
             if (products.ProductImg != null && products.ProductImg.Length > 0)
