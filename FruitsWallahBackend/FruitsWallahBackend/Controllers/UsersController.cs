@@ -171,6 +171,7 @@ namespace FruitsWallahBackend.Controllers
         }
 
         // DELETE: api/Users/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -199,6 +200,7 @@ namespace FruitsWallahBackend.Controllers
             await _context.SaveChangesAsync();
             return Ok("Role Updated");
         }
+        [Authorize]
         [HttpPut("Activate/{UserId}")]
         public async Task<IActionResult> ActivateAccount(int UserId)
         {
@@ -220,6 +222,7 @@ namespace FruitsWallahBackend.Controllers
             }
             return BadRequest("Something Went Wrong");
         }
+        [Authorize]
         [HttpPut("InActivate/{UserId}")]
         public async Task<IActionResult> InActivateAccount(int UserId)
         {
