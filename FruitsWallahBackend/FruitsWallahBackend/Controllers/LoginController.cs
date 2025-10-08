@@ -29,7 +29,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<UserAuth>> GetUserAuth(LoginDTO loginDTO)
         {
-            var user = await (from u in _context.Users where u.Email == loginDTO.Email select u).FirstOrDefaultAsync();
+            var user = await (from u in _context.Users where u.Email == loginDTO.Email && !u.IsDeleted select u).FirstOrDefaultAsync();
             if (user == null)
             {
                 return BadRequest("No User Found");
@@ -37,7 +37,7 @@ namespace FruitsWallahBackend.Controllers
             var UserAuth = await (from UA in _context.UsersAuth where UA.UserID== user.UserId select new {UA.HashPassword}).FirstOrDefaultAsync();
             if (MatchPassword(loginDTO.Password, HashedPassword: UserAuth?.HashPassword))
             {
-                var token = _jwtService.GenerateToken(user.UserId, user.Name, user.IsAdmin);
+                var token = _jwtService.GenerateToken(user.UserId, user.Name, user.IsAdmin,user.IsActive);
                 return Ok(token);
                
             }

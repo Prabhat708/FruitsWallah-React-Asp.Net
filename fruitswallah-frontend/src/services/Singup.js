@@ -1,5 +1,6 @@
 import axios from "axios";
 import useAuthStore from "../Stores/AuthStore";
+import { HandleLogout } from "./HandleLoginLogout";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
@@ -22,6 +23,40 @@ export const handleSignUp = async (data, setData) => {
       
     return;
   }
+};
+
+export const handleDeleteAccount = async () => {
+  const { UserId,token } = useAuthStore.getState();
+  const res = await axios.delete(`${BASE_URL}/api/Users/${UserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
+  return { success: false, message: res.data };
+}
+
+export const handleActiveAccount = async () => {
+  const { UserId,token } = useAuthStore.getState();
+  const res = await axios.put(`${BASE_URL}/api/Users/Activate/${UserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log(res.data);
+  return res.data;
+}
+
+export const handleInActiveAccount = async (navigate) => {
+  const { UserId, token } = useAuthStore.getState();
+  const res = await axios.put(`${BASE_URL}/api/Users/InActivate/${UserId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  HandleLogout(navigate);
+  console.log(res.data);
+  return res.data;
 };
 
 

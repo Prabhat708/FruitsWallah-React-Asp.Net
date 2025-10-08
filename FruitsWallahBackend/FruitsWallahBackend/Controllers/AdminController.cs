@@ -11,42 +11,69 @@ namespace FruitsWallahBackend.Controllers
     [ApiController]
     public class AdminController(FruitsWallahDbContext context) : ControllerBase
     {
-        private readonly FruitsWallahDbContext _context = context ;
-        [Authorize(Roles ="Admin")]
-        [HttpGet]
-        public async Task<IActionResult> GetDashboard()
+        private readonly FruitsWallahDbContext _context = context;
+        [Authorize(Roles = "Admin")]
+        [HttpGet("{datefilter}")]
+        public async Task<IActionResult> GetDashboard(int datefilter)
         {
-            var ordercount = await _context.Orders.CountAsync();
-            var returnedOrder= await _context.Orders.CountAsync(r=>r.IsReturned);
-            var activeOrder= await _context.OrderTrackers.ToListAsync();
-            var codOrders = await _context.OrderTransactions.CountAsync(tt=>tt.TransactionType=="COD");
-            var prepaidOrders= await _context.OrderTransactions.CountAsync()-codOrders;
+            var ordercount = 0;
+            if (datefilter > 0)
+            {
+                ordercount = await _context.Orders.CountAsync(o => o.OrderDate.Date >= DateTime.Now.Date.AddDays(1-datefilter));
+            }
+            else
+            {
+                ordercount = await _context.Orders.CountAsync();
+            }
+            var returnedOrder = await _context.Orders.CountAsync(r => r.IsReturned);
+            var activeOrder = await _context.OrderTrackers.ToListAsync();
+            var codOrders = await _context.OrderTransactions.CountAsync(tt => tt.TransactionType == "COD");
+            var prepaidOrders = await _context.OrderTransactions.CountAsync() - codOrders;
             var undeliveredOrders = activeOrder.Where(o => o.OrderStatus == null || o.OrderStatus.Last() != "Delivered").ToList();
 
             int undeliveredCount = undeliveredOrders.Count;
             var deliveredorder = activeOrder.Count - undeliveredCount;
 
-            var totalProduct= await _context.Products.CountAsync();
-            var deletedproducts = await _context.Products.CountAsync(d=> d.IsActive==false);
-            var activeProducts = totalProduct-deletedproducts;
+            var totalProduct = await _context.Products.CountAsync();
+            var deletedproducts = await _context.Products.CountAsync(d => d.IsActive == false);
+            var activeProducts = totalProduct - deletedproducts;
             var outofstockProducts = await _context.Products.CountAsync(o => o.ProductStock == 0);
 
             var totalUsers = await _context.Users.CountAsync();
             var deletedUsers = await _context.Users.CountAsync(D => D.IsDeleted);
-            var InactiveUsers = await _context.Users.CountAsync(I=>I.IsActive==false)-deletedUsers;
-            var totalAdmins = await _context.Users.CountAsync(A=> A.IsAdmin);
-            var ActiveUsers= totalUsers- InactiveUsers-deletedUsers;
+            var InactiveUsers = await _context.Users.CountAsync(I => I.IsActive == false) - deletedUsers;
+            var totalAdmins = await _context.Users.CountAsync(A => A.IsAdmin);
+            var ActiveUsers = totalUsers - InactiveUsers - deletedUsers;
 
-            var TotalTransactions = await _context.OrderTransactions.ToListAsync();
+            var totalTransactions = await _context.OrderTransactions.ToListAsync();
             var totalRevenue = 0;
             var pendingPayment = 0;
-            TotalTransactions.ForEach(item =>
-            { if (item.TransactionStatus == "PENDING")
+
+            var seenTransactionOrderIds = new HashSet<string>(); 
+
+            foreach (var item in totalTransactions)
+            {
+                // Skip if this TransactionOrderID has already been processed
+                if (!seenTransactionOrderIds.Add(item.TransactionOrderID))
                 {
-                    pendingPayment+= item.Amount;
+                    continue;
                 }
-                totalRevenue += item.Amount;
-            });
+
+                // Only process unique TransactionOrderID
+                if (item.TransactionStatus == "PENDING")
+                {
+                    pendingPayment += item.Amount;
+                }
+                else if (datefilter > 0 && item.TransactionTime.Date >= DateTime.Now.Date.AddDays(1 - datefilter))
+                {
+                    totalRevenue += item.Amount;
+                }
+                else if (datefilter == 0)
+                {
+                    totalRevenue += item.Amount;
+                }
+            }
+
 
             return Ok(new
             {
@@ -72,52 +99,30 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("Revenue")]
         public async Task<IActionResult> GetRevenue()
         {
-            var allTransaction= await _context.OrderTransactions.ToListAsync();
-            List<int> Collections = [0, 0, 0, 0, 0,0,0,0,0,0,0,0];
-            foreach (var item in allTransaction)
+            var allTransactions = await _context.OrderTransactions.ToListAsync();
+
+            var seenTransactionOrderIds = new HashSet<string>();
+
+            // Initialize with 12 zeros for 12 months
+            var collections = new int[12];
+
+            foreach (var item in allTransactions)
             {
-                switch (item.TransactionTime.Month)
+                // Skip duplicate TransactionOrderIDs
+                if (string.IsNullOrEmpty(item.TransactionOrderID) || !seenTransactionOrderIds.Add(item.TransactionOrderID))
                 {
-                    case 1:
-                        Collections[0] += item.Amount;
-                        break;
-                    case 2:
-                        Collections[1] += item.Amount;
-                        break;
-                    case 3:
-                        Collections[2] += item.Amount;
-                        break;
-                    case 4:
-                        Collections[3] += item.Amount;
-                        break;
-                    case 5:
-                        Collections[4] += item.Amount;
-                        break;
-                    case 6:
-                        Collections[5] += item.Amount;
-                        break;
-                    case 7:
-                        Collections[6] += item.Amount;
-                        break;
-                    case 8:
-                        Collections[7] += item.Amount;
-                        break;
-                    case 9:
-                        Collections[8] += item.Amount;
-                        break;
-                    case 10:
-                        Collections[9] += item.Amount;
-                        break;
-                    case 11:
-                        Collections[10] += item.Amount;
-                        break;
-                    case 12:
-                        Collections[11] += item.Amount;
-                        break;
-                      
+                    continue;
+                }
+
+                int monthIndex = item.TransactionTime.Month - 1; // month is 1-based
+
+                if (monthIndex >= 0 && monthIndex < 12)
+                {
+                    collections[monthIndex] += item.Amount;
                 }
             }
-            return Ok(Collections);
+
+            return Ok(collections.ToList());
         }
     }
 }

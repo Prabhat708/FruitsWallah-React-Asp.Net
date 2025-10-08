@@ -14,29 +14,53 @@ namespace FruitsWallahBackend.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class SearchController : ControllerBase
+    public class SearchController(FruitsWallahDbContext context) : ControllerBase
     {
-        private readonly FruitsWallahDbContext _context;
-
-        public SearchController(FruitsWallahDbContext context)
-        {
-            _context = context;
-        }
+        private readonly FruitsWallahDbContext _context = context;
 
         [HttpGet("{search}")]
-        public async Task<ActionResult<Products>> Search(string search)
+        public async Task<ActionResult<IEnumerable<Products>>> Search(string search)
         {
-            var product = await _context.Products.Where(p => p.ProductName.Contains(search) || p.ProductCatagory.Contains(search) ||p.ProductDescription.Contains(search) || p.ProductPrice.ToString().Contains(search) ).ToListAsync();
+            var allProducts = await _context.Products.ToListAsync();
+            var maxDistance = 3; 
 
+            var filteredProducts = allProducts
+                .Where(p =>
+                    LevenshteinDistance(search.ToLower(), p.ProductName?.ToLower() ?? "") <= maxDistance ||
+                    LevenshteinDistance(search.ToLower(), p.ProductCatagory?.ToLower() ?? "") <= maxDistance ||
+                    LevenshteinDistance(search.ToLower(), p.ProductDescription?.ToLower() ?? "") <= maxDistance ||
+                    p.ProductPrice.ToString().Contains(search)
+                )
+                .ToList();
 
-            return Ok(product);
+            return Ok(filteredProducts);
         }
 
-        
-
-        private bool ProductsExists(int id)
+        private static int LevenshteinDistance(string s, string t)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            if (string.IsNullOrEmpty(s)) return t?.Length ?? 0;
+            if (string.IsNullOrEmpty(t)) return s.Length;
+
+            var dp = new int[s.Length + 1, t.Length + 1];
+
+            for (int i = 0; i <= s.Length; i++) dp[i, 0] = i;
+            for (int j = 0; j <= t.Length; j++) dp[0, j] = j;
+
+            for (int i = 1; i <= s.Length; i++)
+            {
+                for (int j = 1; j <= t.Length; j++)
+                {
+                    int cost = (s[i - 1] == t[j - 1]) ? 0 : 1;
+
+                    dp[i, j] = Math.Min(
+                        Math.Min(dp[i - 1, j] + 1, dp[i, j - 1] + 1),
+                        dp[i - 1, j - 1] + cost
+                    );
+                }
+            }
+
+            return dp[s.Length, t.Length];
         }
+
     }
 }

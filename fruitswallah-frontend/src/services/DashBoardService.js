@@ -3,9 +3,9 @@ import useAuthStore from "../Stores/AuthStore";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-export const getDashboardStats = async () => {
+export const getDashboardStats = async (datefilter=0) => {
   const { token } = useAuthStore.getState();
-  const res = await axios.get(`${BASE_URL}/api/Admin`, {
+  const res = await axios.get(`${BASE_URL}/api/Admin/${datefilter}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
