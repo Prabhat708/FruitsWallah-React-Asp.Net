@@ -52,7 +52,7 @@ useEffect(() => {
           setActiveItem={setActiveItem}
         />
         <div className="flex-grow-1 p-4">
-          <div className="container-fluid" style={{ maxWidth: "1024px" }}>
+          <div className="container-fluid">
             <div className="mb-4">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <div>

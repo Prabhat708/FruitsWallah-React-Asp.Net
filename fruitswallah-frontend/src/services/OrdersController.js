@@ -113,17 +113,18 @@ export const GetRecentOrders = async (setOrders) => {
   setOrders(res.data);
 };
 
-export const GetfilteredOrders = async ( setOrders) => {
+export const GetfilteredOrders = async (day = 0, status = "All", type = "All", setOrders) => {
+  console.log(day, type, status);
   const { token } = useAuthStore.getState();
   const res = await axios.get(
-    `${BASE_URL}/api/Orders/filteredOrders`,
+    `${BASE_URL}/api/Orders/filteredOrders/${day}/${status}/${type}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
-  
+  console.log(res.data);
   setOrders(res.data);
 };
 

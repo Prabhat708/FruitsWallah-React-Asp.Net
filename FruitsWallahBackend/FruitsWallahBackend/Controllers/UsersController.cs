@@ -12,6 +12,7 @@ using BCrypt.Net;
 using Mysqlx;
 using FruitsWallahBackend.Services.Iservices;
 using Microsoft.AspNetCore.Authorization;
+using Org.BouncyCastle.Asn1;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -97,6 +98,10 @@ namespace FruitsWallahBackend.Controllers
             var userEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
             if (userEmail != null)
             {
+                if (userEmail.IsDeleted)
+                {
+                    return BadRequest("Your Accound Deleted Prevoiusly Please SignUp with diffrent email");
+                }
                 return BadRequest("User Alredy Exists");
             }
             if (user.Password != null)
@@ -129,7 +134,7 @@ namespace FruitsWallahBackend.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    var token = _jwtService.GenerateToken(user1.UserId, user1.Name, user1.IsAdmin);
+                    var token = _jwtService.GenerateToken(user1.UserId, user1.Name, user1.IsAdmin,user1.IsActive);
                     if (token == null)
                     {
                         return BadRequest();
@@ -175,10 +180,12 @@ namespace FruitsWallahBackend.Controllers
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            user.IsAdmin = false;
+            user.IsDeleted = true;
+            user.IsActive = false;
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Your Acoount Deleted Successfully");
         }
 
         [Authorize]
@@ -192,7 +199,49 @@ namespace FruitsWallahBackend.Controllers
             await _context.SaveChangesAsync();
             return Ok("Role Updated");
         }
+        [HttpPut("Activate/{UserId}")]
+        public async Task<IActionResult> ActivateAccount(int UserId)
+        {
+            if (UserId < 0)
+            {
+                return BadRequest("Invalid UserID");
+            }
+            if (UserExists(UserId))
+            {
+                var user = await _context.Users.FindAsync(UserId);
+                if (user == null)
+                {
+                    return NotFound("No User Found");
+                }
+                user.IsActive = true;
+                await _context.SaveChangesAsync();
 
+                return Ok("Account Activated");
+            }
+            return BadRequest("Something Went Wrong");
+        }
+        [HttpPut("InActivate/{UserId}")]
+        public async Task<IActionResult> InActivateAccount(int UserId)
+        {
+            if (UserId < 0)
+            {
+                return BadRequest("Invalid UserID");
+            }
+            if (UserExists(UserId))
+            {
+                var user = await _context.Users.FindAsync(UserId);
+                if (user == null)
+                {
+                    return NotFound("No User Found");
+                }
+                user.IsActive = false;
+                user.IsAdmin= false;
+                await _context.SaveChangesAsync();
+
+                return Ok("Account DeActivated");
+            }
+            return BadRequest("Something Went Wrong");
+        }
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.UserId == id);

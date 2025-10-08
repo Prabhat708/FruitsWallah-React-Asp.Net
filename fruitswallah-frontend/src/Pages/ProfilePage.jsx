@@ -5,26 +5,49 @@ import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { getAddress } from "../services/ManageAddress";
-import { getUserDeatails } from "../services/HandleLoginLogout";
+import { getUserDeatails, HandleLogout } from "../services/HandleLoginLogout";
 import useAuthStore from "../Stores/AuthStore";
-
+import { handleDeleteAccount, handleInActiveAccount } from "../services/Singup";
+import AlertMessage from "../components/AlertMessage";
+import { BsFillLightningChargeFill } from "react-icons/bs";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState({})
-  const [address,setAddresses]=useState([])
+  const [user, setUser] = useState({});
+  const [address, setAddresses] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showDeactivateConfirmModal, setShowDeactivateConfirmModal] = useState(false);
+  const [res, setRes] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     useAuthStore.getState().initializeAuth();
     getUserDeatails(setUser);
-    getAddress(setAddresses)
+    getAddress(setAddresses);
   }, []);
- 
-  const [activeItem, setActiveItem] = useState("Personal details");
- const add = address.filter((a) => a.isPrimary == true);
 
+  const [activeItem, setActiveItem] = useState("Personal details");
+  const add = address.filter((a) => a.isPrimary == true);
+  const handleDelete = async () => {
+    const response = await handleDeleteAccount();
+    setRes(response);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    HandleLogout(navigate);
+  };
+  const handleConfirm = async () => {
+    handleDelete();
+      setShowConfirmModal(false);
+  };
+  const handleDeactivateConfirm = async () => {
+    handleInActiveAccount(navigate);
+    setShowDeactivateConfirmModal(false);
+  }
   return (
     <>
       <Navbar />
+      {showPopup && <AlertMessage status={res.status} message={res.message} />}
       <div
         className="d-flex min-vh-100 mt-5 pt-5"
         style={{ backgroundColor: "#f8f9fa" }}
@@ -42,6 +65,128 @@ const ProfilePage = () => {
                 Personal Information
               </h1>
             </div>
+            {showDeactivateConfirmModal && (
+              <div
+                className="modal fade show d-block"
+                tabIndex="-1"
+                style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+              >
+                <div className="modal-dialog modal-dialog-centered">
+                  <div className="modal-content border-danger shadow">
+                    <div className="modal-header bg-danger text-white">
+                      <h5 className="modal-title">
+                        Confirmation for Deactivate Account
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close btn-close-white"
+                        onClick={() => setShowConfirmModal(false)}
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      <p className="fw-semibold">
+                        Are you sure you want to
+                        <span className="text-danger"> Deactivate</span> Your
+                        Account?
+                      </p>
+                      <div
+                        className="alert alert-danger d-flex align-items-start mt-3"
+                        role="alert"
+                      >
+                        <div>
+                          <BsFillLightningChargeFill className="me-2" />
+                          <strong>Note: </strong>
+                          <br />
+                          If you deactivate your account, your account details
+                          will be kept safe and you can reactivate your account
+                          anytime by logging in again. Your data will not be
+                          deleted unless you choose to permanently delete your
+                          account.
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowDeactivateConfirmModal(false)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={handleDeactivateConfirm}
+                      >
+                        Yes, Proceed
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showConfirmModal && (
+              <div
+                className="modal fade show d-block"
+                tabIndex="-1"
+                style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+              >
+                <div className="modal-dialog modal-dialog-centered">
+                  <div className="modal-content border-danger shadow">
+                    <div className="modal-header bg-danger text-white">
+                      <h5 className="modal-title">
+                        Confirmation for Delete Account
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close btn-close-white"
+                        onClick={() => setShowConfirmModal(false)}
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      <p className="fw-semibold">
+                        Are you sure you want to
+                        <span className="text-danger"> Delete</span> Your
+                        Account?
+                      </p>
+                      <div
+                        className="alert alert-danger d-flex align-items-start mt-3"
+                        role="alert"
+                      >
+                        <div>
+                          <BsFillLightningChargeFill className="me-2" />
+                          <strong>Note: </strong>
+                          <br />
+                          If you delete the Account, all your personal data,
+                          order history, and saved addresses will be permanently
+                          removed from our system. This action cannot be undone.
+                          Please ensure you have downloaded any important
+                          information before proceeding. You will lose access to
+                          all FruitsWallah services associated with this
+                          account.
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowConfirmModal(false)}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger"
+                        onClick={handleConfirm}
+                      >
+                        Yes, Proceed
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="profile">
               <div className="nameSection">
                 <span className="fw-medium name">Profile Name</span>
@@ -151,11 +296,21 @@ const ProfilePage = () => {
                 </p>
               </div>
               <div className="mt-5 ms-5">
-                <button className="text-primary mb-3 border-0 bg-transparent">
+                <button
+                  className="text-primary mb-3 border-0 bg-transparent"
+                  onClick={() => {
+                    setShowDeactivateConfirmModal(true);
+                  }}
+                >
                   Deactivate account
                 </button>
                 <br />
-                <button className="text-danger border-0 bg-transparent">
+                <button
+                  className="text-danger border-0 bg-transparent"
+                  onClick={() => {
+                    setShowConfirmModal(true);
+                  }}
+                >
                   Delete Account
                 </button>
               </div>

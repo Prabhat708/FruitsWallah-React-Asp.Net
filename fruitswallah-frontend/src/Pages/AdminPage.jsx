@@ -26,8 +26,11 @@ import {
   Legend,
 } from "chart.js";
 import { GetRecentOrders } from "../services/OrdersController";
-import {adminSidebarItems} from "../data/Sidebar";
-import { getDashboardStats, getRevenueData } from "../services/DashBoardService";
+import { adminSidebarItems } from "../data/Sidebar";
+import {
+  getDashboardStats,
+  getRevenueData,
+} from "../services/DashBoardService";
 import { BsFillTruckFrontFill } from "react-icons/bs";
 
 ChartJS.register(
@@ -48,12 +51,7 @@ const AdminPage = () => {
     datasets: [
       {
         label: "Count",
-        data: [
-          0,
-          0,
-          0,
-          0,
-        ],
+        data: [0, 0, 0, 0],
         backgroundColor: [
           "rgba(54, 162, 235, 0.6)",
           "rgba(255, 206, 86, 0.6)",
@@ -98,6 +96,13 @@ const AdminPage = () => {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [orders, setOrders] = useState(null);
   const navigate = useNavigate();
+  const [filter, setFilter] = useState({
+    range: "0"
+  });
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilter({ ...filter, [name]: value });
+  };
 
   const isAdmin = useAuthStore((state) => state.isAdmin);
 
@@ -106,10 +111,10 @@ const AdminPage = () => {
       navigate("/");
     }
     getstats();
-  }, []);
+  }, [filter]);
 
   const getstats = async () => {
-    const res = await getDashboardStats();
+    const res = await getDashboardStats(filter.range);
     setStats(res);
     const revnue = await getRevenueData();
     setOverviewChart({
@@ -177,18 +182,8 @@ const AdminPage = () => {
         },
       ],
     });
-  }
-  const [filter, setFilter] = useState({
-    range: "7d",
-    type: "All",
-    status: "All",
-  });
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilter({ ...filter, [name]: value });
   };
-  
-  
+
   useEffect(() => {
     GetRecentOrders(setOrders);
   }, []);
@@ -196,8 +191,7 @@ const AdminPage = () => {
   if (!orders) {
     return <div>Loading...</div>;
   }
- 
-  
+
   return (
     <>
       <Navbar />
@@ -211,22 +205,22 @@ const AdminPage = () => {
           setActiveItem={setActiveItem}
         />
         <div className="flex-grow-1 p-4">
-          <div className="container-fluid" style={{ maxWidth: "1024px" }}>
+          <div className="container-fluid">
             <div className="mb-4">
-              <h1 className="h2 fw-bold text-dark mb-2">Admin Dashboard</h1>
-
-              <p className="text-muted">
-                {new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-
-              <div className="card shadow-sm border-0 mb-4 p-3">
-                <div className="row g-3 align-items-center">
-                  <div className="col-md-3">
+              <div className="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                  <h1 className="h2 fw-bold text-dark mb-2">Admin Dashboard</h1>
+                  <p className="text-muted mb-0">
+                    {new Date().toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+                <div className="row align-items-center">
+                  <div className="col-md-12">
                     <label className="form-label fw-semibold">Date Range</label>
                     <select
                       name="range"
@@ -234,35 +228,11 @@ const AdminPage = () => {
                       value={filter.range}
                       onChange={handleFilterChange}
                     >
-                      <option value="1d">Today</option>
-                      <option value="7d">Last 7 Days</option>
-                      <option value="30d">Last 30 Days</option>
-                    </select>
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label fw-semibold">Order Type</label>
-                    <select
-                      name="type"
-                      className="form-select"
-                      value={filter.type}
-                      onChange={handleFilterChange}
-                    >
-                      <option value="All">All</option>
-                      <option value="COD">COD</option>
-                      <option value="Online">Online</option>
-                    </select>
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label fw-semibold">Status</label>
-                    <select
-                      name="status"
-                      className="form-select"
-                      value={filter.status}
-                      onChange={handleFilterChange}
-                    >
-                      <option value="All">All</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Completed">Completed</option>
+                      <option value="1">Today</option>
+                      <option value="7">Last 7 Days</option>
+                      <option value="30">Last 30 Days</option>
+                      <option value="90">Last 90 Days</option>
+                      <option value="0">ALL</option>
                     </select>
                   </div>
                 </div>
@@ -294,7 +264,7 @@ const AdminPage = () => {
                   icon={<FaUsers />}
                 />
                 <StatsCard
-                  title="Total Revenue"
+                  title="Received Payments"
                   value={stats.totalRevenue}
                   color="info"
                   icon={<FaDollarSign />}

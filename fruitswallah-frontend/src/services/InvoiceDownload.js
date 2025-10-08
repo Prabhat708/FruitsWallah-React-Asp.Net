@@ -3,7 +3,6 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import useAuthStore from "../Stores/AuthStore";
-import logo from "../../public/favicon.png";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 

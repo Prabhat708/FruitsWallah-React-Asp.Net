@@ -7,19 +7,22 @@ const useAuthStore = create((set) => ({
   UserId: null,
   UserName: null,
   isAdmin: null,
+  isActive:null,
 
     setAuthData: (token) => {
     try {
       const decoded = jwt_decode(token);
-        localStorage.setItem("Token", token);
+      localStorage.setItem("Token", token);
+      console.log(decoded);
       set({
         token,
         UserId: decoded?.UserId || null,
         UserName: decoded?.UserName || null,
         isAdmin: decoded?.isAdmin || null,
+        isActive:decoded?.isActive || null,
       });
     } catch (error) {
-      set({ token: null, UserId: null, UserName: null });
+      set({ token: null, UserId: null, UserName: null,isActive:null });
       localStorage.removeItem("Token");
     }
   },
@@ -35,6 +38,7 @@ const useAuthStore = create((set) => ({
         UserId: decoded?.UserId || null,
         UserName: decoded?.UserName || null,
         isAdmin: decoded?.isAdmin || null,
+        isActive: decoded?.isActive || null,
       });
     } catch (err) {
       localStorage.removeItem("Token");
@@ -44,7 +48,7 @@ const useAuthStore = create((set) => ({
   // ✅ Logout
   logout: () => {
     localStorage.removeItem("Token");
-    set({ token: null, UserId: null, UserName: null });
+    set({ token: null, UserId: null, UserName: null,isActive:null });
   },
 }));
 

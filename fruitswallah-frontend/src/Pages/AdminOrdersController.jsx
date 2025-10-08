@@ -30,7 +30,7 @@ const AdminOrdersController = () => {
   const [showStatusUpdate, setShowStatusUpdate] = useState(false);
   const [activeItem, setActiveItem] = useState("View orders");
   const [filter, setFilter] = useState({
-    range: "7d",
+    range: "0",
     type: "All",
     status: "All",
   });
@@ -59,16 +59,16 @@ const AdminOrdersController = () => {
   };
 useEffect(() => {
    
-    getstats();
-  }, []);
+  getstats();
+  GetfilteredOrders(filter.range, filter.status, filter.type, setOrders);
+  }, [filter]);
 
   const getstats = async () => {
-    const res = await getDashboardStats();
+    const res = await getDashboardStats(filter.range);
+
     setStats(res);
   }
-  useEffect(() => {
-    GetfilteredOrders(setOrders);
-  }, []);
+
   return (
     <>
       <Navbar />
@@ -82,7 +82,7 @@ useEffect(() => {
           setActiveItem={setActiveItem}
         />
         <div className="flex-grow-1 p-4">
-          <div className="container-fluid" style={{ maxWidth: "1024px" }}>
+          <div className="container-fluid">
             <div className="mb-4">
               <div className="d-flex align-items-center justify-content-between mb-4">
                 <div>
@@ -112,51 +112,6 @@ useEffect(() => {
               {showStatusUpdate && (
                 <UpdateStatus setShowStatusUpdate={setShowStatusUpdate} />
               )}
-              <div className="card shadow-sm border-0 mb-4 p-3">
-                <div className="row g-3 align-items-center">
-                  <div className="col-md-3">
-                    <label className="form-label fw-semibold">Date Range</label>
-                    <select
-                      name="range"
-                      className="form-select"
-                      value={filter.range}
-                      onChange={handleFilterChange}
-                    >
-                      <option value="1d">Last 24 Hours</option>
-                      <option value="7d">Last 7 Days</option>
-                      <option value="30d">Last 30 Days</option>
-                      <option value="90d">Last 90 Days</option>
-                      <option value="all">All Time</option>
-                    </select>
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label fw-semibold">Order Type</label>
-                    <select
-                      name="type"
-                      className="form-select"
-                      value={filter.type}
-                      onChange={handleFilterChange}
-                    >
-                      <option value="All">All</option>
-                      <option value="COD">COD</option>
-                      <option value="Online">Online</option>
-                    </select>
-                  </div>
-                  <div className="col-md-3">
-                    <label className="form-label fw-semibold">Status</label>
-                    <select
-                      name="status"
-                      className="form-select"
-                      value={filter.status}
-                      onChange={handleFilterChange}
-                    >
-                      <option value="All">All</option>
-                      <option value="Pending">Pending</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
 
               <div className="row g-3 align-items-center">
                 <StatsCard
@@ -198,7 +153,61 @@ useEffect(() => {
               </div>
 
               <div className="mt-4">
-                <h3 className="h5 fw-bold text-dark mb-3">All Orders</h3>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h2 className="h3 fw-bold text-dark mb-0">All Orders</h2>
+                  <div className="d-flex align-items-end gap-3">
+                    <div>
+                      <label className="form-label fw-semibold mb-1">
+                        Date Range
+                      </label>
+                      <select
+                        name="range"
+                        className="form-select form-select-sm"
+                        value={filter.range}
+                        onChange={handleFilterChange}
+                      >
+                        <option value="1">Today</option>
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="0">All Time</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="form-label fw-semibold mb-1">
+                        Order Type
+                      </label>
+                      <select
+                        name="type"
+                        className="form-select form-select-sm"
+                        value={filter.type}
+                        onChange={handleFilterChange}
+                      >
+                        <option value="All">All</option>
+                        <option value="COD">COD</option>
+                        <option value="Online">Online</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="form-label fw-semibold mb-1">
+                        Status
+                      </label>
+                      <select
+                        name="status"
+                        className="form-select form-select-sm"
+                        value={filter.status}
+                        onChange={handleFilterChange}
+                      >
+                        <option value="All">All</option>
+                        <option value="Placed">Placed</option>
+                        <option value="Dispatched">Dispatched</option>
+                        <option value="En Route">En Route</option>
+                        <option value="Out For delivery">Out For delivery</option>
+                        <option value="Delivered">Delivered</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 {orders.length === 0 ? (
                   <p className="text-muted">No orders found.</p>
                 ) : (

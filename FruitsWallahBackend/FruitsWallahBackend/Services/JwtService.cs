@@ -11,7 +11,7 @@ namespace FruitsWallahBackend.Services
     {
         private readonly IConfiguration _configuration = configuration;
 
-        public string GenerateToken(int userId, string userName, bool isAdmin)
+        public string GenerateToken(int userId, string userName, bool isAdmin, bool isActive)
         {
             var claims = new[]
                 {
@@ -20,6 +20,7 @@ namespace FruitsWallahBackend.Services
                     new Claim("UserId",userId.ToString()),
                     new Claim("UserName",userName),
                     new Claim("isAdmin",isAdmin.ToString()),
+                    new Claim("isActive",isActive.ToString()),
                     new Claim(ClaimTypes.Role,isAdmin?"Admin":"User")
                 };
 

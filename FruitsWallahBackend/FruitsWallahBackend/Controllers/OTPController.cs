@@ -25,6 +25,10 @@ namespace FruitsWallahBackend.Controllers
             var userEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == Email.Email);
             if (userEmail != null)
             {
+                if (userEmail.IsDeleted)
+                {
+                    return BadRequest("Your Accound Deleted Prevoiusly Please SignUp with diffrent email");
+                }
                 return BadRequest("User Alredy Exists. Please! Login");
             }
             var otp = OTP();

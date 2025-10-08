@@ -2,6 +2,6 @@
 {
     public interface IJwtService
     {
-        string GenerateToken(int userId, string userName, bool isAdmin);
+        string GenerateToken(int userId, string userName, bool isAdmin,bool isActive);
     }
 }

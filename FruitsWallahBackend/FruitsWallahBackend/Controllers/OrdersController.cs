@@ -42,48 +42,100 @@ namespace FruitsWallahBackend.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("filteredOrders")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetfilteredOrders()
+        [HttpGet("filteredOrders/{day}/{status}/{type}")]
+        public async Task<ActionResult<IEnumerable<object>>> GetfilteredOrders(int day, string status, string type)
         {
-            var orders = await (from o in _context.Orders
-                                join u in _context.Users on o.UserId equals u.UserId
-                                join OI in _context.OrderItems on o.OrderId equals OI.OrderId
-                                join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId
-                                join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId
-                                join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
-                                orderby o.OrderDate descending
-                                select new
-                                {
-                                    o.OrderId,
-                                    o.OrderDate,
-                                    u.Name,
-                                    o.IsPaid,
-                                    o.TransactionOrderID,
-                                    OI.ProductName,
-                                    OI.ProductPrice,
-                                    OI.ProductQty,
-                                    OI.ShipingCharge,
-                                    OI.TotalPrice,
-                                    OI.TransactionType,
-                                    OI.ProductImg,
-                                    OTrans.TransactionId,
-                                    OTrans.TransactionStatus,
-                                    OTrans.TransactionTime,
-                                    ot.OrderStatus,
-                                    ot.DeliveredOn,
-                                    oa.UserName,
-                                    oa.AddressType,
-                                    oa.HouseNo,
-                                    oa.Locality,
-                                    oa.Address,
-                                    oa.City,
-                                    oa.State,
-                                    oa.PostalCode,
-                                    oa.LandMark,
-                                    oa.PhoneNumber
-                                }).ToListAsync();
-            return Ok(orders);
+            Console.WriteLine(day);
+            Console.WriteLine(status);
+            Console.WriteLine(type);
+            // Define date filter
+            DateTime fromDate = DateTime.MinValue;
+            DateTime today = DateTime.Now.Date;
+
+            switch (day)
+            {
+                case 1: // Today
+                    fromDate = today;
+                    break;
+                case 7: // Last 7 Days
+                    fromDate = today.AddDays(-6);
+                    break;
+                case 30: // Last 30 Days
+                    fromDate = today.AddDays(-29);
+                    break;
+                case 90: // Last 90 Days
+                    fromDate = today.AddDays(-89);
+                    break;
+                default: // All
+                    fromDate = DateTime.MinValue;
+                    break;
+            }
+
+            var query = from o in _context.Orders
+                        join u in _context.Users on o.UserId equals u.UserId
+                        join OI in _context.OrderItems on o.OrderId equals OI.OrderId
+                        join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId
+                        join oa in _context.OrderAddresses on o.OrderId equals oa.OrderId
+                        join OTrans in _context.OrderTransactions on o.OrderId equals OTrans.OrderID
+                        where o.OrderDate.Date >= fromDate
+                        select new
+                        {
+                            o.OrderId,
+                            o.OrderDate,
+                            u.Name,
+                            o.IsPaid,
+                            o.TransactionOrderID,
+                            OI.ProductName,
+                            OI.ProductPrice,
+                            OI.ProductQty,
+                            OI.ShipingCharge,
+                            OI.TotalPrice,
+                            OI.TransactionType,
+                            OI.ProductImg,
+                            OTrans.TransactionId,
+                            OTrans.TransactionStatus,
+                            OTrans.TransactionTime,
+                            ot.OrderStatus,
+                            ot.DeliveredOn,
+                            oa.UserName,
+                            oa.AddressType,
+                            oa.HouseNo,
+                            oa.Locality,
+                            oa.Address,
+                            oa.City,
+                            oa.State,
+                            oa.PostalCode,
+                            oa.LandMark,
+                            oa.PhoneNumber
+                        };
+
+
+            var results = await query.ToListAsync();
+
+            if (status != "All")
+            {
+                results = results
+                    .Where(x => x.OrderStatus != null
+                             && x.OrderStatus.Count > 0
+                             && x.OrderStatus.Last() == status)
+                    .ToList();
+            }
+
+            // Filter transaction type if needed
+            if (type == "COD")
+            {
+                results = results.Where(x => x.TransactionType == "COD").ToList();
+            }
+            else if (type == "Online")
+            {
+                results = results.Where(x => x.TransactionType != "COD").ToList();
+            }
+
+            results = results.OrderByDescending(x => x.OrderDate).ToList();
+
+            return Ok(results);
         }
+
         [Authorize]
         [HttpGet("ByOrderId/{orderId}")]
         public async Task<ActionResult<IEnumerable<Order>>> GetByOrderId(int orderId)
