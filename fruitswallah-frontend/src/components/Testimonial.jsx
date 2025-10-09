@@ -5,7 +5,9 @@ import CustomerReview from "./CustomerReview";
 import Carousel from "react-multi-carousel";
 import { GetReviews, PostReview } from "../services/ReviewController";
 import AlertMessage from "./AlertMessage";
+import useAuthStore from "../Stores/AuthStore";
 const Testimonial = () => {
+  const { token } = useAuthStore();
   const [showPopup, setShowPopup] = useState(false);
   const [res, setRes] = useState({});
   const [data, setData] = useState({
@@ -83,49 +85,50 @@ const Testimonial = () => {
             </Carousel>
           </div>
         </div>
-
-        <div className="container py-5">
-          {showPopup && (
-         <AlertMessage status={res.status} message={res.message} />
+        {token ?
+          <div className="container py-5">
+            {showPopup && (
+              <AlertMessage status={res.status} message={res.message} />
            
-          )}
-          <div className="row g-4 align-items-center">
-            <div className="col-lg-6 col-md-6">
-              <img src={review} height="350px" alt="" />
-            </div>
-            <div className="col-lg-6 col-md-6">
-              <h2 className="text-center mb-4">User Review Form</h2>
-              <form id="Review-form" name="Review-form">
-                <div className="form-group my-2">
-                  <label htmlFor="comment" className="fw-medium">
-                    Share Your Thoughts about me...
-                  </label>
-                  <textarea
-                    className="form-control"
-                    id="comment"
-                    name="comment"
-                    rows="3"
-                    placeholder="Write your review here"
-                    value={data.comment}
-                    onChange={handleChange}
-                    required
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  onClick={async(e) => {
-                    e.preventDefault();
-                    setRes(await PostReview(data, setReviews, setShowPopup));
+            )}
+            <div className="row g-4 align-items-center">
+              <div className="col-lg-6 col-md-6">
+                <img src={review} height="350px" alt="" />
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <h2 className="text-center mb-4">User Review Form</h2>
+                <form id="Review-form" name="Review-form">
+                  <div className="form-group my-2">
+                    <label htmlFor="comment" className="fw-medium">
+                      Share Your Thoughts about me...
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="comment"
+                      name="comment"
+                      rows="3"
+                      placeholder="Write your review here"
+                      value={data.comment}
+                      onChange={handleChange}
+                      required
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      setRes(await PostReview(data, setReviews, setShowPopup));
                   
-                  }}
-                  className="btn btn-primary btn-block my-2 align-items-center"
-                >
-                  Submit
-                </button>
-              </form>
+                    }}
+                    className="btn btn-primary btn-block my-2 align-items-center"
+                  >
+                    Submit
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
+:""}
       </>
     );
 };

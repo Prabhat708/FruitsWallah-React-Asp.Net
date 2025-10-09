@@ -104,7 +104,7 @@ const AdminPage = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  const isAdmin = useAuthStore((state) => state.isAdmin);
+  const {isAdmin} = useAuthStore();
 
   useEffect(() => {
     if (!isAdmin) {
@@ -265,13 +265,13 @@ const AdminPage = () => {
                 />
                 <StatsCard
                   title="Received Payments"
-                  value={stats.totalRevenue}
+                  value={`₹${stats.totalRevenue}`}
                   color="info"
                   icon={<FaDollarSign />}
                 />
                 <StatsCard
                   title="Pending Payments"
-                  value={`${stats.pendingPayment}`}
+                  value={`₹${stats.pendingPayment}`}
                   color="danger"
                   icon={<FaMoneyBillWave />}
                 />
@@ -345,6 +345,8 @@ const AdminPage = () => {
                               className={`badge ${
                                 order.orderStatus.at(-1) === "Delivered"
                                   ? "bg-success"
+                                  : order.orderStatus.at(-1) === "Cancelled"
+                                  ? "bg-danger"
                                   : "bg-warning text-dark"
                               }`}
                             >
@@ -358,7 +360,7 @@ const AdminPage = () => {
                           <td
                             colSpan="5"
                             className="text-center text-muted py-3"
-                          >
+>
                             No orders found for selected filters
                           </td>
                         </tr>

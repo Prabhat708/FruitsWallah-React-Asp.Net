@@ -5,7 +5,7 @@ import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { getAddress } from "../services/ManageAddress";
-import { getUserDeatails, HandleLogout } from "../services/HandleLoginLogout";
+import { getUserDeatails } from "../services/HandleLoginLogout";
 import useAuthStore from "../Stores/AuthStore";
 import { handleDeleteAccount, handleInActiveAccount } from "../services/Singup";
 import AlertMessage from "../components/AlertMessage";
@@ -28,13 +28,13 @@ const ProfilePage = () => {
   const [activeItem, setActiveItem] = useState("Personal details");
   const add = address.filter((a) => a.isPrimary == true);
   const handleDelete = async () => {
-    const response = await handleDeleteAccount();
+    const response = await handleDeleteAccount(navigate);
     setRes(response);
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
     }, 2000);
-    HandleLogout(navigate);
+    
   };
   const handleConfirm = async () => {
     handleDelete();
@@ -47,7 +47,6 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      {showPopup && <AlertMessage status={res.status} message={res.message} />}
       <div
         className="d-flex min-vh-100 mt-5 pt-5"
         style={{ backgroundColor: "#f8f9fa" }}
@@ -257,6 +256,9 @@ const ProfilePage = () => {
                   />
                 </div>
               </form>
+              {showPopup && (
+                <AlertMessage status={res.status} message={res.message} />
+              )}
               <div className="nameSection mt-5">
                 <span className="fw-medium name">FAQs</span>
                 <h6 className="ms-5 mt-3">

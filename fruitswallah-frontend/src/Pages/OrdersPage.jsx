@@ -14,6 +14,7 @@ import { RiEBike2Fill } from "react-icons/ri";
 import Pagination from "../components/Pagination";
 import { sidebarItems } from "../data/Sidebar";
 import useAuthStore from "../Stores/AuthStore";
+import { FcCancel } from "react-icons/fc";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -40,13 +41,16 @@ for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
   const getStatusIcon = (orderStatus) => {
     if (orderStatus.at(-1).toLowerCase() === "dispatched")
       return <Truck className="text-primary" size={20} />;
-    if (orderStatus.at(-1).toLowerCase() === "expected")
+    else if (orderStatus.at(-1).toLowerCase() === "expected")
       return <Clock className="text-warning" size={20} />;
-    if (orderStatus.at(-1).toLowerCase() === "delivered")
+    else if (orderStatus.at(-1).toLowerCase() === "delivered")
       return <CheckCircle className="text-success" size={20} />;
-    if(orderStatus.at(-1).toLowerCase()=== "out for delivery")
+    else if(orderStatus.at(-1).toLowerCase()=== "out for delivery")
       return <RiEBike2Fill className="text-success" size={20} />;
-    return <Truck className="text-primary" size={20} />;
+    else if (orderStatus.at(-1).toLowerCase() === "cancelled")
+      return <FcCancel className="text-danger" size={20} />;
+    else
+      return <Truck className="text-primary" size={20} />;
   };
   const [activeItem, setActiveItem] = useState("View orders");
   return (
@@ -95,6 +99,7 @@ for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
                     order={order}
                     borderColor={borderColor}
                     getStatusIcon={getStatusIcon}
+                    setOrders={setOrders}
                   />
                 );
               })}

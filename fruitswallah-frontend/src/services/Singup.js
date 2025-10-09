@@ -19,43 +19,44 @@ export const handleSignUp = async (data, setData) => {
      return {status:true,Username:Username}
   }
     catch (e) {
-      console.log(e.response.data)
-      
+    console.log(e.response.data);
     return;
   }
 };
 
-export const handleDeleteAccount = async () => {
-  const { UserId,token } = useAuthStore.getState();
-  const res = await axios.delete(`${BASE_URL}/api/Users/${UserId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  
-  return { success: false, message: res.data };
-}
+export const handleDeleteAccount = async (navigate) => {
+  const { UserId, token } = useAuthStore.getState();
+  try {
+    const res = await axios.delete(`${BASE_URL}/api/Users/${UserId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    HandleLogout(navigate);
+    return { status: false, message: res.data };
+  } catch (e) {
+    return { status: false, message: e.response.data };
+  }
+};
 
 export const handleActiveAccount = async () => {
   const { UserId,token } = useAuthStore.getState();
-  const res = await axios.put(`${BASE_URL}/api/Users/Activate/${UserId}`, {
+  const res = await axios.put(`${BASE_URL}/api/Users/Activate/${UserId}`, {}, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log(res.data);
   return res.data;
 }
 
 export const handleInActiveAccount = async (navigate) => {
   const { UserId, token } = useAuthStore.getState();
-  const res = await axios.put(`${BASE_URL}/api/Users/InActivate/${UserId}`, {
+  const res = await axios.put(`${BASE_URL}/api/Users/InActivate/${UserId}`, {}, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   HandleLogout(navigate);
-  console.log(res.data);
   return res.data;
 };
 

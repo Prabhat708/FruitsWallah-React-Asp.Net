@@ -29,7 +29,7 @@ namespace FruitsWallahBackend.Controllers
         public async Task<ActionResult<IEnumerable<Orders>>> GetOrders()
         {
             var orders = await (from ot in _context.OrderTrackers select new { ot.OrderId, ot.OrderStatus }).ToListAsync();
-            var filterOrders = orders.Where(ot => ot.OrderStatus.Count < 5).OrderByDescending(ot => ot.OrderStatus.Count).ToList();
+            var filterOrders = orders.Where(ot => ot.OrderStatus.Count < 5 && !ot.OrderStatus.Contains("Cancelled")).OrderByDescending(ot => ot.OrderStatus.Count).ToList();
             return Ok(filterOrders);
         }
         [Authorize(Roles = "Admin")]
@@ -45,9 +45,6 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("filteredOrders/{day}/{status}/{type}")]
         public async Task<ActionResult<IEnumerable<object>>> GetfilteredOrders(int day, string status, string type)
         {
-            Console.WriteLine(day);
-            Console.WriteLine(status);
-            Console.WriteLine(type);
             // Define date filter
             DateTime fromDate = DateTime.MinValue;
             DateTime today = DateTime.Now.Date;
@@ -382,6 +379,39 @@ namespace FruitsWallahBackend.Controllers
                 };
             });
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPut("OrderCancel/{orderId}")]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var ordertracker = await _context.OrderTrackers.FindAsync(orderId);
+            if (ordertracker == null)
+            {
+                return BadRequest("NO order found");
+            }
+            if (ordertracker.OrderStatus != null && ordertracker.OrderStatus.Count == 1)
+            {
+                var productDetails = await _context.OrderItems.FindAsync(orderId);
+                if (productDetails == null)
+                {
+                    return BadRequest("Some thing went Wrong");
+                }
+                var product = await _context.Products.FindAsync(productDetails.ProductId);
+                if (product != null)
+                {
+                    product.ProductStock += productDetails.ProductQty;
+                }
+                var order= await _context.Orders.FindAsync(orderId);
+                if (order != null)
+                {
+                    order.IsReturned = true;
+                }
+                ordertracker.OrderStatus.Add("Cancelled");
+                await _context.SaveChangesAsync();
+                return Ok("Order Cancelled");
+            }
+            return BadRequest("Can not cancel");
         }
         [Authorize]
         [HttpGet("Inovice{transactionId}")]

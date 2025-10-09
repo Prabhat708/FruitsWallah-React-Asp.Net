@@ -13,7 +13,6 @@ const useAuthStore = create((set) => ({
     try {
       const decoded = jwt_decode(token);
       localStorage.setItem("Token", token);
-      console.log(decoded);
       set({
         token,
         UserId: decoded?.UserId || null,

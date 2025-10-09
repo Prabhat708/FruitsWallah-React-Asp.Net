@@ -145,7 +145,7 @@ useEffect(() => {
                   icon={<MdRealEstateAgent />}
                 />
                 <StatsCard
-                  title="Return Orders"
+                  title="Cancelled Orders"
                   value={`${stats.returnedOrder}`}
                   color="danger"
                   icon={<TbTruckReturn />}
@@ -202,8 +202,11 @@ useEffect(() => {
                         <option value="Placed">Placed</option>
                         <option value="Dispatched">Dispatched</option>
                         <option value="En Route">En Route</option>
-                        <option value="Out For delivery">Out For delivery</option>
+                        <option value="Out For delivery">
+                          Out For delivery
+                        </option>
                         <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
                       </select>
                     </div>
                   </div>
@@ -214,7 +217,8 @@ useEffect(() => {
                   <div className="table-responsive">
                     <table className="table table-hover align-middle">
                       <thead className="table-info">
-                        <tr>
+                          <tr>
+                            <th>S.No.</th>
                           <th>Order ID</th>
                           <th>Order Date</th>
                           <th>Customer</th>
@@ -229,13 +233,16 @@ useEffect(() => {
                         </tr>
                       </thead>
                       <tbody>
-                        {currentPost.map((order, index) => (
+                          {currentPost.map((order, index) => (
+                          
+                            
                           <tr
                             key={order?.orderId}
                             className={`${
                               index % 2 == 0 ? "table-light" : "table-secondary"
                             }`}
-                          >
+                            >
+                              <td>{(currentPage-1)*10+ index+1}</td>
                             <td>{order?.orderId}</td>
                             <td>
                               {new Date(order?.orderDate).toLocaleDateString(
@@ -272,6 +279,8 @@ useEffect(() => {
                                 className={`badge ${
                                   order.orderStatus.at(-1) === "Delivered"
                                     ? "bg-success"
+                                    : order.orderStatus.at(-1) === "Cancelled"
+                                    ? "bg-danger"
                                     : "bg-warning text-dark"
                                 }`}
                               >

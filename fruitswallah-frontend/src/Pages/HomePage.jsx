@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Messeage from "../components/Messeage";
 import { GetProducts } from "../services/ProductController";
 import useAuthStore from "../Stores/AuthStore";
-import { getUserDeatails, HandleLogout } from "../services/HandleLoginLogout";
+import { getUserDeatails, HandleLogin, HandleLogout } from "../services/HandleLoginLogout";
 import { handleActiveAccount } from "../services/Singup";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 
@@ -23,7 +23,6 @@ const HomePage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(8);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     useAuthStore.getState().initializeAuth();
@@ -44,20 +43,21 @@ const HomePage = () => {
     }
   }, [message]);
 
+  const product =products.filter(p=>p.isActive)
   const lastPost = currentPage * postPerPage;
   const firstPost = lastPost - postPerPage;
-  const currentPost = products.slice(firstPost, lastPost);
+  const currentPost = product.slice(firstPost, lastPost);
   const { isActive, token } = useAuthStore();
 
   useEffect(() => {
-    console.log(token, isActive);
     if (token && isActive === "False") {
-      console.log("inactive");
       setShowConfirmModal(true);
     }
   }, [isActive]);
   const handleConfirm = async () => {
     handleActiveAccount();
+    HandleLogout(navigate);
+    navigate('/login');
     setShowConfirmModal(false);
   };
   return (
@@ -136,7 +136,7 @@ const HomePage = () => {
       <Fruits_shop
         products={currentPost}
         postPerPage={postPerPage}
-        allProducts={products.length}
+        allProducts={product.length}
         setCurrentPage={setCurrentPage}
         currentPage={currentPage}
       />
