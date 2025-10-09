@@ -122,8 +122,6 @@ namespace FruitsWallahBackend.Controllers
                 {
                     return NotFound("User Alredy Exists");
                 }
-
-
                 var userAuth = new UserAuth()
                 {
                     UserID = user1.UserId,
@@ -176,11 +174,15 @@ namespace FruitsWallahBackend.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
+
             if (user == null)
             {
                 return NotFound();
             }
-
+            if (user.Email == "fruitswallah.in@gmail.com")
+            {
+                return BadRequest("Super Admins Can't delete there account");
+            }
             user.IsAdmin = false;
             user.IsDeleted = true;
             user.IsActive = false;
@@ -189,7 +191,7 @@ namespace FruitsWallahBackend.Controllers
             return Ok("Your Acoount Deleted Successfully");
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         [HttpPut("Role/{email}/{role}")]
         public async Task<IActionResult> ChangeRole(string email,string role)
         {

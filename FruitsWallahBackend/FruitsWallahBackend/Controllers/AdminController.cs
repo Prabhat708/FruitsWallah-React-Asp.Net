@@ -29,10 +29,10 @@ namespace FruitsWallahBackend.Controllers
             var activeOrder = await _context.OrderTrackers.ToListAsync();
             var codOrders = await _context.OrderTransactions.CountAsync(tt => tt.TransactionType == "COD");
             var prepaidOrders = await _context.OrderTransactions.CountAsync() - codOrders;
-            var undeliveredOrders = activeOrder.Where(o => o.OrderStatus == null || o.OrderStatus.Last() != "Delivered").ToList();
+            var undeliveredOrders = activeOrder.Where(o => o.OrderStatus == null || o.OrderStatus.Last() != "Delivered" && o.OrderStatus.Last() != "Cancelled").ToList();
 
             int undeliveredCount = undeliveredOrders.Count;
-            var deliveredorder = activeOrder.Count - undeliveredCount;
+            var deliveredorder = activeOrder.Count - undeliveredCount-returnedOrder;
 
             var totalProduct = await _context.Products.CountAsync();
             var deletedproducts = await _context.Products.CountAsync(d => d.IsActive == false);
@@ -53,9 +53,15 @@ namespace FruitsWallahBackend.Controllers
 
             foreach (var item in totalTransactions)
             {
-                // Skip if this TransactionOrderID has already been processed
-                if (!seenTransactionOrderIds.Add(item.TransactionOrderID))
+                var order = await _context.Orders.FindAsync(item.OrderID);
+                if (order != null && order.IsReturned)
                 {
+                    continue;
+                }
+                    // Skip if this TransactionOrderID has already been processed
+                    if (!seenTransactionOrderIds.Add(item.TransactionOrderID) )
+                {
+        
                     continue;
                 }
 
@@ -108,8 +114,13 @@ namespace FruitsWallahBackend.Controllers
 
             foreach (var item in allTransactions)
             {
-                // Skip duplicate TransactionOrderIDs
-                if (string.IsNullOrEmpty(item.TransactionOrderID) || !seenTransactionOrderIds.Add(item.TransactionOrderID))
+                var order = await _context.Orders.FindAsync(item.OrderID);
+                if (order != null && order.IsReturned)
+                {
+                    continue;
+                }
+                    // Skip duplicate TransactionOrderIDs
+                    if (string.IsNullOrEmpty(item.TransactionOrderID) || !seenTransactionOrderIds.Add(item.TransactionOrderID))
                 {
                     continue;
                 }

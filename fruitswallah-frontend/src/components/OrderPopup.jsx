@@ -8,14 +8,16 @@ import {
 } from "react-icons/bs";
 import { RiEBike2Fill } from "react-icons/ri";
 import { generateCustomInvoicePDF } from "../services/InvoiceDownload";
+import { ImCross } from "react-icons/im";
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 const OrderPopup = ({ order, setShowOrderDetails }) => {
-
+ 
+  const isCancelled = order.orderStatus.includes("Cancelled");
   const currentStep =
     order?.orderStatus?.length == 5
       ? order.orderStatus.length
-      : order.orderStatus.length + 0.6;
+      : order.orderStatus.length + 0.3;
   const steps = [
     {
       id: 1,
@@ -58,7 +60,6 @@ const OrderPopup = ({ order, setShowOrderDetails }) => {
     return "bg-light text-muted border";
   };
 
-
   return (
     <>
       <div
@@ -70,7 +71,10 @@ const OrderPopup = ({ order, setShowOrderDetails }) => {
           <div className="modal-content border-success shadow">
             <div className="modal-header bg-success text-white">
               <h5 className="mb-0 fw-bold">
-                ORDER <span className="text-warning">#{order.orderId}</span>
+                ORDER{" "}
+                <span className={isCancelled ? "text-danger" : "text-warning"}>
+                  #{order.orderId}
+                </span>
               </h5>
               <button
                 type="button"
@@ -94,15 +98,19 @@ const OrderPopup = ({ order, setShowOrderDetails }) => {
                   ></div>
 
                   <div
-                    className="position-absolute bg-success progress-line"
+                    className={`position-absolute ${
+                      isCancelled ? "bg-danger" : "bg-success"
+                    } progress-line`}
                     style={{
                       height: "4px",
                       left: "24px",
-                      width: `calc(${
-                        ((currentStep - 1) / (steps.length - 1)) * 97
-                      }% - ${
-                        24 - (24 * (currentStep - 1)) / (steps.length - 1)
-                      }px)`,
+                      width: isCancelled
+                        ? "calc(97% - 0px)"
+                        : `calc(${
+                            ((currentStep - 1) / (steps.length - 1)) * 97
+                          }% - ${
+                            24 - (24 * (currentStep - 1)) / (steps.length - 1)
+                          }px)`,
                       top: "50%",
                       transform: "translateY(-50%)",
                       zIndex: 1,
@@ -110,25 +118,47 @@ const OrderPopup = ({ order, setShowOrderDetails }) => {
                     }}
                   ></div>
 
-                  {steps.map((step) => (
-                    <div key={step.id} className="position-relative z-2">
+                  {/* Step Circles */}
+                  {!isCancelled &&
+                    steps.map((step) => (
+                      <div key={step.id} className="position-relative z-2">
+                        <div
+                          className={`rounded-circle d-flex align-items-center justify-content-center ${getStepClass(
+                            step.id
+                          )}`}
+                          style={{ width: "48px", height: "48px" }}
+                        >
+                          {step.id <= currentStep ? (
+                            <BsCheck size={40} />
+                          ) : (
+                            step.icon
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  {/* If cancelled, show a single cancel icon in the center */}
+                  {isCancelled && (
+                    <div className="w-100 d-flex justify-content-center">
                       <div
-                        className={`rounded-circle d-flex align-items-center justify-content-center ${getStepClass(
-                          step.id
-                        )}`}
-                        style={{ width: "48px", height: "48px" }}
+                        className="rounded-circle d-flex align-items-center justify-content-center bg-white text-white"
+                        style={{ width: "56px", height: "56px" }}
+                        title="Order Cancelled"
                       >
-                        {step.id <= currentStep ? (
-                          <BsCheck size={40} />
-                        ) : (
-                          step.icon
-                        )}
+                        <span className="text-danger">
+                          <ImCross size={40} />
+                        </span>
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
-
+              {isCancelled && (
+                <div className="text-center my-4">
+                  <span className="badge bg-danger fs-5 px-4 py-2">
+                    Order Cancelled
+                  </span>
+                </div>
+              )}
               {/* Product & Shipping Details */}
               <div className="mt-3">
                 <h4>Product Details</h4>
@@ -175,7 +205,7 @@ const OrderPopup = ({ order, setShowOrderDetails }) => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-outline-success"
+                className="btn btn-outline-danger"
                 onClick={() => setShowOrderDetails(false)}
               >
                 Cancel

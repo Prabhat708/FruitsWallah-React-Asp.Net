@@ -25,7 +25,6 @@ export const generateCustomInvoicePDF = async (transactionId) => {
   img.src = "/favicon.png";
   img.alt = "logo";
   doc.addImage(img, "PNG", 150, 20, 40, 40);
-  console.log(img);
   // Company Header
   doc.setFontSize(25);
   doc.setTextColor(40);

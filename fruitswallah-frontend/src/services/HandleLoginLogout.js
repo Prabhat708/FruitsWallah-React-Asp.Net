@@ -18,7 +18,6 @@ export const HandleLogin = async (data, navigate, setShowPopup) => {
 
   try {
     const res = await axios.post(`${BASE_URL}/api/Login`, payload);
-    console.log(res.data);
    useAuthStore.getState().setAuthData(res.data);
    const UserName = useAuthStore.getState().UserName;
 

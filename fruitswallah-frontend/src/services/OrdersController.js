@@ -15,8 +15,8 @@ export const GetOrders = async (setOrders) => {
   try {
     const res = await axios.get(`${BASE_URL}/api/Orders/${UserId}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     setOrders(res.data);
     return;
@@ -34,11 +34,9 @@ export const PostOrders = async (
   setAddress,
   Amount
 ) => {
-
   const { token, UserId } = useAuthStore.getState();
- const res=await getAddress(setAddress)
-  if (res.length == 0)
-  {
+  const res = await getAddress(setAddress);
+  if (res.length == 0) {
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
@@ -62,7 +60,7 @@ export const PostOrders = async (
     };
   } else {
     try {
-      const paymentDeatils = await PostPayment(Amount,token);
+      const paymentDeatils = await PostPayment(Amount, token);
       OrderData = await getPayment(paymentDeatils, PaymentMethod);
     } catch (e) {
       console.log(e);
@@ -70,10 +68,10 @@ export const PostOrders = async (
     }
   }
   try {
-    const res = await axios.post(`${BASE_URL}/api/Orders`, OrderData, {   
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
+    const res = await axios.post(`${BASE_URL}/api/Orders`, OrderData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     setShowPopup(true);
     getCartItems(setCartItems);
@@ -83,13 +81,17 @@ export const PostOrders = async (
     setTimeout(() => {
       navigate("/home");
     }, 2600);
-    return {status:true,message:"Thank You! You Ordered Successfully. Now you can Track Your Order From Orders Page."};
+    return {
+      status: true,
+      message:
+        "Thank You! You Ordered Successfully. Now you can Track Your Order From Orders Page.",
+    };
   } catch (e) {
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
     }, 2000);
-    return {status:false,message:e.response.data};
+    return { status: false, message: e.response.data };
   }
 };
 
@@ -113,8 +115,12 @@ export const GetRecentOrders = async (setOrders) => {
   setOrders(res.data);
 };
 
-export const GetfilteredOrders = async (day = 0, status = "All", type = "All", setOrders) => {
-  console.log(day, type, status);
+export const GetfilteredOrders = async (
+  day = 0,
+  status = "All",
+  type = "All",
+  setOrders
+) => {
   const { token } = useAuthStore.getState();
   const res = await axios.get(
     `${BASE_URL}/api/Orders/filteredOrders/${day}/${status}/${type}`,
@@ -124,13 +130,10 @@ export const GetfilteredOrders = async (day = 0, status = "All", type = "All", s
       },
     }
   );
-  console.log(res.data);
   setOrders(res.data);
 };
 
-
 export const GetOrderByOrderId = async (orderId, setOrder) => {
-
   const { token } = useAuthStore.getState();
   const res = await axios.get(`${BASE_URL}/api/Orders/ByOrderId/${orderId}`, {
     headers: {
@@ -138,16 +141,17 @@ export const GetOrderByOrderId = async (orderId, setOrder) => {
     },
   });
 
-  return res.data
- }
+  return res.data;
+};
 export const UpdatesStatus = async (orderId, status, setShowPopup) => {
   const { token } = useAuthStore.getState();
   const res = await axios.put(
-`${BASE_URL}/api/OrderTrackers/${orderId},${status}`,{},
+    `${BASE_URL}/api/OrderTrackers/${orderId},${status}`,
+    {},
     {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
   setShowPopup(true);
@@ -156,8 +160,21 @@ export const UpdatesStatus = async (orderId, status, setShowPopup) => {
   }, 2000);
 };
 
+export const CancelOrder = async (orderId, setOrders) => {
+  const { token } = useAuthStore.getState();
+  const res = await axios.put(
+    `${BASE_URL}/api/Orders/OrderCancel/${orderId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  GetOrders(setOrders);
+};
 const getPayment = async (paymentDeatils, PaymentMethod) => {
-  const { token, UserId } = useAuthStore.getState();
+  const { UserId } = useAuthStore.getState();
   const { orderId, amount, currency } = paymentDeatils;
   var OrderData;
   return new Promise((resolve, reject) => {
