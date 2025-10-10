@@ -1,16 +1,11 @@
-
 import Navbar from "../components/Navbar";
-import {
-  FaCreditCard,
-  FaMobileAlt,
-  FaMoneyBillAlt,
-} from "react-icons/fa";
+import { FaCreditCard, FaMobileAlt, FaMoneyBillAlt } from "react-icons/fa";
 import CreditCard from "../components/CreditCard";
 import UPI from "../components/Upi";
 import NetBanking from "../components/NetBanking";
 import { useEffect, useState } from "react";
 import CashOnDelivery from "../components/CashOnDelivery";
-import { useCart } from "../components/CartContext";
+import { useCart } from "../Context/CartContext";
 import { useNavigate } from "react-router-dom";
 import AlertMessage from "../components/AlertMessage";
 
@@ -20,35 +15,35 @@ const CheckoutPage = () => {
   const [address, setAddress] = useState(null);
   const [res, setRes] = useState({});
   const { cartItems } = useCart();
-    let sum = 0;
-    const [selectedPayment, setSelectedPayment] = useState('UPI');
-    const [activeTab, setActiveTab] = useState('UPI');
+  let sum = 0;
+  const [selectedPayment, setSelectedPayment] = useState("UPI");
+  const [activeTab, setActiveTab] = useState("UPI");
 
   useEffect(() => {
-        const token= localStorage.getItem("Token");
-        if (token==null) {
-          navigate("/login");
-        }
-      }, []);
-    const handleTogglePaymentMethod = (method) => {
-        if (method === "CreditCard") {
-            setActiveTab('CreditCard');
-        } else if (method === "UPI") {
-            setActiveTab('UPI');    
-        } else if (method === "NetBanking") {
-            setActiveTab('NetBanking');
-        } else if (method === "CashOnDelivery") {
-           setActiveTab("CashOnDelivery");
-        }
-        setSelectedPayment(method);
+    const token = localStorage.getItem("Token");
+    if (token == null) {
+      navigate("/login");
+    }
+  }, []);
+  const handleTogglePaymentMethod = (method) => {
+    if (method === "CreditCard") {
+      setActiveTab("CreditCard");
+    } else if (method === "UPI") {
+      setActiveTab("UPI");
+    } else if (method === "NetBanking") {
+      setActiveTab("NetBanking");
+    } else if (method === "CashOnDelivery") {
+      setActiveTab("CashOnDelivery");
+    }
+    setSelectedPayment(method);
   };
 
-useEffect(() => {
-  const script = document.createElement("script");
-  script.src = "https://checkout.razorpay.com/v1/checkout.js";
-  script.async = true;
-  document.body.appendChild(script);
-}, []);
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
   return (
     <>
       <Navbar />
@@ -207,7 +202,6 @@ useEffect(() => {
                   )}
                 </div>{" "}
               </div>
-              
             </div>
           </div>
         </div>

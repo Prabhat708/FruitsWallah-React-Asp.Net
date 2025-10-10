@@ -29,7 +29,7 @@ namespace FruitsWallahBackend.Controllers
                     LevenshteinDistance(search.ToLower(), p.ProductName?.ToLower() ?? "") <= maxDistance ||
                     LevenshteinDistance(search.ToLower(), p.ProductCatagory?.ToLower() ?? "") <= maxDistance ||
                     LevenshteinDistance(search.ToLower(), p.ProductDescription?.ToLower() ?? "") <= maxDistance ||
-                    p.ProductPrice.ToString().Contains(search)
+                    p.ProductPrice.ToString().Contains(search) || (p.ProductName !=null && p.ProductName.Contains(search)) || (p.ProductDescription != null && p.ProductDescription.Contains(search)) || (p.ProductCatagory != null && p.ProductCatagory.Contains(search)) 
                 )
                 .ToList();
 

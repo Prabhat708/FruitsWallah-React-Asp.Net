@@ -21,7 +21,7 @@ const useAuthStore = create((set) => ({
         isActive:decoded?.isActive || null,
       });
     } catch (error) {
-      set({ token: null, UserId: null, UserName: null,isActive:null });
+      set({ token: null, UserId: null, UserName: null,isActive:null,isAdmin:null });
       localStorage.removeItem("Token");
     }
   },
@@ -47,7 +47,7 @@ const useAuthStore = create((set) => ({
   // ✅ Logout
   logout: () => {
     localStorage.removeItem("Token");
-    set({ token: null, UserId: null, UserName: null,isActive:null });
+    set({ token: null, UserId: null, UserName: null,isActive:null,isAdmin:null });
   },
 }));
 

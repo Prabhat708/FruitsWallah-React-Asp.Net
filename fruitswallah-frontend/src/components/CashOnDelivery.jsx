@@ -2,16 +2,25 @@ import React, { useState } from "react";
 import { FaMobileAlt } from "react-icons/fa";
 import { PostOrders } from "../services/OrdersController";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "./CartContext";
+import { useCart } from "../Context/CartContext";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 
-const CashOnDelivery = ({ setShowPopup,setRes,setAddress, Amount }) => {
+const CashOnDelivery = ({ setShowPopup, setRes, setAddress, Amount }) => {
   const { setCartItems } = useCart();
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const handleConfirm = async() => {
-    setRes(await PostOrders("COD", setShowPopup, navigate, setCartItems,setAddress, Amount));
+  const handleConfirm = async () => {
+    setRes(
+      await PostOrders(
+        "COD",
+        setShowPopup,
+        navigate,
+        setCartItems,
+        setAddress,
+        Amount
+      )
+    );
     setShowConfirmModal(false);
   };
 
@@ -52,21 +61,20 @@ const CashOnDelivery = ({ setShowPopup,setRes,setAddress, Amount }) => {
                   className="alert alert-success d-flex align-items-start mt-3"
                   role="alert"
                 >
-                  
                   <div>
-                  <BsFillLightningChargeFill className="me-2"/>
+                    <BsFillLightningChargeFill className="me-2" />
                     <strong>Faster Checkout Tip:</strong>
                     <br />
                     You can also pay online to the delivery agent via{" "}
                     <strong>UPI</strong> or <strong>QR Code </strong>
-                     at the time of delivery!
+                    at the time of delivery!
                   </div>
                 </div>
               </div>
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-outline-success"
+                  className="btn btn-outline-danger"
                   onClick={() => setShowConfirmModal(false)}
                 >
                   Cancel

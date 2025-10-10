@@ -8,3 +8,9 @@ export const GetProducts = async (setProducts) => {
         setProducts(res.data);
     }
 }
+
+export const GetBestProducts = async (setBestProducts) => {
+    const res = await axios.get(`${BASE_URL}/api/Products/bestProducts`);
+    setBestProducts(res.data);
+  return res.data;
+};

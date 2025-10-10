@@ -1,6 +1,7 @@
 import React from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
 const BestProduct = ({ product }) => {
     const navigation = useNavigate();
@@ -11,14 +12,14 @@ const BestProduct = ({ product }) => {
           <div className="row align-items-center">
             <div className="col-6">
               <img
-                src={product.image}
-                className="img-fluid rounded-circle w-100"
+                src={BASE_URL+product.productImg}
+                className="img-fluid rounded-circle w-100 h-100"
                 alt=""
               />
             </div>
             <div className="col-6">
               <Link to="#" className="h5">
-                {product.name}
+                {product.productName}
               </Link>
               <div className="d-flex my-3">
                 <FaStar className="text-success" />
@@ -27,11 +28,14 @@ const BestProduct = ({ product }) => {
                 <FaStar className="text-success" />
                 <FaStarHalfAlt className="text-success" />
               </div>
-              <h4 className="mb-3">&#8377; {product.price}</h4>
-              <button onClick={() =>{ navigation(`/product/${product.id}`);}}
+              <h4 className="mb-3">&#8377; {product.productPrice}</h4>
+              <button
+                onClick={() => {
+                  navigation(`/product/${product.productId}`);
+                }}
                 id="bp1"
                 className="btn cart cart border border-secondary rounded-pill px-3 text-success"
-                disabled
+                
               >
                 Know More
               </button>

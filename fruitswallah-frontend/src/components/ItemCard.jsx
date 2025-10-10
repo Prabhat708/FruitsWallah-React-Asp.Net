@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaShoppingBag } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import {
-  PlusMinusButton,
-  AddToCart
-} from "../services/CartFeatures";
-import { useCart } from "./CartContext";
+import { PlusMinusButton, AddToCart } from "../services/CartFeatures";
+import { useCart } from "../Context/CartContext";
 import SuccessMessage from "./SuccessMessage";
 
 const ItemCard = ({ item }) => {
- const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+  const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const navigation = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const { cartItems, setCartItems } = useCart();

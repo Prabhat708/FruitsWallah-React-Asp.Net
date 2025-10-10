@@ -1,10 +1,11 @@
 import { use, useEffect, useState } from "react";
 import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
-import {Link} from 'react-router-dom';
-import { useCart } from "./CartContext";
-import { GetSearchedProducts } from "../services/SearchController";
-function Navbar({ setProducts, setActiveSearch }) {
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../Context/CartContext";
+
+function Navbar() {
+  const navigate = useNavigate();
   var [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const { cartItems } = useCart();
@@ -58,8 +59,7 @@ function Navbar({ setProducts, setActiveSearch }) {
                     className="w-100"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      GetSearchedProducts(search, setProducts);
-                      setActiveSearch(true);
+                      navigate(`/search/${search}`);
                     }}
                   >
                     <input
