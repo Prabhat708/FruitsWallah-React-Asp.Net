@@ -95,7 +95,6 @@ const AdminPage = () => {
   });
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [orders, setOrders] = useState(null);
-  const navigate = useNavigate();
   const [filter, setFilter] = useState({
     range: "0"
   });
@@ -104,12 +103,7 @@ const AdminPage = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  const {isAdmin} = useAuthStore();
-
   useEffect(() => {
-    if (!isAdmin) {
-      navigate("/");
-    }
     getstats();
   }, [filter]);
 

@@ -127,11 +127,11 @@ const Footer = () => {
             <div className="col-lg-3 col-md-6">
               <div className="footer-item">
                 <h4 className="text-light mb-3">Contact</h4>
-                <p>Address: Lucknow</p>
-                <p>Email: Example@gmail.com</p>
-                <p>Phone: +0123 4567 8910</p>
-                <p>Payment Accepted</p>
-                <img src={payment} className="img-fluid" alt="" />
+                <p>
+                  Address: 120/10, Awadh Park, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh, India - 226010
+                </p>
+                <p>Email: fruitswallah.in@gmail.com</p>
+                <p>Phone: +91 6398561245</p>
               </div>
             </div>
           </div>

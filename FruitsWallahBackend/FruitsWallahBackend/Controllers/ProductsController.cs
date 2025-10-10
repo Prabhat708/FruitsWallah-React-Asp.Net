@@ -21,7 +21,7 @@ namespace FruitsWallahBackend.Controllers
         private readonly FruitsWallahDbContext _context = context;
 
         // GET: api/Products
-        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Products>>> GetProducts()
         {
@@ -49,7 +49,7 @@ namespace FruitsWallahBackend.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> PutProducts(int id, [FromForm] ProductDTO products)
         {
-            
+
 
             var existingProduct = await _context.Products.FindAsync(id);
             if (existingProduct == null)
@@ -61,7 +61,7 @@ namespace FruitsWallahBackend.Controllers
             existingProduct.ProductDescription = products.ProductDescription;
             existingProduct.ProductPrice = products.ProductPrice;
             existingProduct.ProductStock = products.ProductStock;
-            existingProduct.IsActive=true;
+            existingProduct.IsActive = true;
 
             // Handle new image upload if provided
             if (products.ProductImg != null && products.ProductImg.Length > 0)
@@ -111,33 +111,33 @@ namespace FruitsWallahBackend.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<Products>> PostProducts([FromForm] ProductDTO products)
         {
-           
+
             string? ImagePath = null;
             if (products.ProductImg != null && products.ProductImg.Length > 0)
             {
                 var uploadsFolder = Combine("wwwroot", "ProductImages");
                 Directory.CreateDirectory(uploadsFolder);
-                var FileName = Combine(products.ProductImg.FileName.Replace(GetExtension(products.ProductImg.FileName), "")+DateTime.Now.ToString("yyyyMMdd_HHmmss") + GetExtension(products.ProductImg.FileName));
+                var FileName = Combine(products.ProductImg.FileName.Replace(GetExtension(products.ProductImg.FileName), "") + DateTime.Now.ToString("yyyyMMdd_HHmmss") + GetExtension(products.ProductImg.FileName));
                 ImagePath = Combine(uploadsFolder, FileName);
                 using (var fileStream = new FileStream(ImagePath, FileMode.Create))
                 {
                     await products.ProductImg.CopyToAsync(fileStream);
                 }
             }
-            var product=new Products()
+            var product = new Products()
             {
                 ProductName = products.ProductName,
                 ProductCatagory = products.ProductCatagory,
                 ProductDescription = products.ProductDescription,
                 ProductPrice = products.ProductPrice,
                 ProductStock = products.ProductStock,
-                ProductImg=ImagePath?.Replace("wwwroot",""),
-                IsActive=true
+                ProductImg = ImagePath?.Replace("wwwroot", ""),
+                IsActive = true
             };
 
             _context.Add(product);
@@ -163,6 +163,22 @@ namespace FruitsWallahBackend.Controllers
             return Ok("Product deleted successfully but for my reference We store the product details");
         }
 
+        [HttpGet("bestProducts")]
+        public async Task<IActionResult> GetBestProducts()
+        {
+            var topProductIds = await _context.OrderItems
+                .GroupBy(oi => oi.ProductId)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .ToListAsync();
+
+            var topProducts = await _context.Products
+                .Where(p => topProductIds.Contains(p.ProductId) && p.ProductStock > 0 && p.IsActive == true).Take(9)
+                .ToListAsync();
+
+            return Ok(topProducts);
+
+        }
         private bool ProductsExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);

@@ -2,7 +2,9 @@ import { useState } from "react";
 import hero_img_1 from "../assets/hero-img-1.png";
 import hero_img_2 from "../assets/hero-img-2.jpg";
 import { GetSearchedProducts } from "../services/SearchController";
-const Hero = ({ setProducts, setActiveSearch }) => {
+import { useNavigate } from "react-router-dom";
+const Hero = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   return (
     <>
@@ -30,8 +32,7 @@ const Hero = ({ setProducts, setActiveSearch }) => {
                     className="btn btn-success border-2 border-secondary py-3 px-4 position-absolute top-0 start-50 rounded-pill text-white hero-search-btn"
                     onClick={(e) => {
                       e.preventDefault();
-                      GetSearchedProducts(search, setProducts);
-                      setActiveSearch(true);
+                     navigate(`/search/${search}`);
                     }}
                   >
                     Submit Now

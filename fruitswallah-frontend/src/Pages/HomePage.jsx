@@ -13,12 +13,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Messeage from "../components/Messeage";
 import { GetProducts } from "../services/ProductController";
 import useAuthStore from "../Stores/AuthStore";
-import { getUserDeatails, HandleLogin, HandleLogout } from "../services/HandleLoginLogout";
+import {
+  getUserDeatails,
+  HandleLogin,
+  HandleLogout,
+} from "../services/HandleLoginLogout";
 import { handleActiveAccount } from "../services/Singup";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 
 const HomePage = () => {
-  const [activeSearch, setActiveSearch] = useState(false);
   const [products, setProducts] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +30,6 @@ const HomePage = () => {
   useEffect(() => {
     useAuthStore.getState().initializeAuth();
     GetProducts(setProducts);
-    setActiveSearch(false);
   }, []);
   const location = useLocation();
   const [message, setMessage] = useState(location.state?.message || "");
@@ -43,7 +45,7 @@ const HomePage = () => {
     }
   }, [message]);
 
-  const product =products.filter(p=>p.isActive)
+  const product = products.filter((p) => p.isActive);
   const lastPost = currentPage * postPerPage;
   const firstPost = lastPost - postPerPage;
   const currentPost = product.slice(firstPost, lastPost);
@@ -57,12 +59,12 @@ const HomePage = () => {
   const handleConfirm = async () => {
     handleActiveAccount();
     HandleLogout(navigate);
-    navigate('/login');
+    navigate("/login");
     setShowConfirmModal(false);
   };
   return (
     <>
-      <Navbar setProducts={setProducts} setActiveSearch={setActiveSearch} />
+      <Navbar />
       {message && (
         <Messeage
           message={message}
@@ -129,10 +131,9 @@ const HomePage = () => {
           </div>
         </div>
       )}
-      {!activeSearch && (
-        <Hero setProducts={setProducts} setActiveSearch={setActiveSearch} />
-      )}
-      {!activeSearch && <Featurs />}
+
+      <Hero />
+      <Featurs />
       <Fruits_shop
         products={currentPost}
         postPerPage={postPerPage}

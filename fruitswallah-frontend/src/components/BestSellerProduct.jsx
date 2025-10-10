@@ -1,8 +1,13 @@
+import { GetBestProducts } from "../services/ProductController";
 import BestProduct from "./BestProduct";
-import BestProductLarge from "./BestProductLarge";
-import { bestProducts, bestProductLarge } from "../data/Products";
+import { useEffect, useState } from "react";
   
 const BestSellerProduct = () => {
+  const [bestProducts, setBestProducts] = useState([]);
+  useEffect(() => {
+    GetBestProducts(setBestProducts);
+  }, []);
+ 
   return (
     <>
       <div className="container-fluid">
@@ -15,13 +20,13 @@ const BestSellerProduct = () => {
             </p>
           </div>
           <div className="row g-4">
-            {bestProducts.map((product) => (
-              <BestProduct key={product.id} product={product} />  
+            {bestProducts.map((product, index) => (
+              <BestProduct key={index} product={product} />
             ))}
-            
-            {bestProductLarge.map((product) => (
+
+            {/* {bestProductLarge.map((product) => (
               <BestProductLarge key={product.id} product={product} />
-            ))}
+            ))} */}
           </div>
         </div>
       </div>

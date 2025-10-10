@@ -1,16 +1,16 @@
-import {  useState } from "react";
+import { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import cartImg from "../assets/Cart.svg";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import CartRow from "../components/CartRow";
 import { RemoveFromCart } from "../services/CartFeatures";
-import { useCart } from "../components/CartContext";
+import { useCart } from "../Context/CartContext";
 import AlertMessage from "../components/AlertMessage";
 
 const CartPage = () => {
   const [res, setRes] = useState({});
-    const { cartItems, setCartItems } = useCart();
+  const { cartItems, setCartItems } = useCart();
   const [showPopup, setShowPopup] = useState(false);
   let sum = 0;
   return (
@@ -35,9 +35,7 @@ const CartPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                    {cartItems?.map((item, index) => {
-                     
-                
+                  {cartItems?.map((item, index) => {
                     sum = sum + item.productPrice * item.productQuantity;
                     return (
                       <CartRow

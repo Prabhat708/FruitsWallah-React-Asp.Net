@@ -1,11 +1,11 @@
-import React, { use, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { HandleLogout } from '../services/HandleLoginLogout';
 
 const LogoutPage = () => {
-    const navigate = useNavigate(); 
+  const navigate = useNavigate(); 
     useEffect(() => {
-        HandleLogout(navigate);
+      HandleLogout(navigate); 
     }, []);
     
   return null;

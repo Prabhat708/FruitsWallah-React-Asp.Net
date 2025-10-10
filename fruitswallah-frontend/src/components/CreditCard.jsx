@@ -1,11 +1,11 @@
-import React from 'react'
-import { PostOrders } from '../services/OrdersController';
-import { useCart } from './CartContext';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { PostOrders } from "../services/OrdersController";
+import { useCart } from "../Context/CartContext";
+import { useNavigate } from "react-router-dom";
 
-const CreditCard = ({ setShowPopup,setRes,setAddress, Amount }) => {
-    const { setCartItems } = useCart();
-    const navigate = useNavigate();
+const CreditCard = ({ setShowPopup, setRes, setAddress, Amount }) => {
+  const { setCartItems } = useCart();
+  const navigate = useNavigate();
   return (
     <>
       <div id="credit-card" className="tab-pane fade show active pt-3">
@@ -96,15 +96,17 @@ const CreditCard = ({ setShowPopup,setRes,setAddress, Amount }) => {
             <button
               type="button"
               className="subscribe btn btn-primary btn-block shadow-sm"
-              onClick={async() => {
-                setRes(await PostOrders(
-                  "Credit Card",
-                  setShowPopup,
-                  navigate,
-                  setCartItems,
-                  setAddress,
-                  Amount >= 300 ? Amount : Amount + 50
-                ));
+              onClick={async () => {
+                setRes(
+                  await PostOrders(
+                    "Credit Card",
+                    setShowPopup,
+                    navigate,
+                    setCartItems,
+                    setAddress,
+                    Amount >= 300 ? Amount : Amount + 50
+                  )
+                );
               }}
             >
               {" "}
@@ -124,4 +126,4 @@ const CreditCard = ({ setShowPopup,setRes,setAddress, Amount }) => {
   );
 };
 
-export default CreditCard
+export default CreditCard;

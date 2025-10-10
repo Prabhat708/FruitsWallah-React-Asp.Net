@@ -1,7 +1,6 @@
-
 import { Routes, Route } from "react-router-dom";
-import HomePage from '../Pages/HomePage';
-import LoginPage from '../Pages/LoginPage';
+import HomePage from "../Pages/HomePage";
+import LoginPage from "../Pages/LoginPage";
 import SignUpPage from "../Pages/SignUpPage";
 import ContactPage from "../Pages/ContactPage";
 import ProductsPage from "../Pages/ProductsPage";
@@ -21,6 +20,8 @@ import PrivateRoute from "./PrivateRoute";
 import AdminOrdersController from "../Pages/AdminOrdersController";
 import ProductManagementPage from "../Pages/ProductManagementPage";
 import ManageAdmin from "../Pages/ManageAdmin";
+import SearchPage from "../Pages/SearchPage";
+import AdminRoutes from "./AdminRoutes";
 
 const AppRoutes = () => {
   return (
@@ -32,6 +33,7 @@ const AppRoutes = () => {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/product/:id" element={<Product />} />
       <Route path="/products" element={<ProductsPage />} />
+      <Route path="/search/:search" element={<SearchPage />} />
       <Route path="/t&c" element={<TermAndConditionPage />} />
       <Route
         path="/cart"
@@ -89,14 +91,7 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       />
-      <Route
-        path="/FruitsWallahAdmin"
-        element={
-          <PrivateRoute>
-            <AdminPage />
-          </PrivateRoute>
-        }
-      />
+
       <Route
         path="/order/:OrderId"
         element={
@@ -114,31 +109,39 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/FruitsWallahAdmin"
+        element={
+          <AdminRoutes>
+            <AdminPage />
+          </AdminRoutes>
+        }
+      />
+      <Route
         path="/FruitsWallahAdmin/orders"
         element={
-          <PrivateRoute>
+          <AdminRoutes>
             <AdminOrdersController />
-          </PrivateRoute>
+          </AdminRoutes>
         }
       />
       <Route
         path="/FruitsWallahAdmin/products"
         element={
-          <PrivateRoute>
+          <AdminRoutes>
             <ProductManagementPage />
-          </PrivateRoute>
+          </AdminRoutes>
         }
       />
       <Route
         path="/FruitsWallahAdmin/users"
         element={
-          <PrivateRoute>
+          <AdminRoutes>
             <ManageAdmin />
-          </PrivateRoute>
+          </AdminRoutes>
         }
       />
     </Routes>
   );
-}
+};
 
-export default AppRoutes
+export default AppRoutes;

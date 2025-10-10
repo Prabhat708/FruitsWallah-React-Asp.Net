@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import {
-  AddToCart,
-  PlusMinusButton,
-} from "../services/CartFeatures";
+import { AddToCart, PlusMinusButton } from "../services/CartFeatures";
 
 import { useParams } from "react-router-dom";
 import { GetProducts } from "../services/ProductController";
-import { useCart } from "./CartContext";
+import { useCart } from "../Context/CartContext";
 import SuccessMessage from "./SuccessMessage";
 
 const Product = () => {
@@ -20,12 +17,11 @@ const Product = () => {
   useEffect(() => {
     GetProducts(setProducts);
   }, []);
-  
-  
-  const item = products.find(it => it?.productId == id);
+
+  const item = products.find((it) => it?.productId == id);
   const cartItem = cartItems.find((ci) => ci?.productId === item?.productId);
   const quantity = cartItem?.productQuantity || 0;
- 
+
   return (
     <>
       <Navbar />
