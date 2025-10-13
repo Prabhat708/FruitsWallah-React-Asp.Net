@@ -20,6 +20,7 @@ namespace FruitsWallahBackend.Data
         public DbSet<OrderTransactions> OrderTransactions { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Reviews> Reviews { get; set; }
+        public DbSet<ChatBox> ChatBoxes { get; set; }
        
        
     }

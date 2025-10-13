@@ -6,9 +6,11 @@ import {
   MapPin,
   LogOut,
 } from "lucide-react";
+import { BsChatText } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import { IoStatsChartSharp } from "react-icons/io5";
 import { PiUsersFourFill } from "react-icons/pi";
+import { href } from "react-router-dom";
 
 
 export const sidebarItems = [
@@ -46,6 +48,11 @@ export const adminSidebarItems = [
     icon: PiUsersFourFill,
   },
   { icon: LogOut, label: "Log out", href: "/logOut" },
+  {
+    icon: BsChatText,
+    label: "Chat Support",
+    href: "/FruitsWallahAdmin/AdminChatSupportPage",
+  },
 
   // Add more items as needed
 ];

@@ -67,6 +67,7 @@ export const GetAllUsers = async (setUsers) => {
     },
   });
   setUsers(res.data);
+  return res.data;
 };
 
 export const UpdateUserRole = async (email, role,setUsers) => {

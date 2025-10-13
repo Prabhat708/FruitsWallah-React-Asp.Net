@@ -22,6 +22,7 @@ import ProductManagementPage from "../Pages/ProductManagementPage";
 import ManageAdmin from "../Pages/ManageAdmin";
 import SearchPage from "../Pages/SearchPage";
 import AdminRoutes from "./AdminRoutes";
+import AdminChatSupportPage from "../Pages/AdminChatSupportPage";
 
 const AppRoutes = () => {
   return (
@@ -137,6 +138,14 @@ const AppRoutes = () => {
         element={
           <AdminRoutes>
             <ManageAdmin />
+          </AdminRoutes>
+        }
+      />
+      <Route
+        path="/FruitsWallahAdmin/AdminChatSupportPage"
+        element={
+          <AdminRoutes>
+            <AdminChatSupportPage />
           </AdminRoutes>
         }
       />

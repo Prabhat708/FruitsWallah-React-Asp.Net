@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import contactImg from "../assets/Contact-us-pana.svg";
 import { SendMsg } from "../services/contactController";
 import AlertMessage from "../components/AlertMessage";
+import ChatBox from "../components/ChatBox";
 
 const ContactPage = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -184,6 +185,7 @@ const ContactPage = () => {
           </div>
         </div>
       </div>
+      <ChatBox/>
       <Footer />
     </>
   );
