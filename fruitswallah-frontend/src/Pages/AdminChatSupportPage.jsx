@@ -3,11 +3,13 @@ import React, { useEffect, useState, useRef } from "react";
 import * as signalR from "@microsoft/signalr";
 import axios from "axios";
 import useAuthStore from "../Stores/AuthStore";
+import { FaBackspace } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-const HUB_URL = "https://localhost:7293/chathub";
 
 const AdminChatSupportPage = () => {
+  const navigate = useNavigate();
   const [connection, setConnection] = useState(null);
   const [customers, setCustomers] = useState([]); 
   const [connectedIds, setConnectedIds] = useState([]); 
@@ -24,20 +26,10 @@ const AdminChatSupportPage = () => {
   }
 
   useEffect(() => {
-    // Load all customer accounts for sidebar
-    const loadUsers = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/AdminChat/users`);
-        setCustomers(res.data);
-      } catch (err) {
-        console.error("Failed to load users:", err);
-      }
-    };
-    loadUsers();
-
+    
     // Build SignalR connection
     const conn = new signalR.HubConnectionBuilder()
-      .withUrl(`${HUB_URL}?access_token=${token}`)
+      .withUrl(`${BASE_URL}/chathub?access_token=${token}`)
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Warning)
       .build();
@@ -86,13 +78,13 @@ const AdminChatSupportPage = () => {
       })
       .catch((err) => console.error("❌ SignalR connection error:", err));
 
-    // Cleanup on unmount
+  
     return () => {
       conn.stop();
     };
   }, []);
 
-  // when selectedCustomer changes, load history and clear unread
+  
   useEffect(() => {
     if (!selectedCustomer) return;
 
@@ -102,7 +94,6 @@ const AdminChatSupportPage = () => {
           `${BASE_URL}/api/AdminChat/history/${selectedCustomer}`
         );
 
-        // normalize to messages map
         setMessages((prev) => ({
           ...prev,
           [selectedCustomer]: res.data.map((m) => ({
@@ -125,6 +116,18 @@ const AdminChatSupportPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, selectedCustomer]);
 
+  useEffect(() => {
+    // Load all customer accounts for sidebar
+    const loadUsers = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/AdminChat/users`);
+        setCustomers(res.data);
+      } catch (err) {
+        console.error("Failed to load users:", err);
+      }
+    };
+    loadUsers();
+  }, [messages]);
   const handleSelectCustomer = (id) => {
     setSelectedCustomer(id);
   };
@@ -132,10 +135,9 @@ const AdminChatSupportPage = () => {
   const handleSend = async () => {
     if (!input.trim() || !connection || !selectedCustomer) return;
     try {
-      // SignalR method SendToCustomer(int customerId, string message)
+  
       await connection.invoke("SendToCustomer", selectedCustomer, input);
-      // optimistic UI update (backend hub also will send ReceiveMessage to caller)
-
+      
       setMessages((prev) => {
         const old = prev[selectedCustomer] || [];
         const next = [
@@ -161,116 +163,135 @@ const AdminChatSupportPage = () => {
   };
 
   return (
-    <div className="container-fluid mt-3">
-      <div className="row">
-        {/* Sidebar */}
-        <div
-          className="col-md-3 border-end"
-          style={{ height: "80vh", overflowY: "auto" }}
-        >
-          <h5 className="p-3 bg-primary text-white">Customers</h5>
-          <ul className="list-group list-group-flush">
-            {customers.map((c) => {
-              const idsArray = Object.keys(connectedIds).map(Number);
-              const isOnline = idsArray.includes(c.userId);
-              const unreadCount = unread[c.id] || 0;
-              return (
-                <li
-                  key={c.userId}
-                  className={`list-group-item d-flex justify-content-between align-items-center ${
-                    selectedCustomer === c.userId ? "active" : ""
-                  }`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleSelectCustomer(c.userId)}
-                >
-                  <div>
-                    <div className="fw-bold">{c.name}</div>
-                  </div>
-                  <div>
-                    {unreadCount > 0 && (
-                      <span className="badge bg-danger me-2">
-                        {unreadCount}
-                      </span>
-                    )}
-                    {isOnline && (
-                      <span className="badge text-secondary">online</span>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        {/* Chat panel */}
-        <div className="col-md-9 d-flex flex-column" style={{ height: "80vh" }}>
+    <>
+      <div className="container-fluid mt-3">
+        <div className="row">
+          {/* Sidebar */}
           <div
-            className="flex-grow-1 p-3 overflow-auto"
-            style={{ backgroundColor: "#f8f9fa" }}
+            className="col-md-3 border-end"
+            style={{ height: "80vh", overflowY: "auto" }}
           >
-            {selectedCustomer ? (
-              <>
-                <h6>Chat with {getName(selectedCustomer)}</h6>
-                <div className="mt-3">
-                  {(messages[selectedCustomer] || []).map((m, idx) => {
-                    const fromAdmin =
-                      m.senderId === "admin" ||
-                      m.senderId === parseInt(connection?.connectionId || NaN);
+            <h5 className="p-3 bg-success text-white">Customers</h5>
 
-                    const align =
-                      m.senderType === "admin"
-                        ? "justify-content-end"
-                        : "justify-content-start";
-                    const bubbleClass =
-                      m.senderType === "admin"
-                        ? "bg-success text-white"
-                        : "bg-light border";
-                    return (
-                      <div key={idx} className={`d-flex mb-2 ${align}`}>
-                        <div
-                          className={`p-2 rounded ${bubbleClass}`}
-                          style={{ maxWidth: "70%" }}
-                        >
-                          <div>{m.messageText}</div>
-                          <small
-                            className="text-muted d-block mt-1"
-                            style={{ fontSize: 11 }}
+            <ul className="list-group list-group-flush">
+              {customers.map((c) => {
+                const idsArray = Object.keys(connectedIds).map(Number);
+                const isOnline = idsArray.includes(c.userId);
+                const unreadCount = unread[c.userId] || 0;
+                return (
+                  <li
+                    key={c.userId}
+                    className={`list-group-item d-flex justify-content-between align-items-center ${
+                      selectedCustomer === c.userId ? "bg-success" : ""
+                    }`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleSelectCustomer(c.userId)}
+                  >
+                    <div>
+                      <div className="fw-bold">{c.name}</div>
+                      {isOnline && (
+                        <span className="badge text-secondary">online</span>
+                      )}
+                    </div>
+                    <div>
+                      {unreadCount > 0 && (
+                        <span className="badge text-success fw-bold me-2">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {/* Chat panel */}
+          <div
+            className="col-md-9 d-flex flex-column"
+            style={{ height: "80vh" }}
+          >
+            {selectedCustomer && (
+              <h5 className="position-fixed p-3 ms-0 bg-secondary w-100 text-white">
+                {getName(selectedCustomer)}
+              </h5>
+            )}
+            <div
+              className="flex-grow-1 p-3 pt-0 overflow-auto mt-5"
+              style={{ backgroundColor: "#f8f9fa" }}
+            >
+              {selectedCustomer ? (
+                <>
+                  <div className="mt-3">
+                    {(messages[selectedCustomer] || []).map((m, idx) => {
+                      const align =
+                        m.senderType === "admin"
+                          ? "justify-content-end"
+                          : "justify-content-start";
+                      const bubbleClass =
+                        m.senderType === "admin"
+                          ? "bg-success text-white"
+                          : "bg-light border";
+                      return (
+                        <div key={idx} className={`d-flex mb-2 ${align}`}>
+                          <div
+                            className={`p-2 rounded ${bubbleClass}`}
+                            style={{ maxWidth: "70%" }}
                           >
-                            {new Date(m.timestamp).toLocaleString()}
-                          </small>
+                            <div>{m.messageText}</div>
+                            <small
+                              className="text-muted d-block mt-1"
+                              style={{ fontSize: 11 }}
+                            >
+                              {new Date(m.timestamp).toLocaleString()}
+                            </small>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                  <div ref={messagesEndRef} />
+                      );
+                    })}
+                    <div ref={messagesEndRef} />
+                  </div>
+                </>
+              ) : (
+                <div className="text-center text-muted mt-5">
+                  Select a customer to view chat
                 </div>
-              </>
-            ) : (
-              <div className="text-center text-muted mt-5">
-                Select a customer to view chat
+              )}
+            </div>
+
+            {/* Input */}
+            {selectedCustomer && (
+              <div className="p-3 border-top d-flex">
+                <input
+                  type="text"
+                  className="form-control me-2"
+                  placeholder="Type a reply..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                />
+                <button className="btn btn-success" onClick={handleSend}>
+                  Send
+                </button>
               </div>
             )}
           </div>
-
-          {/* Input */}
-          {selectedCustomer && (
-            <div className="p-3 border-top d-flex">
-              <input
-                type="text"
-                className="form-control me-2"
-                placeholder="Type a reply..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              />
-              <button className="btn btn-success" onClick={handleSend}>
-                Send
-              </button>
-            </div>
-          )}
         </div>
       </div>
-    </div>
+      <button
+        className="btn text-start d-flex align-items-center justify-content-between p-3 border-0 rounded btn-outline-light text-dark"
+        onClick={() => {
+          navigate("/FruitsWallahAdmin");
+        }}
+      >
+        <div className="d-flex align-items-center gap-3 fw-medium" >
+          <FaBackspace size={20} />
+            Back to DashBoard
+         
+        </div>
+      </button>
+
+    </>
   );
 };
 

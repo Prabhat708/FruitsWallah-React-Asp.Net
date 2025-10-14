@@ -13,11 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Messeage from "../components/Messeage";
 import { GetProducts } from "../services/ProductController";
 import useAuthStore from "../Stores/AuthStore";
-import {
-  getUserDeatails,
-  HandleLogin,
-  HandleLogout,
-} from "../services/HandleLoginLogout";
+import { HandleLogout } from "../services/HandleLoginLogout";
 import { handleActiveAccount } from "../services/Singup";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 

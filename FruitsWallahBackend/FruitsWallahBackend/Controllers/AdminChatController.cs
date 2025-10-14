@@ -24,14 +24,26 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetCustomers()
         {
-            //var senderIds= await _context.ChatBoxes.Select(s=>s.SenderId).ToListAsync();
-               
-            //var customers = await _context.Users
-            //    .Select(u => new { u.UserId,u.Name})
-            //    .ToListAsync();
-            var customers = await( from s in _context.ChatBoxes join u in _context.Users on s.SenderId equals u.UserId where !u.IsAdmin group u by new { u.UserId, u.Name } into g
-    select new { g.Key.UserId, g.Key.Name }).ToListAsync();
-            Console.WriteLine(customers.Count);
+
+            var customers = await (
+                    from u in _context.Users
+                    where !u.IsAdmin
+                    let lastMsg = _context.ChatBoxes
+                                         .Where(cb => cb.SenderId == u.UserId)   
+                                         .OrderByDescending(cb => cb.Timestamp) 
+                                         .Select(cb => new { cb.Timestamp, cb.MessageText })
+                                         .FirstOrDefault()
+                    where lastMsg != null
+                    orderby lastMsg.Timestamp descending
+                    select new
+                    {
+                        u.UserId,
+                        u.Name,
+                        LastMessageTime = lastMsg.Timestamp,
+                        LastMessage = lastMsg.MessageText,
+                    }
+                ).ToListAsync();
+
             return Ok(customers);
         }
         [HttpGet("history/{customerId}")]

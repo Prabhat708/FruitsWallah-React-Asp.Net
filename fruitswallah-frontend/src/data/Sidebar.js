@@ -47,12 +47,12 @@ export const adminSidebarItems = [
     href: "/FruitsWallahAdmin/users",
     icon: PiUsersFourFill,
   },
-  { icon: LogOut, label: "Log out", href: "/logOut" },
   {
     icon: BsChatText,
     label: "Chat Support",
     href: "/FruitsWallahAdmin/AdminChatSupportPage",
   },
+  { icon: LogOut, label: "Log out", href: "/logOut" },
 
   // Add more items as needed
 ];

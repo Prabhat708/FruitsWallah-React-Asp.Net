@@ -70,7 +70,7 @@ namespace FruitsWallahBackend.Hubs
             await SaveMessage( adminId, customerId, message);
             if(ConnectUsers.TryGetValue(customerId, out var connId))
             {
-                await Clients.Client(connId).SendAsync("ReceiveMessage",adminId,customerId, "admin", message);
+                await Clients.Client(connId).SendAsync("ReceiveMessage",adminId,customerId, "admin", message,DateTime.Now);
             }
         }
 
