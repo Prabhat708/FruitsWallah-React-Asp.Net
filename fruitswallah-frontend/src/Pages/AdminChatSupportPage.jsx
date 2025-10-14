@@ -19,148 +19,184 @@ const AdminChatSupportPage = () => {
   const [unread, setUnread] = useState({});
   const messagesEndRef = useRef(null);
 
-  // axios defaults with token
-  const { token, UserId } = useAuthStore.getState();
-  if (token) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  }
+ const { token, UserId } = useAuthStore.getState();
+ if (token) {
+   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+ }
 
-  useEffect(() => {
-    
-    // Build SignalR connection
-    const conn = new signalR.HubConnectionBuilder()
-      .withUrl(`${BASE_URL}/chathub?access_token=${token}`)
-      .withAutomaticReconnect()
-      .configureLogging(signalR.LogLevel.Warning)
-      .build();
+ // SignalR connection
+ useEffect(() => {
+   if (!token) return;
 
-    try {
-      conn.on("CustomerList", (connectedIdsList) => {
-        setConnectedIds(connectedIdsList);
-      });
-    } catch (e) {
-      console.log("can't get", e);
-    } finally {
-      
-    }
-    // Handle messages
-    conn.on("ReceiveMessage", (senderId, receiverId, senderType, message) => {
-      const customerId = senderType === "customer" ? senderId : receiverId;
+   const conn = new signalR.HubConnectionBuilder()
+     .withUrl(`${BASE_URL}/chathub?access_token=${token}`)
+     .withAutomaticReconnect()
+     .configureLogging(signalR.LogLevel.Warning)
+     .build();
 
-      setMessages((prev) => {
-        const old = prev[customerId] || [];
-        const next = [
-          ...old,
-          {
-            senderId,
-            messageText: message,
-            timestamp: new Date().toISOString(),
-          },
-        ];
-        return { ...prev, [customerId]: next };
-      });
+   // Listen for customer connection updates
+   conn.on("CustomerList", (connectedIdsList) => {
+     setConnectedIds(connectedIdsList || {});
+   });
 
-      // if not selected customer, mark unread
-      setSelectedCustomer((prevSel) => {
-        if (prevSel !== customerId) {
-          setUnread((u) => ({ ...u, [customerId]: (u[customerId] || 0) + 1 }));
-        }
-        return prevSel;
-      });
-    });
+   // Listen for incoming messages
+   conn.on("ReceiveMessage", (senderId, receiverId, senderType, message) => {
+     const customerId = senderType === "customer" ? senderId : receiverId;
 
-    // ✅ Only start connection after listeners are set
-    conn
-      .start()
-      .then(() => {
-        console.log("✅ Admin SignalR connected");
-        setConnection(conn);
-      })
-      .catch((err) => console.error("❌ SignalR connection error:", err));
+     setMessages((prev) => ({
+       ...prev,
+       [customerId]: [
+         ...(prev[customerId] || []),
+         {
+           senderId,
+           senderType,
+           messageText: message,
+           timestamp: new Date().toISOString(),
+         },
+       ],
+     }));
 
-  
-    return () => {
-      conn.stop();
-    };
-  }, []);
+     // Increment unread count if customer not currently selected
+     setSelectedCustomer((prevSel) => {
+       if (prevSel !== customerId) {
+         setUnread((u) => {
+           const nextCount = (u[customerId] || 0) + 1;
+           // Save immediately to backend
+           axios.post(`${BASE_URL}/api/UnreadMessages`, {
+               senderId: customerId,
+               unreadCount: nextCount,
+             })
 
-  
-  useEffect(() => {
-    if (!selectedCustomer) return;
+             .catch(console.error);
+           return { ...u, [customerId]: nextCount };
+         });
+       }
+       return prevSel;
+     });
+   });
 
-    const loadHistory = async () => {
-      try {
-        const res = await axios.get(
-          `${BASE_URL}/api/AdminChat/history/${selectedCustomer}`
-        );
+   // Start connection
+   conn
+     .start()
+     .then(() => {
+       console.log("✅ Admin SignalR connected");
+       setConnection(conn);
+     })
+     .catch((err) => console.error("❌ SignalR connection error:", err));
 
-        setMessages((prev) => ({
-          ...prev,
-          [selectedCustomer]: res.data.map((m) => ({
-            senderId: m.senderId,
-            senderType: m.senderId == UserId?"admin":"customer",
-            messageText: m.messageText,
-            timestamp: m.timestamp,
-          })),
-        }));
-        // clear unread
-        setUnread((prev) => ({ ...prev, [selectedCustomer]: 0 }));
-      } catch (err) {
-        console.error("Failed to load history:", err);
-      }
-    };
-    loadHistory();
-  }, [selectedCustomer]);
+   return () => conn.stop();
+ }, [token]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, selectedCustomer]);
+ // Fetch all customers
+ useEffect(() => {
+   const loadUsers = async () => {
+     try {
+       const res = await axios.get(`${BASE_URL}/api/AdminChat/users`);
+       setCustomers(res.data);
+     } catch (err) {
+       console.error("Failed to load users:", err);
+     }
+   };
+   loadUsers();
+ }, [messages]);
 
-  useEffect(() => {
-    // Load all customer accounts for sidebar
-    const loadUsers = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/AdminChat/users`);
-        setCustomers(res.data);
-      } catch (err) {
-        console.error("Failed to load users:", err);
-      }
-    };
-    loadUsers();
-  }, [messages]);
-  const handleSelectCustomer = (id) => {
-    setSelectedCustomer(id);
-  };
+ // Fetch unread counts on page load
+ useEffect(() => {
+   if (!UserId) return;
 
-  const handleSend = async () => {
-    if (!input.trim() || !connection || !selectedCustomer) return;
-    try {
-  
-      await connection.invoke("SendToCustomer", selectedCustomer, input);
-      
-      setMessages((prev) => {
-        const old = prev[selectedCustomer] || [];
-        const next = [
-          ...old,
-          {
-            senderId: "admin",
-            senderType:"admin",
-            messageText: input,
-            timestamp: new Date().toISOString(),
-          },
-        ];
-        return { ...prev, [selectedCustomer]: next };
-      });
-      setInput("");
-    } catch (err) {
-      console.error("Send failed:", err);
-    }
-  };
+   const fetchUnread = async () => {
+     console.log("running get")
+     try {
+       const res = await axios.get(
+         `${BASE_URL}/api/UnreadMessages/Admin/${UserId}`
+       );
+       const unreadData = res.data.reduce((acc, item) => {
+         acc[item.senderId] = item.unreadCount;
+         return acc;
+       }, {});
+       setUnread(unreadData);
+     } catch (err) {
+       console.error("Failed to fetch admin unread counts:", err);
+     }
+   };
 
-  const getName = (id) => {
-    const u = customers.find((c) => c.userId === id);
-    return u ? u.name : `User ${id}`;
-  };
+   fetchUnread();
+ }, [useAuthStore((s) => s.UserId)]);
+
+ // Load chat history for selected customer
+ useEffect(() => {
+   if (!selectedCustomer) return;
+
+   const loadHistory = async () => {
+     try {
+       const res = await axios.get(
+         `${BASE_URL}/api/AdminChat/history/${selectedCustomer}`
+       );
+       
+       setMessages((prev) => ({
+         ...prev,
+         [selectedCustomer]: res.data.map((m) => ({
+           senderId: m.senderId,
+           senderType: m.senderId == UserId ? "admin" : "customer",
+           messageText: m.messageText,
+           timestamp: m.timestamp,
+         })),
+       }));
+
+       // Clear unread for this customer
+       setUnread((prev) => ({ ...prev, [selectedCustomer]: 0 }));
+
+       // Save cleared unread count to backend
+       await axios.post(`${BASE_URL}/api/UnreadMessages`, {
+         senderId: selectedCustomer,
+         unreadCount: 0,
+       });
+     } catch (err) {
+       console.error("Failed to load history:", err);
+     }
+   };
+
+   loadHistory();
+ }, [selectedCustomer, UserId]);
+
+ // Scroll to bottom
+ useEffect(() => {
+   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+ }, [messages, selectedCustomer]);
+
+ // Handle sending a message
+ const handleSend = async () => {
+   if (!input.trim() || !connection || !selectedCustomer) return;
+
+   try {
+     await connection.invoke("SendToCustomer", selectedCustomer, input);
+
+     setMessages((prev) => ({
+       ...prev,
+       [selectedCustomer]: [
+         ...(prev[selectedCustomer] || []),
+         {
+           senderId: "admin",
+           senderType: "admin",
+           messageText: input,
+           timestamp: new Date().toISOString(),
+         },
+       ],
+     }));
+     setInput("");
+   } catch (err) {
+     console.error("Send failed:", err);
+   }
+ };
+
+ const handleSelectCustomer = (id) => {
+   setSelectedCustomer(id);
+ };
+
+ const getName = (id) => {
+   const u = customers.find((c) => c.userId === id);
+   return u ? u.name : `User ${id}`;
+ };
 
   return (
     <>

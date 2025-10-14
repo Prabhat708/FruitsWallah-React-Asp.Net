@@ -21,11 +21,11 @@ namespace FruitsWallahBackend.Controllers
             _context = context;
         }
 
-        // GET: api/UnreadMessages
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UnreadMessages>>> GetUnreadMessages()
+        // GET: ai/UnreadMessages
+        [HttpGet("Admin/{UserId}")]
+        public async Task<ActionResult<IEnumerable<UnreadMessages>>> GetAllUnreadMessages(int UserId)
         {
-            return await _context.UnreadMessages.ToListAsync();
+            return await _context.UnreadMessages.Where(u=>u.ReciverId == UserId).ToListAsync();
         }
 
         // GET: api/UnreadMessages/5
@@ -40,63 +40,37 @@ namespace FruitsWallahBackend.Controllers
             return Ok(unreadCount[0]);
         }
 
-        // PUT: api/UnreadMessages/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUnreadMessages(int id, UnreadMessages unreadMessages)
-        {
-            if (id != unreadMessages.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(unreadMessages).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UnreadMessagesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
 
         // POST: api/UnreadMessages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UnreadMessages>> PostUnreadMessages(UnreadMessages unreadMessages)
+        public async Task<ActionResult<UnreadMessages>> PostUnreadMessages(UserUnread unreadMessages)
         {
-            _context.UnreadMessages.Add(unreadMessages);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUnreadMessages", new { id = unreadMessages.Id }, unreadMessages);
-        }
-
-        // DELETE: api/UnreadMessages/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUnreadMessages(int id)
-        {
-            var unreadMessages = await _context.UnreadMessages.FindAsync(id);
-            if (unreadMessages == null)
+            var ReciverId = await _context.Users.Where(s => s.IsAdmin).Select(u => u.UserId).FirstOrDefaultAsync();
+            var AllIds = await _context.UnreadMessages.Select(c =>new {c.SenderId, c.ReciverId}).ToListAsync();
+           
+            if (AllIds.Contains(new { unreadMessages.SenderId, ReciverId }))
             {
-                return NotFound();
+                var unread = await _context.UnreadMessages.Where(u => u.SenderId == unreadMessages.SenderId && u.ReciverId == ReciverId).FirstOrDefaultAsync();
+                if (unread != null)
+                unread.UnreadCount = unreadMessages.UnreadCount;
+                await _context.SaveChangesAsync();
+                return Ok("done");
             }
-
-            _context.UnreadMessages.Remove(unreadMessages);
+            var newunreadChat = new UnreadMessages()
+            {
+                SenderId = unreadMessages.SenderId,
+                UnreadCount = unreadMessages.UnreadCount,
+                ReciverId = ReciverId,
+            };
+            _context.UnreadMessages.Add(newunreadChat);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("updated");
         }
+
+        
 
         [HttpPost("User")]
         public async Task<ActionResult<UserUnread>>PostUserUnreadCount(UserUnread unreadUser)
