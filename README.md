@@ -13,7 +13,7 @@ FruitsWallah is a full-stack e-commerce platform for buying fresh fruits and veg
 - ⭐ **Product Reviews:** Share and read reviews for products.
 - 📊 **Admin Dashboard:** View sales stats, manage products, orders, and admins.
 - 📄 **Invoice Download:** Download PDF invoices for your orders.
-- 📧 **Contact & Support:** Integrated contact form and support system.
+- 📧 **Contact & Support:** Integrated contact form and support system Using ChatBox.
 
 ---
 
@@ -38,5 +38,5 @@ FruitsWallah is a full-stack e-commerce platform for buying fresh fruits and veg
 ### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/yourusername/FruitsWallah.git
+git clone https://github.com/prabhat708/FruitsWallah-react-asp.net.git
 cd FruitsWallah
