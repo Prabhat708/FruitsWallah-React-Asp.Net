@@ -4,6 +4,7 @@ import * as signalR from "@microsoft/signalr";
 import axios from "axios";
 import useAuthStore from "../Stores/AuthStore";
 import { FaBackspace } from "react-icons/fa";
+import { ImCross } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -79,7 +80,6 @@ const AdminChatSupportPage = () => {
    conn
      .start()
      .then(() => {
-       console.log("✅ Admin SignalR connected");
        setConnection(conn);
      })
      .catch((err) => console.error("❌ SignalR connection error:", err));
@@ -105,7 +105,7 @@ const AdminChatSupportPage = () => {
    if (!UserId) return;
 
    const fetchUnread = async () => {
-     console.log("running get")
+   
      try {
        const res = await axios.get(
          `${BASE_URL}/api/UnreadMessages/Admin/${UserId}`
@@ -248,8 +248,17 @@ const AdminChatSupportPage = () => {
             style={{ height: "80vh" }}
           >
             {selectedCustomer && (
-              <h5 className="position-fixed p-3 ms-0 bg-secondary w-100 text-white">
-                {getName(selectedCustomer)}
+              <h5
+                className="position-fixed top-0 p-3 bg-secondary text-white d-flex justify-content-between align-items-center"
+                style={{ width: "75%" }}
+              >
+                <span>{getName(selectedCustomer)}</span>
+                <button
+                  className="btn btn-sm btn-transparent text-white"
+                   onClick={()=>setSelectedCustomer(null)}
+                >
+                  <ImCross />
+                </button>
               </h5>
             )}
             <div
@@ -320,13 +329,11 @@ const AdminChatSupportPage = () => {
           navigate("/FruitsWallahAdmin");
         }}
       >
-        <div className="d-flex align-items-center gap-3 fw-medium" >
+        <div className="d-flex align-items-center gap-3 fw-medium">
           <FaBackspace size={20} />
-            Back to DashBoard
-         
+          Back to DashBoard
         </div>
       </button>
-
     </>
   );
 };

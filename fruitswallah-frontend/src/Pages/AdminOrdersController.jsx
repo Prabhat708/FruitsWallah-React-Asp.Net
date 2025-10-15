@@ -225,7 +225,7 @@ useEffect(() => {
                           <th>Product</th>
                           <th>Price</th>
                           <th>Quantity</th>
-                          <th>Total</th>
+                          
                           <th>Pincode</th>
                           <th>Payment Method</th>
                           <th>Status</th>
@@ -258,16 +258,7 @@ useEffect(() => {
                             <td>{order?.productName}</td>
                             <td>{order?.productPrice}</td>
                             <td>{order?.productQty}</td>
-                            <td>
-                              {order?.productPrice * order?.productQty >= 300
-                                ? (
-                                    order?.productPrice * order?.productQty
-                                  ).toFixed(2)
-                                : (
-                                    order?.productPrice * order?.productQty +
-                                    50
-                                  ).toFixed(2)}
-                            </td>
+                            
                             <td>{order?.postalCode}</td>
                             <td>
                               <span className="badge bg-secondary">

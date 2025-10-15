@@ -313,7 +313,8 @@ const AdminPage = () => {
                       <tr>
                         <th>Order ID</th>
                         <th>Customer</th>
-                        <th>Amount</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
                         <th>Type</th>
                         <th>Status</th>
                       </tr>
@@ -326,9 +327,10 @@ const AdminPage = () => {
                             index % 2 == 0 ? "table-light" : "table-secondary"
                           }`}
                         >
-                          <td>{order.orderId}</td>
+                          <td>{order.orderId} </td>
                           <td>{order.name}</td>
-                          <td>{order.amount}</td>
+                          <td>{order.productName}</td>
+                          <td>{order.productQty}</td>
                           <td>
                             <span className="badge bg-secondary">
                               {order.transactionType}
@@ -354,7 +356,7 @@ const AdminPage = () => {
                           <td
                             colSpan="5"
                             className="text-center text-muted py-3"
->
+                          >
                             No orders found for selected filters
                           </td>
                         </tr>

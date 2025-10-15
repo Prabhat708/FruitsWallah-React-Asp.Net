@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -22,6 +23,7 @@ namespace FruitsWallahBackend.Controllers
         }
 
         // GET: ai/UnreadMessages
+        [Authorize(Roles ="Admin")]
         [HttpGet("Admin/{UserId}")]
         public async Task<ActionResult<IEnumerable<UnreadMessages>>> GetAllUnreadMessages(int UserId)
         {
@@ -29,6 +31,7 @@ namespace FruitsWallahBackend.Controllers
         }
 
         // GET: api/UnreadMessages/5
+        [Authorize]
         [HttpGet("{UserId}")]
         public async Task<ActionResult<UnreadMessages>> GetUnreadMessages(int UserId)
         {
@@ -43,6 +46,7 @@ namespace FruitsWallahBackend.Controllers
 
         // POST: api/UnreadMessages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<ActionResult<UnreadMessages>> PostUnreadMessages(UserUnread unreadMessages)
         {
@@ -70,8 +74,8 @@ namespace FruitsWallahBackend.Controllers
             return Ok("updated");
         }
 
-        
 
+        [Authorize]
         [HttpPost("User")]
         public async Task<ActionResult<UserUnread>>PostUserUnreadCount(UserUnread unreadUser)
         {
@@ -97,10 +101,6 @@ namespace FruitsWallahBackend.Controllers
             await _context.SaveChangesAsync();
           
             return Ok(unreadUser);
-        }
-        private bool UnreadMessagesExists(int id)
-        {
-            return _context.UnreadMessages.Any(e => e.Id == id);
         }
 
         public class UserUnread

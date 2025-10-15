@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getCartItems } from "./CartFeatures";
-import { PostPayment } from "./payments";
+import { PostPayment, VerifyPayment } from "./payments";
 import { getAddress } from "./ManageAddress";
 import useAuthStore from "../Stores/AuthStore";
 
@@ -62,6 +62,16 @@ export const PostOrders = async (
     try {
       const paymentDeatils = await PostPayment(Amount, token);
       OrderData = await getPayment(paymentDeatils, PaymentMethod);
+      
+      const payload = {
+        razorpay_order_id: OrderData.transactionOrderID,
+        razorpay_payment_id: OrderData.transactionId,
+        razorpay_signature:OrderData.razorpaySignature
+      };
+      const res = await VerifyPayment(payload, token);
+      if (!res) {
+        return;
+      }
     } catch (e) {
       console.log(e);
       return;

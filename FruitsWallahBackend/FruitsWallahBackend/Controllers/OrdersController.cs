@@ -19,10 +19,10 @@ namespace FruitsWallahBackend.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController(FruitsWallahDbContext context, IConfiguration configuration) : ControllerBase
+    public class OrdersController(FruitsWallahDbContext context) : ControllerBase
     {
         private readonly FruitsWallahDbContext _context = context;
-        private readonly IConfiguration _configuration = configuration;
+        
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
@@ -36,7 +36,7 @@ namespace FruitsWallahBackend.Controllers
         [HttpGet("RecentOrders")]
         public async Task<ActionResult<IEnumerable<Orders>>> GetRecentOrdersOrders()
         {
-            var orders = await (from o in _context.Orders join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId join u in _context.Users on o.UserId equals u.UserId join otrans in _context.OrderTransactions on o.OrderId equals otrans.OrderID orderby o.OrderDate descending select new { o.OrderId, u.Name, ot.OrderStatus, otrans.TransactionType, otrans.Amount }).Take(5).ToListAsync();
+            var orders = await (from o in _context.Orders join ot in _context.OrderTrackers on o.OrderId equals ot.OrderId join u in _context.Users on o.UserId equals u.UserId join otrans in _context.OrderTransactions on o.OrderId equals otrans.OrderID join oi in _context.OrderItems on o.OrderId equals oi.OrderId orderby o.OrderDate descending select new { o.OrderId, u.Name, ot.OrderStatus, otrans.TransactionType, oi.ProductName,oi.ProductQty }).Take(5).ToListAsync();
 
             return Ok(orders);
         }
@@ -128,7 +128,7 @@ namespace FruitsWallahBackend.Controllers
                 results = results.Where(x => x.TransactionType != "COD").ToList();
             }
 
-            results = results.OrderByDescending(x => x.OrderDate).ToList();
+            results = [.. results.OrderByDescending(x => x.OrderDate)];
 
             return Ok(results);
         }
@@ -351,35 +351,7 @@ namespace FruitsWallahBackend.Controllers
             }
             return Ok("Ordered Successfully");
         }
-        [Authorize]
-        [HttpPost("create-order")]
-        public async Task<ActionResult<PaymentDTO>> PostPayment(PaymentDTO request)
-
-        {
-            var paymentSettings = _configuration.GetSection("Razorpay");
-            var result = await Task.Run(() =>
-            {
-                RazorpayClient client = new RazorpayClient(paymentSettings["Key"], paymentSettings["Secret"]);
-                Dictionary<string, object> options = new()
-                {
-                    { "amount", request.Amount*100 },  // in paise
-                    { "currency", "INR" },
-                    { "receipt", Guid.NewGuid().ToString() },
-                    { "payment_capture", 1 } // auto capture
-                };
-                Order order = client.Order.Create(options);
-                var orderId = order.Attributes["id"].ToString();
-                var amount = Convert.ToInt32(order.Attributes["amount"]);
-                var currency = order.Attributes["currency"].ToString();
-                return new
-                {
-                    orderId,
-                    amount,
-                    currency
-                };
-            });
-            return Ok(result);
-        }
+        
 
         [Authorize]
         [HttpPut("OrderCancel/{orderId}")]

@@ -21,10 +21,10 @@ const ProductsPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [postPerPage, setPostPerPage] = useState(9);
-
+  const product = products.filter((p) => p.isActive);
   const lastPost = currentPage * postPerPage;
   const firstPost = lastPost - postPerPage;
-  const currentPost = products.slice(firstPost, lastPost);
+  const currentPost = product.slice(firstPost, lastPost);
   var pages = [];
   for (let i = 1; i <= Math.ceil(products.length / postPerPage); i++) {
     pages.push(i);
