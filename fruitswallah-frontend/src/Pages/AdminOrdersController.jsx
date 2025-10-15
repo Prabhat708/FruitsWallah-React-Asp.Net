@@ -58,10 +58,9 @@ const AdminOrdersController = () => {
     setShowOrderDetails(true);
   };
 useEffect(() => {
-   
   getstats();
   GetfilteredOrders(filter.range, filter.status, filter.type, setOrders);
-  }, [filter]);
+}, [filter, showStatusUpdate]);
 
   const getstats = async () => {
     const res = await getDashboardStats(filter.range);

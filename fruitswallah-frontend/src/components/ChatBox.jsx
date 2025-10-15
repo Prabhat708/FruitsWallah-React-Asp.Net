@@ -14,7 +14,7 @@ const ChatBox = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef(null);
   const firstRender = useRef(true); // used to skip first unreadCount effect run
-
+  const { token } = useAuthStore.getState();
   // ✅ Setup SignalR connection
   useEffect(() => {
     const { token } = useAuthStore.getState();
@@ -83,7 +83,11 @@ useEffect(() => {
 
   const fetchUnread = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/UnreadMessages/${UserId}`);
+      const res = await axios.get(`${BASE_URL}/api/UnreadMessages/${UserId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUnreadCount(res.data || 0);
       
     } catch (err) {
@@ -105,10 +109,18 @@ useEffect(() => {
     const { UserId } = useAuthStore.getState();
     const updateUnread = async () => {
       try {
-        await axios.post(`${BASE_URL}/api/UnreadMessages/User`, {
-          senderId: parseInt(UserId),
-          unreadCount,
-        });
+        await axios.post(
+          `${BASE_URL}/api/UnreadMessages/User`,
+          {
+            senderId: parseInt(UserId),
+            unreadCount,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } catch (err) {
         console.error("Failed to update unread count:", err);
       }
@@ -125,7 +137,12 @@ useEffect(() => {
     const loadHistory = async () => {
       try {
         const res = await axios.get(
-          `${BASE_URL}/api/AdminChat/UserHistroy/${UserId}`
+          `${BASE_URL}/api/AdminChat/UserHistroy/${UserId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setMessages(
           res.data.map((m) => ({

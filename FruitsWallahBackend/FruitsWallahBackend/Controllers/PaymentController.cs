@@ -45,7 +45,7 @@ namespace FruitsWallahBackend.Controllers
             });
             return Ok(result);
         }
-
+        [Authorize]
         [HttpPost("verify-payment")]
         public IActionResult VerifyPayment(VerifyData paymentData)
         {
@@ -87,7 +87,11 @@ namespace FruitsWallahBackend.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    return BadRequest(new
+                    {
+                        success = false,
+                        message = "Invalid signature. Payment verification failed."
+                    });
                 }
             }
             catch (Exception ex)

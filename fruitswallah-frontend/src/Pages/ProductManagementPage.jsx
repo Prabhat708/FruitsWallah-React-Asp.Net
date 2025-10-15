@@ -135,17 +135,14 @@ const ProductManagementPage = () => {
     setShowConfirmModal(false);
   };
 
-  useEffect(() => {
-    getstats();
-  }, []);
-
   const getstats = async () => {
     const res = await getDashboardStats();
     setStats(res);
   };
   useEffect(() => {
+    getstats();
     GetProducts(setProducts);
-  }, []);
+  }, [showAddEditProduct]);
   return (
     <>
       <Navbar />

@@ -102,6 +102,7 @@ namespace FruitsWallahBackend.Controllers
                 pendingPayment,
             });
         }
+        [Authorize(Roles ="Admin")]
         [HttpGet("Revenue")]
         public async Task<IActionResult> GetRevenue()
         {

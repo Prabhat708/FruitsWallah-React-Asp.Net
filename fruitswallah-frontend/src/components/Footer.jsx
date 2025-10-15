@@ -76,9 +76,9 @@ const Footer = () => {
               <div className="footer-item">
                 <h4 className="text-light mb-3">Why People Like us!</h4>
                 <p className="mb-4">
-                  typesetting, remaining essentially unchanged. It was
-                  popularised in the 1960s with the like Aldus PageMaker
-                  including of Lorem Ipsum.
+                  We deliver fresh, high-quality fruits straight from farms to
+                  your doorstep. Fast, clean, and reliable — that’s what makes
+                  FruitsWallah everyone’s favorite!
                 </p>
               </div>
             </div>
@@ -128,7 +128,8 @@ const Footer = () => {
               <div className="footer-item">
                 <h4 className="text-light mb-3">Contact</h4>
                 <p>
-                  Address: 120/10, Awadh Park, Vibhuti Khand, Gomti Nagar, Lucknow, Uttar Pradesh, India - 226010
+                  Address: 120/10, Awadh Park, Vibhuti Khand, Gomti Nagar,
+                  Lucknow, Uttar Pradesh, India - 226010
                 </p>
                 <p>Email: fruitswallah.in@gmail.com</p>
                 <p>Phone: +91 6398561245</p>

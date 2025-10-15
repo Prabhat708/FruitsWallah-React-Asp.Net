@@ -13,9 +13,15 @@ const Banner = () => {
                 <p className="fw-normal display-3 text-dark mb-4">
                   in Our Store
                 </p>
-                <p className="mb-4 text-white">
-                  The generated Lorem Ipsum is therefore always free from
-                  repetition injected humour, or non-characteristic words etc.
+                <p className="mb-4 text-white " style={{textAlign:"justify"}}>
+                  Elevate your health with our premium range of exotic fruits.
+                  Sourced from the finest growers, our collection is bursting
+                  with antioxidants, vitamins, and natural sweetness. Experience
+                  the crisp, juicy flesh of the Thai Lychee or the nourishing
+                  goodness of Hass Avocados. We are committed to providing you
+                  with the cleanest, freshest, and most hygienic produce.
+                  Perfect for a nutritious snack, a vibrant addition to salads,
+                  or a beautiful, healthy dessert.
                 </p>
                 <Link
                   to="#"

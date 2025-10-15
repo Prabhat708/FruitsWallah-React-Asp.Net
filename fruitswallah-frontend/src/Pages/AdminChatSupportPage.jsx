@@ -63,10 +63,19 @@ const AdminChatSupportPage = () => {
          setUnread((u) => {
            const nextCount = (u[customerId] || 0) + 1;
            // Save immediately to backend
-           axios.post(`${BASE_URL}/api/UnreadMessages`, {
-               senderId: customerId,
-               unreadCount: nextCount,
-             })
+           axios
+             .post(
+               `${BASE_URL}/api/UnreadMessages`,
+               {
+                 senderId: customerId,
+                 unreadCount: nextCount,
+               },
+               {
+                 headers: {
+                   Authorization: `Bearer ${token}`,
+                 },
+               }
+             )
 
              .catch(console.error);
            return { ...u, [customerId]: nextCount };
@@ -91,7 +100,11 @@ const AdminChatSupportPage = () => {
  useEffect(() => {
    const loadUsers = async () => {
      try {
-       const res = await axios.get(`${BASE_URL}/api/AdminChat/users`);
+       const res = await axios.get(`${BASE_URL}/api/AdminChat/users`, {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       });
        setCustomers(res.data);
      } catch (err) {
        console.error("Failed to load users:", err);
@@ -108,7 +121,12 @@ const AdminChatSupportPage = () => {
    
      try {
        const res = await axios.get(
-         `${BASE_URL}/api/UnreadMessages/Admin/${UserId}`
+         `${BASE_URL}/api/UnreadMessages/Admin/${UserId}`,
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         }
        );
        const unreadData = res.data.reduce((acc, item) => {
          acc[item.senderId] = item.unreadCount;
@@ -130,7 +148,12 @@ const AdminChatSupportPage = () => {
    const loadHistory = async () => {
      try {
        const res = await axios.get(
-         `${BASE_URL}/api/AdminChat/history/${selectedCustomer}`
+         `${BASE_URL}/api/AdminChat/history/${selectedCustomer}`,
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         }
        );
        
        setMessages((prev) => ({
@@ -147,10 +170,18 @@ const AdminChatSupportPage = () => {
        setUnread((prev) => ({ ...prev, [selectedCustomer]: 0 }));
 
        // Save cleared unread count to backend
-       await axios.post(`${BASE_URL}/api/UnreadMessages`, {
-         senderId: selectedCustomer,
-         unreadCount: 0,
-       });
+       await axios.post(
+         `${BASE_URL}/api/UnreadMessages`,
+         {
+           senderId: selectedCustomer,
+           unreadCount: 0,
+         },
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         }
+       );
      } catch (err) {
        console.error("Failed to load history:", err);
      }

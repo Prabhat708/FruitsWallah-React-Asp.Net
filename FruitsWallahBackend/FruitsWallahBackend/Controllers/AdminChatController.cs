@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FruitsWallahBackend.Data;
 using FruitsWallahBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
@@ -21,6 +22,7 @@ namespace FruitsWallahBackend.Controllers
             _context = context;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet("users")]
         public async Task<IActionResult> GetCustomers()
         {
@@ -46,6 +48,7 @@ namespace FruitsWallahBackend.Controllers
 
             return Ok(customers);
         }
+        [Authorize(Roles ="Admin")]
         [HttpGet("history/{customerId}")]
         public async Task<IActionResult> GetHistory(int customerId)
         {
@@ -54,6 +57,7 @@ namespace FruitsWallahBackend.Controllers
                             (admin != null && m.SenderId == admin.UserId && m.ReceiverId == customerId)).OrderBy(m => m.Timestamp).Select(m => new {m.Id, m.SenderId, m.ReceiverId,m.MessageText,m.Timestamp }).ToListAsync();
             return Ok(message);
         }
+        [Authorize]
         [HttpGet("UserHistroy/{UserId}")]
         public async Task<IActionResult> GetUserHistory(int UserId)
         {

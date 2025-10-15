@@ -84,7 +84,7 @@ namespace FruitsWallahBackend.Controllers
 
             return Ok("Thanks for sharing your thoughts");
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReviews(int id)
         {
