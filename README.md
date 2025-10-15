@@ -39,4 +39,4 @@ FruitsWallah is a full-stack e-commerce platform for buying fresh fruits and veg
 
 ```sh
 git clone https://github.com/prabhat708/FruitsWallah-react-asp.net.git
-cd FruitsWallah
+cd FruitsWallah-react-asp.net
