@@ -50,7 +50,7 @@ const LoginPage = () => {
               <>
                 <h1 className="text-center mb-4 mt-5">
                   Welcome Back to
-                  <strong className="text-success">FruitsWallah.</strong>
+                  <strong className="text-success"> FruitsWallah.</strong>
                 </h1>
 
                 <h2 className="text-center mb-4 mt-2">

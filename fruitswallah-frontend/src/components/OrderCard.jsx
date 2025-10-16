@@ -22,7 +22,7 @@ const OrderCard = ({ order, borderColor, getStatusIcon, setOrders }) => {
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content border-danger shadow">
               <div className="modal-header bg-danger text-white">
-                <h5 className="modal-title">Confirmation for Delete Account</h5>
+                <h5 className="modal-title">Confirmation for Cancel Order</h5>
                 <button
                   type="button"
                   className="btn-close btn-close-white"

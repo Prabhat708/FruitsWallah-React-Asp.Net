@@ -8,11 +8,12 @@ import CashOnDelivery from "../components/CashOnDelivery";
 import { useCart } from "../Context/CartContext";
 import { useNavigate } from "react-router-dom";
 import AlertMessage from "../components/AlertMessage";
+import { getAddress } from "../services/ManageAddress";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-  const [address, setAddress] = useState(null);
+  const [address, setAddress] = useState([]);
   const [res, setRes] = useState({});
   const { cartItems } = useCart();
   let sum = 0;
@@ -20,11 +21,15 @@ const CheckoutPage = () => {
   const [activeTab, setActiveTab] = useState("UPI");
 
   useEffect(() => {
+    
     const token = localStorage.getItem("Token");
     if (token == null) {
       navigate("/login");
     }
+    getAddress(setAddress);
   }, []);
+
+
   const handleTogglePaymentMethod = (method) => {
     if (method === "CreditCard") {
       setActiveTab("CreditCard");
@@ -202,6 +207,54 @@ const CheckoutPage = () => {
                   )}
                 </div>{" "}
               </div>
+            </div>
+            <div className="container my-4">
+              <h4 className="mb-3 text-primary">Delivery Address</h4>
+              {address?.length == 0 && (
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => navigate("/address")}
+                >
+                  Add New Address
+                </button>
+              )}
+              {address?.map((add) => (
+                <div
+                  key={add.addId}
+                  className={`card shadow-sm mb-3 border-2 ${
+                    add.isPrimary ? "border-success" : "border-secondary"
+                  }`}
+                >
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h5 className="card-title mb-0">
+                        {add.userName} ({add.addressType})
+                      </h5>
+                      {add.isPrimary && (
+                        <span className="badge bg-success">Primary</span>
+                      )}
+                    </div>
+                    <p className="mt-2 mb-1">
+                      <strong>Address:</strong> {add.houseNo}, {add.locality},{" "}
+                      {add.address}, {add.city}, {add.state} - {add.postalCode}
+                    </p>
+                    <p className="mb-1">
+                      <strong>Landmark:</strong> {add.landMark}
+                    </p>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p className="mb-1">
+                        <strong>Phone:</strong> {add.phoneNumber}
+                      </p>
+                      <button
+                        className="btn btn-outline-secondary"
+                        onClick={() => navigate("/address")}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

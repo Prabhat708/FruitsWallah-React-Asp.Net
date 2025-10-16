@@ -14,10 +14,3 @@ export const PostUnreadCount = async (unreadCount, setUnread) => {
   setUnread(res.data.unreadCount);
 };
 
-export const GetUnread = async (setUnread) => {
-    const { UserId } = useAuthStore.getState();
-    
-  const res = await axios.get(`${BASE_URL}/api/UnreadMessages/${UserId}`);
-  setUnread(res.data);
-  console.log(res.data);
-};

@@ -51,7 +51,7 @@ namespace FruitsWallahBackend.Controllers
         {
             try
             {
-                if (paymentData.Razorpay_order_id != null && paymentData.Razorpay_payment_id != null && paymentData.Razorpay_signature !=null)
+                if (paymentData.Razorpay_order_id != null && paymentData.Razorpay_payment_id != null && paymentData.Razorpay_signature != null)
                 {
 
                     // Extract fields sent from frontend
@@ -65,10 +65,10 @@ namespace FruitsWallahBackend.Controllers
                     // Generate signature using HMAC SHA256
                     string generatedSignature = GenerateSignature(payload, paymentSettings["Secret"]);
 
-                    
+
                     if (generatedSignature == razorpaySignature)
                     {
-                        
+
                         return Ok(new
                         {
                             success = true,
@@ -77,7 +77,7 @@ namespace FruitsWallahBackend.Controllers
                     }
                     else
                     {
-                        
+
                         return BadRequest(new
                         {
                             success = false,
