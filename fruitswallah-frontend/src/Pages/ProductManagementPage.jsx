@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import SidePannel from "../components/SidePannel";
 import Navbar from "../components/Navbar";
 import { adminSidebarItems } from "../data/Sidebar";
-import { BsCheck, BsFillLightningChargeFill } from "react-icons/bs";
+import { BsCheck, BsFillLightningChargeFill, BsFillSearchHeartFill } from "react-icons/bs";
 import StatsCard from "../components/StatsCard";
 import {
   FaBitcoin,
   FaBox,
   FaClock,
   FaEdit,
+  FaSearch,
   FaShoppingCart,
   FaSignOutAlt,
 } from "react-icons/fa";
@@ -31,6 +32,7 @@ const ProductManagementPage = () => {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [formData, setFormData] = useState({
     productCategory: "",
@@ -39,7 +41,7 @@ const ProductManagementPage = () => {
     productPrice: "",
     productStock: "",
     productImage: null,
-    existingImage: "", 
+    existingImage: "",
   });
 
   const [products, setProducts] = useState([]);
@@ -50,9 +52,23 @@ const ProductManagementPage = () => {
 
   const lastPost = currentPage * postPerPage;
   const firstPost = lastPost - postPerPage;
-  const currentPost = products.slice(firstPost, lastPost);
+  const filteredProducts = products?.filter((product) => {
+    const name = product.productName ? product.productName.toLowerCase() : "";
+    const desc = product.productDescription ? product.productDescription.toLowerCase() : "";
+    const cat = (product.productCategory || product.productCatagory || "").toLowerCase();
+    const price = product.productPrice ? product.productPrice.toString().toLowerCase() : "";
+    const Stock = product.productStock ? product.productStock.toString().toLowerCase() : "";  
+    return (
+      name.includes(searchTerm.toLowerCase()) ||
+      desc.includes(searchTerm.toLowerCase()) ||
+      cat.includes(searchTerm.toLowerCase()) ||
+      price.includes(searchTerm.toLowerCase()) ||
+      Stock.includes(searchTerm.toLowerCase()) 
+    );
+  });
+  const currentPost = filteredProducts.slice(firstPost, lastPost);
   var pages = [];
-  for (let i = 1; i <= Math.ceil(products.length / postPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(filteredProducts.length / postPerPage); i++) {
     pages.push(i);
   }
   const handleChange = (e) => {
@@ -150,7 +166,6 @@ const ProductManagementPage = () => {
         className="d-flex min-vh-100 mt-5 pt-5"
         style={{ backgroundColor: "#f8f9fa" }}
       >
-        
         <SidePannel
           sidebarItems={adminSidebarItems}
           activeItem={activeItem}
@@ -173,6 +188,7 @@ const ProductManagementPage = () => {
                     })}
                   </p>
                 </div>
+                
                 <button
                   className="btn btn-outline-primary d-flex align-items-center ms-3"
                   style={{ height: "40px" }}
@@ -330,7 +346,20 @@ const ProductManagementPage = () => {
               </div>
 
               <div className="mt-4">
-                <h3 className="h5 fw-bold text-dark mb-3">All Products</h3>
+                <div className="d-flex align-items-center justify-content-between mb-3">
+                  <h1 className="h3 fw-bold text-dark mb-0">All Products</h1>
+                  <div className="input-group" style={{ width: '280px' }}>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      placeholder="Search products..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      style={{ fontSize: '0.95rem' }}
+                    />
+                    <span className="input-group-text p-1 px-2"><FaSearch/> </span>
+                  </div>
+                </div>
                 {showConfirmModal && (
                   <div
                     className="modal fade show d-block"
@@ -390,7 +419,7 @@ const ProductManagementPage = () => {
                     </div>
                   </div>
                 )}
-                {products.length === 0 ? (
+                {currentPost.length === 0 ? (
                   <p className="text-muted">No products found.</p>
                 ) : (
                   <div className="table-responsive">

@@ -5,14 +5,11 @@ import { adminSidebarItems } from "../data/Sidebar";
 import { BsCheck } from "react-icons/bs";
 import StatsCard from "../components/StatsCard";
 import {
-  FaBitcoin,
-  FaClock,
   FaEdit,
-  FaShoppingCart,
-  FaSignOutAlt,
   FaUserClock,
   FaUserInjured,
   FaUsersSlash,
+  FaSearch,
 } from "react-icons/fa";
 import SetAdmin from "../components/SetAdmin";
 import { GetAllUsers } from "../services/AdminOperations";
@@ -25,20 +22,31 @@ const ManageAdmin = () => {
   const [showUpdateAdmins, setShowUpdateAdmins] = useState(false);
   const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
 useEffect(() => {
-   
+   GetAllUsers(setUsers);
     getstats();
-  }, []);
+  }, [showUpdateAdmins]);
 
   const getstats = async () => {
     const res = await getDashboardStats();
     setStats(res);
   };
-  useEffect(() => {
-    GetAllUsers(setUsers);
-  }, []);
+
 
   const admins = users.filter(u => u.isAdmin);
+  const filteredAdmins = admins.filter((a) => {
+    if (!search || search.trim() === "") return true;
+    const q = search.trim().toLowerCase();
+    const name = (a.name || "").toString().toLowerCase();
+    const email = (a.email || "").toString().toLowerCase();
+    const phone = (a.phoneNumber || "").toString().toLowerCase();
+    return (
+      name.includes(q) ||
+      email.includes(q) ||
+      phone.includes(q)
+    );
+  });
   return (
     <>
       <Navbar />
@@ -118,6 +126,30 @@ useEffect(() => {
 
               {/* Admins Interactive Form and Table */}
 
+              <div className="d-flex align-items-center justify-content-between mt-4">
+                <h4 className="mb-0">All Admins ({admins.length})</h4>
+                <div className="input-group" style={{ width: 360 }}>
+                  <span className="input-group-text bg-white">
+                    <FaSearch />
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Search by name, email or phone"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  {search && (
+                    <button
+                      className="btn btn-outline-secondary"
+                      onClick={() => setSearch("")}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+
               <div className="table-responsive mt-3">
                 <table className="table table-bordered table-hover">
                   <thead className="table-info">
@@ -131,38 +163,46 @@ useEffect(() => {
                     </tr>
                   </thead>
                   <tbody>
-                    {admins.map((admin, index) => (
-                      <tr
-                        key={index}
-                        className={`${
-                          index % 2 == 0 ? "table-light" : "table-secondary"
-                        }`}
-                      >
-                        <td>{index + 1}</td>
-                        <td>{admin.name}</td>
-                        <td>{admin.email}</td>
-                        <td>{admin.phoneNumber}</td>
-                        <td>
-                          {admin.email == "fruitswallah.in@gmail.com"
-                            ? "Super Admin"
-                            : "Admin"}
-                        </td>
-                        <td>
-                          {admin.email == "fruitswallah.in@gmail.com" ? (
-                            ""
-                          ) : (
-                            <button
-                              className="text-primary border-0 bg-transparent "
-                              onClick={() => {
-                                setShowUpdateAdmins(true);
-                              }}
-                            >
-                              <FaEdit size={25} />
-                            </button>
-                          )}
+                    {filteredAdmins.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="text-center py-4">
+                          No admins found for "{search.slice(0,20)}".
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredAdmins.map((admin, index) => (
+                        <tr
+                          key={admin.id ?? index}
+                          className={`${
+                            index % 2 == 0 ? "table-light" : "table-secondary"
+                          }`}
+                        >
+                          <td>{index + 1}</td>
+                          <td>{admin.name}</td>
+                          <td>{admin.email}</td>
+                          <td>{admin.phoneNumber}</td>
+                          <td>
+                            {admin.email == "fruitswallah.in@gmail.com"
+                              ? "Super Admin"
+                              : "Admin"}
+                          </td>
+                          <td>
+                            {admin.email == "fruitswallah.in@gmail.com" ? (
+                              ""
+                            ) : (
+                              <button
+                                className="text-primary border-0 bg-transparent "
+                                onClick={() => {
+                                  setShowUpdateAdmins(true);
+                                }}
+                              >
+                                <FaEdit size={25} />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

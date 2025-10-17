@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Navbar from "../components/Navbar";
 import SidePannel from "../components/SidePannel";
 import { adminSidebarItems } from "../data/Sidebar";
-import { useState } from "react";
+
 import {
   FaClock,
   FaDollarSign,
@@ -26,6 +26,8 @@ import { MdRealEstateAgent } from "react-icons/md";
 const AdminOrdersController = () => {
   const [orders, setOrders] = useState([]);
   const [order, setOrder] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(null);
   const [showStatusUpdate, setShowStatusUpdate] = useState(false);
   const [activeItem, setActiveItem] = useState("View orders");
@@ -46,9 +48,30 @@ const AdminOrdersController = () => {
 
   const lastPost = currentPage * postPerPage;
   const firstPost = lastPost - postPerPage;
-  const currentPost = orders.slice(firstPost, lastPost);
+  // debounce search input
+  useEffect(() => {
+   
+    const handler = setTimeout(() => setDebouncedQuery(searchQuery), 300);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // filter orders by debounced query across all fields
+  const filteredOrders = useMemo(() => {
+    if (!debouncedQuery || debouncedQuery.trim() === "") return orders || [];
+    const q = debouncedQuery.toLowerCase();
+    return (orders || []).filter((o) => {
+      try {
+        const hay = JSON.stringify(o).toLowerCase();
+        return hay.includes(q);
+      } catch {
+        return false;
+      }
+    });
+  }, [orders, debouncedQuery]);
+
+  const currentPost = filteredOrders.slice(firstPost, lastPost);
   var pages = [];
-  for (let i = 1; i <= Math.ceil(orders.length / postPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(filteredOrders.length / postPerPage); i++) {
     pages.push(i);
   }
   const [stats, setStats] = useState([]);
@@ -58,15 +81,16 @@ const AdminOrdersController = () => {
     setShowOrderDetails(true);
   };
 useEffect(() => {
+   const getstats = async () => {
+    const res = await getDashboardStats(filter.range);
+
+    setStats(res);
+  };
   getstats();
   GetfilteredOrders(filter.range, filter.status, filter.type, setOrders);
 }, [filter, showStatusUpdate]);
 
-  const getstats = async () => {
-    const res = await getDashboardStats(filter.range);
-
-    setStats(res);
-  }
+ 
 
   return (
     <>
@@ -155,6 +179,16 @@ useEffect(() => {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h2 className="h3 fw-bold text-dark mb-0">All Orders</h2>
                   <div className="d-flex align-items-end gap-3">
+                      <div>
+                        <label className="form-label fw-semibold mb-1">Search</label>
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          placeholder="Search orders (id, customer, product, pincode, status...)"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value.trim())}
+                        />
+                      </div>
                     <div>
                       <label className="form-label fw-semibold mb-1">
                         Date Range

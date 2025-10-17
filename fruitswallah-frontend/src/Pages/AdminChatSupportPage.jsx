@@ -6,6 +6,8 @@ import useAuthStore from "../Stores/AuthStore";
 import { FaBackspace } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
+import { FiSearch } from "react-icons/fi";
+import "./AdminChatSupportPage.css";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
@@ -18,6 +20,7 @@ const AdminChatSupportPage = () => {
   const [messages, setMessages] = useState({}); 
   const [input, setInput] = useState("");
   const [unread, setUnread] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
   const messagesEndRef = useRef(null);
 
  const { token, UserId } = useAuthStore.getState();
@@ -229,126 +232,104 @@ const AdminChatSupportPage = () => {
    return u ? u.name : `User ${id}`;
  };
 
+ const filteredCustomers = customers.filter(customer =>
+  customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
   return (
     <>
       <div className="container-fluid mt-3">
-        <div className="row">
-          {/* Sidebar */}
-          <div
-            className="col-md-3 border-end"
-            style={{ height: "80vh", overflowY: "auto" }}
-          >
-            <h5 className="p-3 bg-success text-white">Customers</h5>
+        <div className="admin-chat-container">
+          <div className="chat-sidebar">
+            <div className="sidebar-header">
+              <div>
+                <div style={{fontWeight:700}}>Customers</div>
+                <div style={{fontSize:12,opacity:0.9}}>Support queue</div>
+              </div>
+            </div>
 
-            <ul className="list-group list-group-flush">
-              {customers.map((c) => {
+            <div className="sidebar-search">
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <FiSearch />
+                <input placeholder="Search customers..." onChange={(e) => setSearchTerm(e.target.value)} />
+              </div>
+            </div>
+
+            <div className="customer-list">
+              {filteredCustomers.map((c) => {
                 const idsArray = Object.keys(connectedIds).map(Number);
                 const isOnline = idsArray.includes(c.userId);
                 const unreadCount = unread[c.userId] || 0;
                 return (
-                  <li
+                  <div
                     key={c.userId}
-                    className={`list-group-item d-flex justify-content-between align-items-center ${
-                      selectedCustomer === c.userId ? "bg-success" : ""
-                    }`}
-                    style={{ cursor: "pointer" }}
+                    className={`customer-item ${selectedCustomer === c.userId ? 'selected':''}`}
                     onClick={() => handleSelectCustomer(c.userId)}
                   >
-                    <div>
-                      <div className="fw-bold">{c.name}</div>
-                      {isOnline && (
-                        <span className="badge text-secondary">online</span>
-                      )}
+                    <div className="avatar">{(c.name || 'U').slice(0,1)}</div>
+                    <div className="customer-meta">
+                      <div className="d-flex align-items-center">
+                        <div className="customer-name">{c.name}</div>
+                        {isOnline && <span className="badge-online" />}
+                      </div>
+                      <div className="customer-sub">{c.email || 'Customer'}</div>
                     </div>
                     <div>
                       {unreadCount > 0 && (
-                        <span className="badge text-success fw-bold me-2">
-                          {unreadCount}
-                        </span>
+                        <div className="unread-badge">{unreadCount}</div>
                       )}
                     </div>
-                  </li>
+                  </div>
                 );
               })}
-            </ul>
+            </div>
           </div>
 
-          {/* Chat panel */}
-          <div
-            className="col-md-9 d-flex flex-column"
-            style={{ height: "80vh" }}
-          >
-            {selectedCustomer && (
-              <h5
-                className="position-fixed top-0 p-3 bg-secondary text-white d-flex justify-content-between align-items-center"
-                style={{ width: "75%" }}
-              >
-                <span>{getName(selectedCustomer)}</span>
-                <button
-                  className="btn btn-sm btn-transparent text-white"
-                   onClick={()=>setSelectedCustomer(null)}
-                >
-                  <ImCross />
-                </button>
-              </h5>
-            )}
-            <div
-              className="flex-grow-1 p-3 pt-0 overflow-auto mt-5"
-              style={{ backgroundColor: "#f8f9fa" }}
-            >
-              {selectedCustomer ? (
-                <>
-                  <div className="mt-3">
-                    {(messages[selectedCustomer] || []).map((m, idx) => {
-                      const align =
-                        m.senderType === "admin"
-                          ? "justify-content-end"
-                          : "justify-content-start";
-                      const bubbleClass =
-                        m.senderType === "admin"
-                          ? "bg-success text-white"
-                          : "bg-light border";
-                      return (
-                        <div key={idx} className={`d-flex mb-2 ${align}`}>
-                          <div
-                            className={`p-2 rounded ${bubbleClass}`}
-                            style={{ maxWidth: "70%" }}
-                          >
-                            <div>{m.messageText}</div>
-                            <small
-                              className="text-muted d-block mt-1"
-                              style={{ fontSize: 11 }}
-                            >
-                              {new Date(m.timestamp).toLocaleString()}
-                            </small>
-                          </div>
-                        </div>
-                      );
-                    })}
-                    <div ref={messagesEndRef} />
-                  </div>
-                </>
-              ) : (
-                <div className="text-center text-muted mt-5">
-                  Select a customer to view chat
+          <div className="chat-panel">
+            <div className="chat-header">
+              <div style={{display:'flex',alignItems:'center',gap:12}}>
+                <div className="avatar" style={{width:48,height:48}}>{selectedCustomer? (getName(selectedCustomer)||'U').slice(0,1):'A'}</div>
+                <div>
+                  <div className="title">{selectedCustomer ? getName(selectedCustomer) : 'Select a customer'}</div>
+                  <div style={{fontSize:12,color:'#6b7280'}}>{selectedCustomer? 'Active chat' : 'No conversation selected'}</div>
                 </div>
-              )}
+              </div>
+              <div style={{marginLeft:'auto'}}>
+                {selectedCustomer && (
+                  <button className="btn btn-sm btn-outline-secondary" onClick={()=>setSelectedCustomer(null)}><ImCross /></button>
+                )}
+              </div>
             </div>
 
-            {/* Input */}
+            <div className="chat-messages">
+              {selectedCustomer ? (
+                (messages[selectedCustomer] || []).map((m, idx) => {
+                  const isAdmin = m.senderType === 'admin' || m.senderId === 'admin';
+                  return (
+                    <div key={idx} className={`msg-row ${isAdmin? 'right':''}`}>
+                      <div className={`msg-bubble ${isAdmin? 'admin':'customer'}`}>
+                        <div>{m.messageText}</div>
+                        <div className="msg-meta">{new Date(m.timestamp).toLocaleString()}</div>
+                      </div>
+                    </div>
+                  )
+                })
+              ) : (
+                <div className="text-center text-muted mt-5">Select a customer to view chat</div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
             {selectedCustomer && (
-              <div className="p-3 border-top d-flex">
+              <div className="composer">
                 <input
                   type="text"
-                  className="form-control me-2"
                   placeholder="Type a reply..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 />
-                <button className="btn btn-success" onClick={handleSend}>
-                  Send
-                </button>
+                <button className="btn-send" onClick={handleSend}>Send</button>
               </div>
             )}
           </div>

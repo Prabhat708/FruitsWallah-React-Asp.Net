@@ -72,7 +72,7 @@ export const GetAllUsers = async (setUsers) => {
 
 export const UpdateUserRole = async (email, role,setUsers) => {
   const { token } = useAuthStore.getState();
-
+try{
   const res = await axios.put(
     `${BASE_URL}/api/Users/Role/${email}/${role}`,
     {},
@@ -85,4 +85,7 @@ export const UpdateUserRole = async (email, role,setUsers) => {
   );
   GetAllUsers(setUsers);
   return { success: true, message: res.data }
+}catch(error){
+  return { success: false, message: error.response?.data || error.message };
+}
 };

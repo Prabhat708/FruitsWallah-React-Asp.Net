@@ -2,9 +2,11 @@ import React, { use, useEffect, useState } from "react";
 import SuccessMessage from "./SuccessMessage";
 import { GetAllUsers, UpdateUserRole } from "../services/AdminOperations";
 import useAuthStore from "../Stores/AuthStore";
+import AlertMessage from "./AlertMessage";
 
 const SetAdmin = ({ setShowUpdateAdmins }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [res, setRes] = useState(null);
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
     Email: "",
@@ -21,8 +23,8 @@ const SetAdmin = ({ setShowUpdateAdmins }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await UpdateUserRole(form.Email, form.Role, setUsers);
-
+    const resp = await UpdateUserRole(form.Email, form.Role, setUsers);
+    setRes(resp);
     setShowPopup(true);
     setTimeout(() => {
       setShowPopup(false);
@@ -41,10 +43,7 @@ const SetAdmin = ({ setShowUpdateAdmins }) => {
     <>
       <>
         {showPopup && (
-          <SuccessMessage
-            className="mt-5"
-            message={"Role Updated Successfuly!"}
-          />
+          <AlertMessage status={res.success} message={res.message} />
         )}
         <div className="container mt-5 d-flex justify-content-center mb-4">
           <div

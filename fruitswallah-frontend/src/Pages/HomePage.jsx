@@ -21,7 +21,7 @@ const HomePage = () => {
   const [products, setProducts] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage, setPostPerPage] = useState(8);
+  const [postPerPage] = useState(8);
   const navigate = useNavigate();
   useEffect(() => {
     useAuthStore.getState().initializeAuth();
@@ -41,17 +41,17 @@ const HomePage = () => {
     }
   }, [message]);
 
-  const product = products.filter((p) => p.isActive);
+  const product = products?.filter((p) => p.isActive);
   const lastPost = currentPage * postPerPage;
   const firstPost = lastPost - postPerPage;
-  const currentPost = product.slice(firstPost, lastPost);
+  const currentPost = product?.slice(firstPost, lastPost);
   const { isActive, token } = useAuthStore();
 
   useEffect(() => {
     if (token && isActive === "False") {
       setShowConfirmModal(true);
     }
-  }, [isActive]);
+  }, [token, isActive]);
   const handleConfirm = async () => {
     handleActiveAccount();
     HandleLogout(navigate);

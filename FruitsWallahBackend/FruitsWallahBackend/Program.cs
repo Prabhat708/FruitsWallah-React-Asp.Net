@@ -25,7 +25,7 @@ namespace FruitsWallahBackend.Data
             {
                 options.AddPolicy("AllowReactApp", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins("http://localhost:5173", "http://192.168.1.213", "http://localhost")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();

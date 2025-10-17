@@ -1,7 +1,7 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
+
 import {
   FaBox,
   FaClock,
@@ -10,7 +10,6 @@ import {
   FaShoppingCart,
   FaUsers,
 } from "react-icons/fa";
-import useAuthStore from "../Stores/AuthStore";
 import SidePannel from "../components/SidePannel";
 import StatsCard from "../components/StatsCard";
 import { Line, Bar } from "react-chartjs-2";
@@ -104,79 +103,79 @@ const AdminPage = () => {
   };
 
   useEffect(() => {
-    getstats();
-  }, [filter]);
+    const fetchStats = async () => {
+      const res = await getDashboardStats(filter.range);
+      setStats(res);
+      const revnue = await getRevenueData();
+      setOverviewChart({
+        labels: ["Total Orders", "Products", "Admins", "Active Orders"],
+        datasets: [
+          {
+            label: "Count",
+            data: [
+              res.ordercount,
+              res.activeProducts,
+              res.totalAdmins,
+              res.undeliveredCount,
+            ],
+            backgroundColor: [
+              "rgba(54, 162, 235, 0.6)",
+              "rgba(255, 206, 86, 0.6)",
+              "rgba(75, 192, 192, 0.6)",
+              "rgba(153, 102, 255, 0.6)",
+            ],
+            borderColor: [
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+            ],
+            borderWidth: 1,
+          },
+        ],
+      });
+      setRevenueChart({
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
+        datasets: [
+          {
+            label: "Revenue",
+            data: [
+              revnue[0],
+              revnue[1],
+              revnue[2],
+              revnue[3],
+              revnue[4],
+              revnue[5],
+              revnue[6],
+              revnue[7],
+              revnue[8],
+              revnue[9],
+              revnue[10],
+              revnue[11],
+            ],
+            borderColor: "rgba(75, 192, 192, 1)",
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            tension: 0.4,
+          },
+        ],
+      });
+    };
 
-  const getstats = async () => {
-    const res = await getDashboardStats(filter.range);
-    setStats(res);
-    const revnue = await getRevenueData();
-    setOverviewChart({
-      labels: ["Total Orders", "Products", "Admins", "Active Orders"],
-      datasets: [
-        {
-          label: "Count",
-          data: [
-            res.ordercount,
-            res.activeProducts,
-            res.totalAdmins,
-            res.undeliveredCount,
-          ],
-          backgroundColor: [
-            "rgba(54, 162, 235, 0.6)",
-            "rgba(255, 206, 86, 0.6)",
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-          ],
-          borderColor: [
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    });
-    setRevenueChart({
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-      datasets: [
-        {
-          label: "Revenue",
-          data: [
-            revnue[0],
-            revnue[1],
-            revnue[2],
-            revnue[3],
-            revnue[4],
-            revnue[5],
-            revnue[6],
-            revnue[7],
-            revnue[8],
-            revnue[9],
-            revnue[10],
-            revnue[11],
-          ],
-          borderColor: "rgba(75, 192, 192, 1)",
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
-          tension: 0.4,
-        },
-      ],
-    });
-  };
+    fetchStats();
+  }, [filter]);
 
   useEffect(() => {
     GetRecentOrders(setOrders);
