@@ -30,6 +30,7 @@ const SetAdmin = ({ setShowUpdateAdmins }) => {
       setShowPopup(false);
     }, 2000);
 
+    
     e.target.reset();
     setForm({ Email: "", Role: "" });
   };
