@@ -29,5 +29,5 @@ export const VerifyPayment = async (payload,token) => {
     }
   );
 
-  return res.data.success;
+  return res.data;
 }

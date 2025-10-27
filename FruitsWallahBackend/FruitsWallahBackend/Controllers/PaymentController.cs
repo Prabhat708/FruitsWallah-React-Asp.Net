@@ -1,10 +1,11 @@
 ﻿using FruitsWallahBackend.Models.DTOModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using Razorpay.Api;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -47,37 +48,50 @@ namespace FruitsWallahBackend.Controllers
         }
         [Authorize]
         [HttpPost("verify-payment")]
-        public IActionResult VerifyPayment(VerifyData paymentData)
+        public async Task<IActionResult> VerifyPayment([FromBody] VerifyData paymentData)
         {
             try
             {
-                if (paymentData.Razorpay_order_id != null && paymentData.Razorpay_payment_id != null && paymentData.Razorpay_signature != null)
+                if (paymentData.Razorpay_order_id != null &&
+                    paymentData.Razorpay_payment_id != null &&
+                    paymentData.Razorpay_signature != null)
                 {
-
-                    // Extract fields sent from frontend
                     string razorpayOrderId = paymentData.Razorpay_order_id;
                     string razorpayPaymentId = paymentData.Razorpay_payment_id;
                     string razorpaySignature = paymentData.Razorpay_signature;
 
-                    // Combine order_id and payment_id exactly in this order
                     string payload = $"{razorpayOrderId}|{razorpayPaymentId}";
                     var paymentSettings = _configuration.GetSection("Razorpay");
-                    // Generate signature using HMAC SHA256
-                    string generatedSignature = GenerateSignature(payload, paymentSettings["Secret"]);
 
+                    string generatedSignature = GenerateSignature(payload, paymentSettings["Secret"]);
 
                     if (generatedSignature == razorpaySignature)
                     {
 
+                        using var client = new HttpClient();
+                        var authToken = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{paymentSettings["Key"]}:{paymentSettings["Secret"]}"));
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
+
+                        var response = await client.GetAsync($"https://api.razorpay.com/v1/payments/{razorpayPaymentId}");
+                        response.EnsureSuccessStatusCode();
+
+                        var json = await response.Content.ReadAsStringAsync();
+                        using JsonDocument doc = JsonDocument.Parse(json);
+                        var root = doc.RootElement;
+                        string method = root.GetProperty("method").GetString();
+                        Console.WriteLine($"Payment Method: {method}");
+
+
+
                         return Ok(new
                         {
                             success = true,
-                            message = "Payment verified successfully."
+                            message = "Payment verified successfully.",
+                            method
                         });
                     }
                     else
                     {
-
                         return BadRequest(new
                         {
                             success = false,
@@ -90,16 +104,17 @@ namespace FruitsWallahBackend.Controllers
                     return BadRequest(new
                     {
                         success = false,
-                        message = "Invalid signature. Payment verification failed."
+                        message = "Missing required payment data."
                     });
                 }
             }
             catch (Exception ex)
             {
+                Console.WriteLine("❌ Error in VerifyPayment: " + ex.Message);
                 return StatusCode(500, new
                 {
                     success = false,
-                    message = "Server error during payment verification.",
+                    message = "Internal server error",
                     error = ex.Message
                 });
             }

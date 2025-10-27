@@ -174,29 +174,31 @@ const CheckoutPage = () => {
                           handleTogglePaymentMethod("CashOnDelivery")
                         }
                       >
-                        <FaMobileAlt /> Cash On Delivery
+                        <FaMoneyBillAlt /> Cash On Delivery
                       </button>{" "}
                     </li>
                   </ul>
                 </div>
                 <div className="tab-content">
                   {selectedPayment === "UPI" && (
-                    <UPI
-                      setShowPopup={setShowPopup}
+                   <NetBanking
+                  setShowPopup={setShowPopup}
                       setRes={setRes}
                       setAddress={setAddress}
-                      Amount={sum}
-                    />
+                      Amount={sum} />
                   )}
                   {selectedPayment === "CreditCard" && (
-                    <CreditCard
-                      setShowPopup={setShowPopup}
+                    <NetBanking
+                  setShowPopup={setShowPopup}
                       setRes={setRes}
                       setAddress={setAddress}
-                      Amount={sum}
-                    />
+                      Amount={sum} />
                   )}
-                  {selectedPayment === "NetBanking" && <NetBanking />}
+                  {selectedPayment === "NetBanking" && <NetBanking
+                  setShowPopup={setShowPopup}
+                      setRes={setRes}
+                      setAddress={setAddress}
+                      Amount={sum} />}
                   {selectedPayment === "CashOnDelivery" && (
                     <CashOnDelivery
                       setShowPopup={setShowPopup}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaMobileAlt } from "react-icons/fa";
+import { FaMobileAlt, FaMoneyBillAlt } from "react-icons/fa";
 import { PostOrders } from "../services/OrdersController";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
@@ -32,10 +32,14 @@ const CashOnDelivery = ({ setShowPopup, setRes, setAddress, Amount }) => {
           className="btn btn-primary mt-2 ms-3"
           onClick={() => setShowConfirmModal(true)}
         >
-          <FaMobileAlt /> Proceed Payment
+          <FaMoneyBillAlt /> Place Order
         </button>
       </div>
-
+      <p className="text-muted">
+        Note: You will pay the amount in cash to the delivery agent at the time
+        of delivery. You can also pay online to the delivery agent via UPI or QR Code at
+        the time of delivery!
+      </p>
       {showConfirmModal && (
         <div
           className="modal fade show d-block"

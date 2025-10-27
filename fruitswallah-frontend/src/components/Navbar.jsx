@@ -1,13 +1,16 @@
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
+import useAuthStore from "../Stores/AuthStore";
 
 function Navbar() {
   const navigate = useNavigate();
   var [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
+  const {isAdmin}= useAuthStore.getState();
+  
   const { cartItems } = useCart();
   useEffect(() => {
     var total1 = 0;
@@ -49,9 +52,15 @@ function Navbar() {
                 <Link to="/Orders/" className="nav-item nav-link">
                   Orders
                 </Link>
-                <Link to="/contact/" className="nav-item nav-link">
+                {isAdmin == "True" ? (
+                  <Link to="/FruitsWAllahAdmin" className="nav-item nav-link">
+                    Admin Dashboard
+                  </Link>
+                ):
+                (<Link to="/contact/" className="nav-item nav-link">
                   Contact
-                </Link>
+                </Link>)
+}
               </div>
               <div className="d-flex m-3 me-0">
                 <div className="position-relative mx-auto d-inline-block w-75">

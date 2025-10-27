@@ -68,16 +68,19 @@ export const PostOrders = async (
         razorpay_payment_id: OrderData.transactionId,
         razorpay_signature:OrderData.razorpaySignature
       };
+      console.log( OrderData);
       const res = await VerifyPayment(payload, token);
-      if (!res) {
+      if (!res.success) {
         return;
       }
+      OrderData.TransactionType = res.method;
     } catch (e) {
       console.log(e);
       return;
     }
   }
   try {
+    console.log("OrderData:", OrderData);
     const res = await axios.post(`${BASE_URL}/api/Orders`, OrderData, {
       headers: {
         Authorization: `Bearer ${token}`,
