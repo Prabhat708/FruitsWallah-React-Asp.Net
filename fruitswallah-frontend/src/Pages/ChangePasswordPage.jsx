@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Navbar from "../components/Navbar";
 
 import SidePannel from "../components/SidePannel";
 import Footer from "../components/Footer";
 import { HandlePasswordChange } from "../services/HandleLoginLogout";
 import { sidebarItems } from "../data/Sidebar";
+import AlertMessage from "../components/AlertMessage";
 
 const ChangePasswordPage = () => {
 
@@ -13,7 +14,8 @@ const ChangePasswordPage = () => {
     newPassword: "",
     confirmPassword:""
     });
-  
+  const [res, setRes] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
     const handleChange = (e) => {
       setData({ ...data, [e.target.name]: e.target.value });
     };
@@ -34,14 +36,20 @@ const ChangePasswordPage = () => {
 
         <div className="flex-grow-1 p-4">
           <div className="container-fluid" style={{ maxWidth: "1024px" }}>
+            {showPopup && (
+              <AlertMessage
+                status={res?.status}
+                message={res?.message}
+              />
+            )}
             <div className="mb-4">
               <h1 className="h2 fw-bold text-dark mb-2">Change Password</h1>
             </div>
             <div className="profile">
               <form
-                onSubmit={(e) => {
+                onSubmit={async(e) => {
                   e.preventDefault();
-                  HandlePasswordChange(data);
+                  setRes(await HandlePasswordChange(data, setShowPopup));
                 }}
               >
                 <div className="nameSection">

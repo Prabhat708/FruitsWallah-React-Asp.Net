@@ -220,7 +220,8 @@ const CheckoutPage = () => {
                   Add New Address
                 </button>
               )}
-              {address?.map((add) => (
+              {address.slice(0,1)?.map((add) => (
+
                 <div
                   key={add.addId}
                   className={`card shadow-sm mb-3 border-2 ${

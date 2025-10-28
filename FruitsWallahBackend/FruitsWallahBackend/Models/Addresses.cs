@@ -12,7 +12,8 @@ namespace FruitsWallahBackend.Models
         [MaxLength(30)]
         public string? AddressType { get; set; }
         public string? UserName { get; set; }
-        public int HouseNo { get; set; }
+        [MaxLength(10)]
+        public string? HouseNo { get; set; }
         [MaxLength(100)]
         public string? Locality { get; set; }
         [MaxLength(300)]

@@ -20,14 +20,26 @@ export const addAddress = async (data, setAddresses, setShowPopup) => {
   const { PhoneNumber, PostalCode } = data; 
   
   if (UserId == null) {
-    alert("Please login to add address");
-    return;
+    
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "User not found. Please login again." };
+ 
   } else if (PostalCode.toString().length != 6) {
-    alert("Pincode must be 6 Digit");
-    return;
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "Pincode must be 6 Digit" };
+   
   } else if (PhoneNumber.toString().length != 10) {
-    alert("Phone Number must be 10 Digit");
-    return;
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "Phone Number must be 10 Digit" };
   }
   data.UserId = UserId;
   try {

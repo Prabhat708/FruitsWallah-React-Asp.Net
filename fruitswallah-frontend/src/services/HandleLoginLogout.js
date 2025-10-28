@@ -5,11 +5,19 @@ const BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 export const HandleLogin = async (data, navigate, setShowPopup) => {
   const { email, password } = data;
   if (!email || !password) {
-    alert("Please fill all fields");
-    return;
+  
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "Please fill all the fields" };
+
   } else if (password.length < 6) {
-    alert("Password must be at least 6 characters long");
-    return;
+setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "Password must be at least 6 characters long" };
   }
   const payload = {
     Email: email,
@@ -51,21 +59,33 @@ export const HandleLogout = (navigate) => {
 
 
 
-export const HandlePasswordChange = async (data) => {
+export const HandlePasswordChange = async (data, setShowPopup) => {
   const { token, UserId } = useAuthStore.getState();
   if (token == null) {
-    alert("User not found. Please login again.");
-    return;
+setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "User not found. Please login again." };
   }
  
   const { Password, newPassword, confirmPassword } = data;
   if (newPassword != confirmPassword) {
-    alert("Password not matched");
-    return;
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "New password and confirm password do not match." };
+  
   } else if (newPassword.length < 6) {
-    alert("Password must be 6 digit");
-    return;
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: "Password must be at least 6 characters long." };
+    
   } else {
+    try {
     const res = await axios.put(
       `${BASE_URL}/api/Login/${UserId},${Password},${newPassword}`, {},
       {
@@ -74,7 +94,18 @@ export const HandlePasswordChange = async (data) => {
         },
       }
     );
-    alert(res.data);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: res.data};
+  } catch (e) {
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 2000);
+    return { success: false, message: e.response.data };
+  }
   }
 };
 

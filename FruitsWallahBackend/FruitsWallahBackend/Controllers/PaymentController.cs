@@ -79,9 +79,6 @@ namespace FruitsWallahBackend.Controllers
                         using JsonDocument doc = JsonDocument.Parse(json);
                         var root = doc.RootElement;
                         string method = root.GetProperty("method").GetString();
-                        Console.WriteLine($"Payment Method: {method}");
-
-
 
                         return Ok(new
                         {

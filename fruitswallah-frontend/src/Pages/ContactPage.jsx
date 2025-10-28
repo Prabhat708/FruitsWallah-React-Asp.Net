@@ -25,7 +25,12 @@ const ContactPage = () => {
     setSending(true);
     e.preventDefault();
     if (!contactData.Name || !contactData.Email || !contactData.PhoneNumber || !contactData.OrderNumber || !contactData.Subject || !contactData.Desc) {
-      alert("Please fill all fields");
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
+      setRes({ status: false, message: "Please fill all the fields" });
+      setSending(false);
       return;
     }
    
@@ -102,8 +107,8 @@ const ContactPage = () => {
                       type="number"
                       id="phone"
                       name="PhoneNumber"
-                      maxLength="10"
-                      minLength="10"
+                      maxLength={10}
+                      minLength={10}
                       value={contactData.PhoneNumber}
                       onChange={handleChange}
                       className="form-control"

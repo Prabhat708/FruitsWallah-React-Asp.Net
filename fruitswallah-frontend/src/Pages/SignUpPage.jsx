@@ -60,6 +60,13 @@ const SignUpPage = () => {
         setShowPopup(false);
       }, 2000);
       return;
+    }else if (PhoneNumber.length !== 10 || !/^\d{10}$/.test(PhoneNumber)) {
+      setRes({ status: false, message: "Invalid Phone Number" });
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
+      return;
     }
     else {
       setLoading(true);
