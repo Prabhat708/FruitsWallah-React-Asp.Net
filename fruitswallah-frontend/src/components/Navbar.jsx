@@ -1,5 +1,5 @@
 import {  useEffect, useState } from "react";
-import { FaRegUserCircle, FaShoppingCart, FaBars } from "react-icons/fa";
+import { FaRegUserCircle, FaShoppingCart, FaBars, FaSignOutAlt } from "react-icons/fa";
 import { IoSearchCircleSharp } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
@@ -9,7 +9,7 @@ function Navbar() {
   const navigate = useNavigate();
   var [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
-  const {isAdmin}= useAuthStore.getState();
+  const { isAdmin, isLoggedIn, logout } = useAuthStore();
   
   const { cartItems } = useCart();
   useEffect(() => {
@@ -62,8 +62,8 @@ function Navbar() {
                 </Link>)
 }
               </div>
-              <div className="d-flex m-3 me-0">
-                <div className="position-relative mx-auto d-inline-block w-75">
+              <div className="d-flex align-items-center m-3 me-0">
+                <div className="position-relative mx-auto">
                   <form
                     className="w-100"
                     onSubmit={(e) => {
@@ -72,7 +72,8 @@ function Navbar() {
                     }}
                   >
                     <input
-                      className="form-control border-2 top-50 border-success rounded-pill "
+                      className="form-control border-2 border-success rounded-pill"
+                      style={{ paddingRight: '2.5rem' }}
                       type="search"
                       name="search"
                       id="search"
@@ -82,31 +83,43 @@ function Navbar() {
                     />
                     <button
                       type="submit"
-                      className="btn position-absolute top-50 end-0 translate-middle-y me-0 p-0 border-0 bg-transparent "
+                      className="btn position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent"
+                      style={{ right: '0.5rem' }}
                     >
                       <IoSearchCircleSharp
-                        size={50}
+                        size={25}
                         className="text-success search-btn"
                       />
                     </button>
                   </form>
                 </div>
 
-                <Link to="/cart/" className="m-2">
-                  <span
-                    className="position-absolute  rounded-circle d-flex align-items-center justify-content-center text-success fw-medium px-1 "
-                    style={{ top: "20%", right: "3.5%" }}
-                  >
-                    {total}
-                  </span>
-                  <FaShoppingCart
-                    size={30}
-                    className="text-success pb-1"
-                  ></FaShoppingCart>
+                <Link to="/cart/" className="nav-item nav-link">
+                  <div className="position-relative">
+                    <FaShoppingCart
+                      size={30}
+                      className="text-success pb-1"
+                    />
+                    <span
+                      className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-transparent text-success"
+                      style={{ fontSize: "1rem" }}
+                    >
+                      {total}
+                    </span>
+                  </div>
                 </Link>
-                <Link to="/login/" className="m-2">
-                  <FaRegUserCircle className="text-success pb-1" size={30} />
-                </Link>
+                {isLoggedIn ? (
+                  <Link to="/login" className="m-2" onClick={() => {
+                    logout();
+                    navigate('/login');
+                  }}>
+                    <FaSignOutAlt className="text-success pb-1" size={30} />
+                  </Link>
+                ) : (
+                  <Link to="/login/" className="m-2">
+                    <FaRegUserCircle className="text-success pb-1" size={30} />
+                  </Link>
+                )}
               </div>
             </div>
           </nav>

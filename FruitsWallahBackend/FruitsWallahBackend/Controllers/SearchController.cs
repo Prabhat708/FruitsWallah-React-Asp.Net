@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FruitsWallahBackend.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class SearchController(FruitsWallahDbContext context) : ControllerBase
